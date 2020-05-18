@@ -90,10 +90,10 @@
 -keep class * implements com.google.gson.JsonDeserializer
 
 ##---------------End: proguard configuration for Gson  ----------
--keep class com.merxury.ifw.entity.** { *; }
--keep class com.merxury.libkit.entity.** { *; }
--keep class com.merxury.blocker.rule.entity.** { *; }
--keep class com.merxury.blocker.strategy.entity.** { *; }
+-keep class io.github.newbugger.android.ifw.entity.** { *; }
+-keep class io.github.newbugger.android.libkit.entity.** { *; }
+-keep class io.github.newbugger.android.blocker.rule.entity.** { *; }
+-keep class io.github.newbugger.android.blocker.strategy.entity.** { *; }
 -keepclassmembers enum * { *; }
 -keep class android.os.** { *; }
 

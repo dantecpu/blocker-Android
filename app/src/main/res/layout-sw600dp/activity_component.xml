@@ -5,7 +5,7 @@
     android:id="@+id/component_main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.merxury.blocker.ui.component.ComponentActivity">
+    tools:context="io.github.newbugger.android.blocker.ui.component.ComponentActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/component_appbar"

@@ -5,7 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.merxury.blocker.ui.settings.SettingsActivity">
+    tools:context="io.github.newbugger.android.blocker.ui.settings.SettingsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -22,10 +22,10 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <fragment
-        android:name="com.merxury.blocker.ui.settings.PreferenceFragment"
+        android:name="io.github.newbugger.android.blocker.ui.settings.PreferenceFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:tag="com.merxury.blocker.ui.settings.PreferenceFragment"
+        android:tag="io.github.newbugger.android.blocker.ui.settings.PreferenceFragment"
         tools:ignore="FragmentTagUsage" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

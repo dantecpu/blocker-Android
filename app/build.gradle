@@ -7,7 +7,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.merxury.blocker"
+        applicationId "io.github.newbugger.android.blocker"
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 40
