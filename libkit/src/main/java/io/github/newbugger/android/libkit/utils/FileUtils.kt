@@ -108,7 +108,6 @@ object FileUtils {
     @JvmStatic
     fun getExternalStoragePath(context: Context): String {
         return context.getExternalFilesDir(null).toString() +
-                File.separator + "files" +
                 File.separator + "blocker" +
                 File.separator
     }
@@ -168,7 +167,6 @@ object FileUtils {
                 val type = split[0]
                 if ("primary".equals(type, ignoreCase = true)) {
                     return context.getExternalFilesDir(null).toString() +
-                            File.separator + "files" +
                             File.separator + "blocker" +
                             File.separator + split[1]
                 }
