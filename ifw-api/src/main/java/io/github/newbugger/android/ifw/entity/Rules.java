@@ -1,14 +1,14 @@
 package io.github.newbugger.android.ifw.entity;
 
-import ifw.entity.Activity;
-import ifw.entity.Broadcast;
-import ifw.entity.Service;
 import io.github.newbugger.android.ifw.entity.Activity;
 import io.github.newbugger.android.ifw.entity.Broadcast;
 import io.github.newbugger.android.ifw.entity.Service;
-import io.github.newbugger.android.merxury.ifw.entity.Activity;
-import io.github.newbugger.android.merxury.ifw.entity.Broadcast;
-import io.github.newbugger.android.merxury.ifw.entity.Service;
+import io.github.newbugger.android.ifw.entity.Activity;
+import io.github.newbugger.android.ifw.entity.Broadcast;
+import io.github.newbugger.android.ifw.entity.Service;
+import io.github.newbugger.android.ifw.entity.Activity;
+import io.github.newbugger.android.ifw.entity.Broadcast;
+import io.github.newbugger.android.ifw.entity.Service;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;

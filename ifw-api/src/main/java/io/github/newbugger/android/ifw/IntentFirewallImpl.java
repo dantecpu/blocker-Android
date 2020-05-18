@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import io.github.newbugger.android.merxury.ifw.IntentFirewall;
+import io.github.newbugger.android.ifw.IntentFirewall;
 
 public class IntentFirewallImpl implements IntentFirewall {
 

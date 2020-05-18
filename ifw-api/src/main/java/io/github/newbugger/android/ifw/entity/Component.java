@@ -1,11 +1,11 @@
 package io.github.newbugger.android.ifw.entity;
 
-import ifw.entity.ComponentFilter;
-import ifw.entity.IntentFilter;
 import io.github.newbugger.android.ifw.entity.ComponentFilter;
 import io.github.newbugger.android.ifw.entity.IntentFilter;
-import io.github.newbugger.android.merxury.ifw.entity.ComponentFilter;
-import io.github.newbugger.android.merxury.ifw.entity.IntentFilter;
+import io.github.newbugger.android.ifw.entity.ComponentFilter;
+import io.github.newbugger.android.ifw.entity.IntentFilter;
+import io.github.newbugger.android.ifw.entity.ComponentFilter;
+import io.github.newbugger.android.ifw.entity.IntentFilter;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
