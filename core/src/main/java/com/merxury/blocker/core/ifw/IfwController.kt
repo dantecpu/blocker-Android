@@ -40,7 +40,7 @@ class IfwController(val context: Context) : IController {
                 throw e
             }
         }
-        return result;
+        return result
     }
 
     override fun enable(packageName: String, componentName: String): Boolean {

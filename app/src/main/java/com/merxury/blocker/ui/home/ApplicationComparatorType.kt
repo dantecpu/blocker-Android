@@ -7,6 +7,6 @@ enum class ApplicationComparatorType(val value: Int) {
     LAST_UPDATE_TIME(3);
 
     companion object {
-        fun from(findValue: Int): ApplicationComparatorType = ApplicationComparatorType.values().first { it.value == findValue }
+        fun from(findValue: Int): ApplicationComparatorType = values().first { it.value == findValue }
     }
 }

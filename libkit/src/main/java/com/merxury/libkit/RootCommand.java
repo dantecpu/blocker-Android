@@ -2,6 +2,7 @@ package com.merxury.libkit;
 
 import com.elvishew.xlog.Logger;
 import com.elvishew.xlog.XLog;
+import com.example.RootTools.BuildConfig;
 import com.merxury.libkit.exception.ProcessUnexpectedTerminateException;
 import com.stericson.RootShell.exceptions.RootDeniedException;
 import com.stericson.RootShell.execution.Command;
@@ -23,7 +24,7 @@ import io.reactivex.disposables.Disposable;
  */
 
 public class RootCommand {
-    private static Logger logger = XLog.tag("RootCommand").build();
+    private static final Logger logger = XLog.tag("RootCommand").build();
 
     @NonNull
     public synchronized static String runBlockingCommand(final String comm) throws RootDeniedException, IOException, TimeoutException {

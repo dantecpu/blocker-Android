@@ -10,6 +10,8 @@ import android.os.Parcelable;
 
 import com.merxury.libkit.utils.ApkUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.Date;
 
@@ -53,7 +55,7 @@ public class Application implements Parcelable {
     private Application() {
     }
 
-    public Application(@NonNull PackageInfo info) {
+    private Application(@NonNull PackageInfo info) {
         this.packageName = info.packageName;
         this.versionName = info.versionName;
         this.versionCode = info.versionCode;
@@ -88,7 +90,7 @@ public class Application implements Parcelable {
         this.blocked = blocked;
     }
 
-    protected Application(Parcel in) {
+    private Application(Parcel in) {
         this.label = in.readString();
         this.packageName = in.readString();
         this.versionName = in.readString();
@@ -232,6 +234,7 @@ public class Application implements Parcelable {
         return null;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Application{" +

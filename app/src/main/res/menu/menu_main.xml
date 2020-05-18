@@ -9,12 +9,12 @@
         android:inputType="textCapWords"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_filter"
         android:icon="@drawable/ic_sort_24dp"
         android:title="@string/menu_filter"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_refresh"
         android:title="@string/refresh"

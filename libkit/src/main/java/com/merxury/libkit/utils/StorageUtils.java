@@ -1,5 +1,6 @@
 package com.merxury.libkit.utils;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import java.io.File;
@@ -45,7 +46,7 @@ public class StorageUtils {
      * @return File object representing the secure storage system directory.
      */
 
-    public static File getSystemSecureDirectory() {
+    private static File getSystemSecureDirectory() {
         if (isEncryptedFilesystemEnabled()) {
             return new File(SECURE_DATA_DIRECTORY, "system");
         } else {
@@ -60,7 +61,8 @@ public class StorageUtils {
      * @return <code>true</code> if Encrypted File System feature is enabled, <code>false</code>
      * if disabled.
      */
-    public static boolean isEncryptedFilesystemEnabled() {
+    @SuppressLint("PrivateApi")
+    private static boolean isEncryptedFilesystemEnabled() {
         try {
             return (boolean) Class.forName("android.os.SystemProperties")
                     .getMethod("getBoolean", String.class, boolean.class)

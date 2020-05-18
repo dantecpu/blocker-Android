@@ -115,9 +115,9 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
         }
         appListSwipeLayout?.apply {
             setColorSchemeColors(
-                    ContextCompat.getColor(context, com.merxury.blocker.R.color.colorPrimary),
-                    ContextCompat.getColor(context, com.merxury.blocker.R.color.colorAccent),
-                    ContextCompat.getColor(context, com.merxury.blocker.R.color.colorPrimaryDark)
+                    ContextCompat.getColor(context, R.color.colorPrimary),
+                    ContextCompat.getColor(context, R.color.colorAccent),
+                    ContextCompat.getColor(context, R.color.colorPrimaryDark)
             )
             setOnRefreshListener { presenter.loadApplicationList(context, isSystem) }
         }
@@ -242,7 +242,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
 
     companion object {
         const val IS_SYSTEM: String = "IS_SYSTEM"
-        fun newInstance(isSystem: Boolean): androidx.fragment.app.Fragment {
+        fun newInstance(isSystem: Boolean): Fragment {
             val fragment = ApplicationListFragment()
             val bundle = Bundle()
             bundle.putBoolean(IS_SYSTEM, isSystem)
@@ -252,7 +252,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
 
     }
 
-    inner class AppListRecyclerViewAdapter(private val listener: ApplicationListFragment.AppItemListener, private var applications: MutableList<Application> = mutableListOf()) : androidx.recyclerview.widget.RecyclerView.Adapter<AppListRecyclerViewAdapter.ViewHolder>() {
+    inner class AppListRecyclerViewAdapter(private val listener: AppItemListener, private var applications: MutableList<Application> = mutableListOf()) : androidx.recyclerview.widget.RecyclerView.Adapter<AppListRecyclerViewAdapter.ViewHolder>() {
 
         private lateinit var pm: PackageManager
         private var listCopy = ArrayList<Application>()
@@ -289,7 +289,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
 
         }
 
-        fun getPositionByPackageName(packageName: String): Int {
+        private fun getPositionByPackageName(packageName: String): Int {
             applications.forEachIndexed { index, application ->
                 if (application.packageName == packageName) {
                     return index

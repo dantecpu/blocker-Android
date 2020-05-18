@@ -24,7 +24,7 @@ object DeviceUtil {
 
     @Suppress("DEPRECATION")
     fun isScreenOn(context: Context): Boolean {
-        return if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             val dm = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
             var screenOn = false
             for (display in dm.displays) {

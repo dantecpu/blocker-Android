@@ -251,9 +251,9 @@ object Rule {
                                 component
                             }
                             ?.toList() ?: mutableListOf()
-                    controller.batchDisable(activities) { _ -> }
-                    controller.batchDisable(broadcast) { _ -> }
-                    controller.batchDisable(service) { _ -> }
+                    controller.batchDisable(activities) { }
+                    controller.batchDisable(broadcast) { }
+                    controller.batchDisable(service) { }
                     succeedCount++
                 }
         return succeedCount
@@ -322,7 +322,7 @@ object Rule {
         return File(storagePath, path)
     }
 
-    fun getBlockerIFWFolder(context: Context): File {
+    private fun getBlockerIFWFolder(context: Context): File {
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
         val path = pref.getString(context.getString(R.string.key_pref_ifw_rule_path), context.getString(R.string.key_pref_ifw_rule_path_default_value))
         val storagePath = FileUtils.getExternalStoragePath()

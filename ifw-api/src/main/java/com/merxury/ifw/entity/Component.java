@@ -8,16 +8,16 @@ import java.util.List;
 
 public class Component {
     @Attribute
-    protected boolean block = true;
+    private boolean block = true;
 
     @Attribute
-    protected boolean log = true;
+    private boolean log = true;
 
     @ElementList(entry = "component-filter", inline = true, empty = false, required = false)
-    protected List<ComponentFilter> componentFilters;
+    private List<ComponentFilter> componentFilters;
 
     @Element(name = "intent-filter", required = false)
-    protected IntentFilter intentFilter;
+    private IntentFilter intentFilter;
 
     public List<ComponentFilter> getComponentFilters() {
         return componentFilters;

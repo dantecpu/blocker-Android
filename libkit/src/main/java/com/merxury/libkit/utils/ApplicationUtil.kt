@@ -20,7 +20,6 @@ object ApplicationUtil {
     private const val BLOCKER_PACKAGE_NAME = "com.merxury.blocker"
     private const val BLOCKED_CONF_NAME = "Blocked"
     private const val BLOCKED_APP_LIST_KEY = "key_blocked_app_list"
-    private const val MARKET_URL = "market://details?id="
     private val logger = XLog.tag("ApplicationUtil").build()
 
     /**
@@ -152,10 +151,10 @@ object ApplicationUtil {
         val services = ArrayList<ServiceInfo>()
         try {
             var flags = PackageManager.GET_SERVICES
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                flags = flags or PackageManager.GET_DISABLED_COMPONENTS
+            flags = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                flags or PackageManager.GET_DISABLED_COMPONENTS
             } else {
-                flags = flags or PackageManager.MATCH_DISABLED_COMPONENTS
+                flags or PackageManager.MATCH_DISABLED_COMPONENTS
             }
             val components = pm.getPackageInfo(packageName, flags).services
             if (components != null && components.isNotEmpty()) {
@@ -206,7 +205,7 @@ object ApplicationUtil {
      * GET_SERVICES, GET_SIGNATURES, MATCH_DISABLED_COMPONENTS (API level 24), MATCH_DISABLED_UNTIL_USED_COMPONENTS(API level 24)
      * @return a set of components
      */
-    fun getApplicationComponents(pm: PackageManager, packageName: String, flags: Int): PackageInfo? {
+    private fun getApplicationComponents(pm: PackageManager, packageName: String, flags: Int): PackageInfo? {
         var info: PackageInfo? = null
         try {
             info = pm.getPackageInfo(packageName, flags)

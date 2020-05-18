@@ -7,12 +7,12 @@ import androidx.core.app.NotificationManagerCompat
 import com.merxury.blocker.R
 
 
-object NotificationUtil {
-    const val PROCESSING_INDICATOR_CHANNEL_ID = "processing_progress_indicator"
-    const val PROCESSING_NOTIFICATION_ID = 1
+class NotificationUtil {
+    val vProcessingIndicatorChannelId = "processing_progress_indicator"
+    private val vProcessingNotificationId = 1
     private lateinit var builder: NotificationCompat.Builder
     fun createProcessingNotification(context: Context, total: Int) {
-        builder = NotificationCompat.Builder(context, PROCESSING_INDICATOR_CHANNEL_ID)
+        builder = NotificationCompat.Builder(context, vProcessingIndicatorChannelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(context.getString(R.string.processing))
                 .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -20,7 +20,7 @@ object NotificationUtil {
                 .setOnlyAlertOnce(true)
                 .setAutoCancel(true)
         val notificationManager = NotificationManagerCompat.from(context)
-        notificationManager.notify(PROCESSING_NOTIFICATION_ID, builder.build())
+        notificationManager.notify(vProcessingNotificationId, builder.build())
     }
 
     fun finishProcessingNotification(context: Context, count: Int) {
@@ -30,7 +30,7 @@ object NotificationUtil {
                 .setSubText("Blocker")
                 .setProgress(0, 0, false)
         val notificationManager = NotificationManagerCompat.from(context)
-        notificationManager.notify(PROCESSING_NOTIFICATION_ID, builder.build())
+        notificationManager.notify(vProcessingNotificationId, builder.build())
     }
 
     fun updateProcessingNotification(context: Context, appLabel: String, current: Int, total: Int) {
@@ -38,10 +38,10 @@ object NotificationUtil {
                 .setContentText(context.getString(R.string.processing_indicator, current, total))
                 .setSubText(appLabel)
         val notificationManager = NotificationManagerCompat.from(context)
-        notificationManager.notify(PROCESSING_NOTIFICATION_ID, builder.build())
+        notificationManager.notify(vProcessingNotificationId, builder.build())
     }
 
     fun cancelNotification(context: Context) {
-        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(PROCESSING_NOTIFICATION_ID)
+        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(vProcessingNotificationId)
     }
 }

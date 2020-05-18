@@ -129,11 +129,10 @@ class HomeActivity : AppCompatActivity(), IActivityView {
 
 
     private fun changeBackgroundColor(tabLayout: TabLayout, tab: TabLayout.Tab) {
-        val colorFrom: Int
-        if (tabLayout.background != null) {
-            colorFrom = (tabLayout.background as ColorDrawable).color
+        val colorFrom: Int = if (tabLayout.background != null) {
+            (tabLayout.background as ColorDrawable).color
         } else {
-            colorFrom = ContextCompat.getColor(this, android.R.color.darker_gray)
+            ContextCompat.getColor(this, android.R.color.darker_gray)
         }
         val colorTo = getBackgroundColor(tab.position)
         val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
@@ -171,9 +170,9 @@ class HomeActivity : AppCompatActivity(), IActivityView {
             val logUri = FileProvider.getUriForFile(
                 this,
                 "com.merxury.blocker.provider", //(use your app signature + ".provider" )
-                logFile);
+                logFile)
             emailIntent.putExtra(Intent.EXTRA_STREAM, logUri)
         }
-        startActivity(Intent.createChooser(emailIntent , getString(R.string.send_email)));
+        startActivity(Intent.createChooser(emailIntent , getString(R.string.send_email)))
     }
 }

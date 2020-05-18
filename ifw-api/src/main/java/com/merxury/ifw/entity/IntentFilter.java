@@ -6,6 +6,7 @@ import java.util.List;
 
 public class IntentFilter {
     @ElementList(inline = true)
+    private
     List<Action> actions;
 
     public List<Action> getActions() {

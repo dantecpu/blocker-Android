@@ -23,7 +23,7 @@ class BlockerApplication : Application() {
         initLogger()
         context = this
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelId = NotificationUtil.PROCESSING_INDICATOR_CHANNEL_ID
+            val channelId = NotificationUtil().vProcessingIndicatorChannelId
             val channelName = context.getString(R.string.processing_progress_indicator)
             createNotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
         }

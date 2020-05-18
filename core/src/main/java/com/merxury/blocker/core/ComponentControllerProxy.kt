@@ -46,7 +46,7 @@ class ComponentControllerProxy private constructor(method: EControllerMethod, co
     companion object {
         @Volatile
         private var instance: IController? = null
-        var controllerMethod: EControllerMethod? = null
+        private var controllerMethod: EControllerMethod? = null
 
         fun getInstance(method: EControllerMethod, context: Context): IController =
                 synchronized(this) {

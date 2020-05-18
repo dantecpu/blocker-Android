@@ -23,7 +23,7 @@ class SettingsPresenter(
     private val logger = XLog.tag("SettingsPresenter").build()
     private val exceptionHandler = CoroutineExceptionHandler { _, e: Throwable ->
         logger.e("Caught an exception:", e)
-        NotificationUtil.cancelNotification(context)
+        NotificationUtil().cancelNotification(context)
     }
     private val uiScope = CoroutineScope(Dispatchers.Main + exceptionHandler)
 
@@ -39,11 +39,11 @@ class SettingsPresenter(
             checkRootAccess()
             val applicationList = ApplicationUtil.getApplicationList(context)
             appCount = applicationList.size
-            NotificationUtil.createProcessingNotification(context, appCount)
+            NotificationUtil().createProcessingNotification(context, appCount)
             applicationList.forEach { currentApp ->
                 Rule.export(context, currentApp.packageName)
                 succeedCount++
-                NotificationUtil.updateProcessingNotification(
+                NotificationUtil().updateProcessingNotification(
                     context,
                     currentApp.label,
                     (succeedCount + failedCount),
@@ -51,7 +51,7 @@ class SettingsPresenter(
                 )
             }
             delay(1000L)
-            NotificationUtil.finishProcessingNotification(context, succeedCount)
+            NotificationUtil().finishProcessingNotification(context, succeedCount)
         }
         settingsView.showExportResult(true, succeedCount, failedCount)
     }
@@ -65,7 +65,7 @@ class SettingsPresenter(
                 Rule.getBlockerRuleFolder(context).absolutePath,
                 Rule.EXTENSION
             )
-            NotificationUtil.createProcessingNotification(context, rulesCount)
+            NotificationUtil().createProcessingNotification(context, rulesCount)
             FileUtils.listFiles(Rule.getBlockerRuleFolder(context).absolutePath).filter {
                 it.endsWith(Rule.EXTENSION)
             }.forEach {
@@ -75,7 +75,7 @@ class SettingsPresenter(
                 }
                 Rule.import(context, File(it))
                 restoredCount++
-                NotificationUtil.updateProcessingNotification(
+                NotificationUtil().updateProcessingNotification(
                     context,
                     rule.packageName ?: "",
                     restoredCount,
@@ -83,16 +83,16 @@ class SettingsPresenter(
                 )
             }
         }
-        NotificationUtil.finishProcessingNotification(context, restoredCount)
+        NotificationUtil().finishProcessingNotification(context, restoredCount)
     }
 
 
     override fun exportAllIfwRules() = uiScope.launch {
         withContext(Dispatchers.IO) {
             checkRootAccess()
-            NotificationUtil.createProcessingNotification(context, 0)
+            NotificationUtil().createProcessingNotification(context, 0)
             val exportedCount = Rule.exportIfwRules(context)
-            NotificationUtil.finishProcessingNotification(context, exportedCount)
+            NotificationUtil().finishProcessingNotification(context, exportedCount)
         }
     }
 
@@ -100,9 +100,9 @@ class SettingsPresenter(
         var count = 0
         withContext(Dispatchers.IO) {
             checkRootAccess()
-            NotificationUtil.createProcessingNotification(context, 0)
+            NotificationUtil().createProcessingNotification(context, 0)
             count = Rule.importIfwRules(context)
-            NotificationUtil.finishProcessingNotification(context, count)
+            NotificationUtil().finishProcessingNotification(context, count)
         }
         settingsView.showExportResult(true, count, 0)
     }
@@ -129,11 +129,11 @@ class SettingsPresenter(
     override fun importMatRules(filePath: String?) {
         val errorHandler = CoroutineExceptionHandler { _, e ->
             logger.e(e)
-            NotificationUtil.finishProcessingNotification(context, 0)
+            NotificationUtil().finishProcessingNotification(context, 0)
         }
         CoroutineScope(Dispatchers.IO + errorHandler).launch {
             checkRootAccess()
-            NotificationUtil.createProcessingNotification(context, 0)
+            NotificationUtil().createProcessingNotification(context, 0)
             if (filePath == null) {
                 throw NullPointerException("File path cannot be null")
             }
@@ -142,10 +142,10 @@ class SettingsPresenter(
                 throw FileNotFoundException("Cannot find MyAndroidTools Rule File: ${file.path}")
             }
             val result = Rule.importMatRules(context, file) { context, name, current, total ->
-                NotificationUtil.updateProcessingNotification(context, name, current, total)
+                NotificationUtil().updateProcessingNotification(context, name, current, total)
             }
-            Thread.sleep(1000)
-            NotificationUtil.finishProcessingNotification(
+            // Thread.sleep(1000)
+            NotificationUtil().finishProcessingNotification(
                 context,
                 result.failedCount + result.succeedCount
             )
