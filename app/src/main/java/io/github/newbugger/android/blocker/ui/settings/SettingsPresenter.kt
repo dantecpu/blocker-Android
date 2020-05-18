@@ -144,7 +144,7 @@ class SettingsPresenter(
             val result = Rule.importMatRules(context, file) { context, name, current, total ->
                 NotificationUtil().updateProcessingNotification(context, name, current, total)
             }
-            // Thread.sleep(1000)
+            delay(1000L)
             NotificationUtil().finishProcessingNotification(
                 context,
                 result.failedCount + result.succeedCount
