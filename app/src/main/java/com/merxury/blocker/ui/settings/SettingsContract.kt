@@ -11,7 +11,7 @@ interface SettingsContract : BaseView<SettingsContract.SettingsPresenter> {
         fun showImportResult(isSucceed: Boolean, successfulCount: Int, failedCount: Int)
         fun showResetResult(isSucceed: Boolean)
         fun showMessage(@StringRes res: Int)
-        fun showDialog(@StringRes title: String, @StringRes message: String, action: () -> Unit)
+        fun showDialog(title: String, message: String, action: () -> Unit)
         fun showDialog(title: String, message: String, file: String?, action: (file: String?) -> Unit)
     }
 

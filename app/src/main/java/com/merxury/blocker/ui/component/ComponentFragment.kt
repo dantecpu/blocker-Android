@@ -45,7 +45,7 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
         super.onCreate(savedInstanceState)
         type = arguments?.getSerializable(Constants.CATEGORY) as EComponentType
         packageName = arguments?.getString(Constants.PACKAGE_NAME) ?: ""
-        presenter = ComponentPresenter(context!!, this, packageName)
+        presenter = ComponentPresenter(requireContext(), this, packageName)
         initShizuku()
     }
 
