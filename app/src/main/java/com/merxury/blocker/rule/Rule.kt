@@ -3,12 +3,10 @@ package com.merxury.blocker.rule
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ComponentInfo
-import android.preference.PreferenceManager
 import com.elvishew.xlog.XLog
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
-import com.merxury.blocker.R
 import com.merxury.blocker.core.ComponentControllerProxy
 import com.merxury.blocker.core.IController
 import com.merxury.blocker.core.root.EControllerMethod
@@ -37,7 +35,7 @@ object Rule {
         logger.i("Backup rules for $packageName")
         val pm = context.packageManager
         val applicationInfo = ApplicationUtil.getApplicationComponents(pm, packageName)
-        val rule = BlockerRule(packageName = applicationInfo.packageName, versionName = applicationInfo.versionName, versionCode = applicationInfo.versionCode)
+        val rule = BlockerRule(packageName = applicationInfo.packageName, versionName = applicationInfo.versionName, versionCode = 1)
         var disabledComponentsCount = 0
         val ifwController = IntentFirewallImpl.getInstance(context, packageName)
         applicationInfo.receivers?.forEach {
@@ -212,10 +210,6 @@ object Rule {
 
     fun importIfwRules(context: Context): Int {
         val ifwBackupFolder = getBlockerIFWFolder(context)
-        if (!ifwBackupFolder.exists()) {
-            ifwBackupFolder.mkdirs()
-            return 0
-        }
         val controller = ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
         var succeedCount = 0
         ifwBackupFolder.listFiles { file -> file.isFile && file.name.endsWith(".xml") }
@@ -292,9 +286,6 @@ object Rule {
     }
 
     private fun saveRuleToStorage(rule: BlockerRule, dest: File) {
-        if (!dest.parentFile.exists()) {
-            dest.parentFile.mkdirs()
-        }
         if (dest.exists()) {
             dest.delete()
         }
@@ -316,17 +307,19 @@ object Rule {
     }
 
     fun getBlockerRuleFolder(context: Context): File {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        val path = pref.getString(context.getString(R.string.key_pref_rule_path), context.getString(R.string.key_pref_rule_path_default_value))
-        val storagePath = FileUtils.getExternalStoragePath()
-        return File(storagePath, path)
+        val path = File(FileUtils.getExternalStoragePath(context).let { it + "rule" })
+        if (!path.exists()) {
+            path.mkdirs()
+        }
+        return path
     }
 
     private fun getBlockerIFWFolder(context: Context): File {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        val path = pref.getString(context.getString(R.string.key_pref_ifw_rule_path), context.getString(R.string.key_pref_ifw_rule_path_default_value))
-        val storagePath = FileUtils.getExternalStoragePath()
-        return File(storagePath, path)
+        val path = File(FileUtils.getExternalStoragePath(context).let { it + "ifw" })
+        if (!path.exists()) {
+            path.mkdirs()
+        }
+        return path
     }
 
     private fun getController(context: Context): IController {

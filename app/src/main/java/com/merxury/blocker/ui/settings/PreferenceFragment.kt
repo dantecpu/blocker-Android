@@ -1,6 +1,5 @@
 package com.merxury.blocker.ui.settings
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
@@ -9,8 +8,8 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.preference.ListPreference
-import android.preference.PreferenceManager
+import androidx.preference.ListPreference
+import androidx.preference.PreferenceManager
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -26,38 +25,36 @@ import com.merxury.blocker.R
 import com.merxury.blocker.util.ToastUtil
 import com.merxury.blocker.work.ScheduledWork
 import com.merxury.libkit.utils.FileUtils
-import com.tbruyelle.rxpermissions2.RxPermissions
 import java.util.concurrent.TimeUnit
+
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.SettingsView,
     Preference.OnPreferenceClickListener {
+
     private val logger = XLog.tag("PreferenceFragment")
     private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
-    private lateinit var prefs: SharedPreferences
+    private lateinit var preferences: SharedPreferences
     private lateinit var presenter: SettingsPresenter
 
-    private var controllerTypePreference: Preference? = null
-    private var rulePathPreference: Preference? = null
-    private var exportRulePreference: Preference? = null
-    private var importRulePreference: Preference? = null
-    private var ifwRulePathPreference: Preference? = null
-    private var exportIfwRulePreference: Preference? = null
-    private var importIfwRulePreference: Preference? = null
-    private var resetIfwPreference: Preference? = null
-    private var importMatRulesPreference: Preference? = null
-    private var autoBlockPreference: CheckBoxPreference? = null
-    private var forceDozePreference: CheckBoxPreference? = null
-    private var aboutPreference: Preference? = null
+    private lateinit var controllerTypePreference: Preference
+    private lateinit var exportRulePreference: Preference
+    private lateinit var importRulePreference: Preference
+    private lateinit var exportIfwRulePreference: Preference
+    private lateinit var importIfwRulePreference: Preference
+    private lateinit var resetIfwPreference: Preference
+    private lateinit var importMatRulesPreference: Preference
+    private lateinit var autoBlockPreference: CheckBoxPreference
+    private lateinit var forceDozePreference: CheckBoxPreference
+    private lateinit var aboutPreference: Preference
 
     private val matRulePathRequestCode = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+        preferences = PreferenceManager.getDefaultSharedPreferences(activity)
         findPreference()
-        initPreference()
         initListener()
         initPresenter()
     }
@@ -67,28 +64,16 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
     }
 
     private fun findPreference() {
-        controllerTypePreference = findPreference(getString(R.string.key_pref_controller_type))
-        rulePathPreference = findPreference(getString(R.string.key_pref_rule_path))
-        exportRulePreference = findPreference(getString(R.string.key_pref_export_rules))
-        importRulePreference = findPreference(getString(R.string.key_pref_import_rules))
-        ifwRulePathPreference = findPreference(getString(R.string.key_pref_ifw_rule_path))
-        importIfwRulePreference = findPreference(getString(R.string.key_pref_import_ifw_rules))
-        exportIfwRulePreference = findPreference(getString(R.string.key_pref_export_ifw_rules))
-        resetIfwPreference = findPreference(getString(R.string.key_pref_reset_ifw_rules))
-        importMatRulesPreference = findPreference(getString(R.string.key_pref_import_mat_rules))
-        autoBlockPreference =
-                findPreference(getString(R.string.key_pref_auto_block)) as? CheckBoxPreference
-        forceDozePreference =
-                findPreference(getString(R.string.key_pref_force_doze)) as? CheckBoxPreference
-        aboutPreference = findPreference(getString(R.string.key_pref_about))
-    }
-
-    private fun initPreference() {
-        controllerTypePreference?.setDefaultValue(getString(R.string.key_pref_controller_type_default_value))
-        rulePathPreference?.setDefaultValue(getString(R.string.key_pref_rule_path_default_value))
-        bindPreferenceSummaryToValue(rulePathPreference)
-        ifwRulePathPreference?.setDefaultValue(getString(R.string.key_pref_ifw_rule_path_default_value))
-        bindPreferenceSummaryToValue(ifwRulePathPreference)
+        controllerTypePreference = findPreference(getString(R.string.key_pref_controller_type))!!
+        exportRulePreference = findPreference(getString(R.string.key_pref_export_rules))!!
+        importRulePreference = findPreference(getString(R.string.key_pref_import_rules))!!
+        importIfwRulePreference = findPreference(getString(R.string.key_pref_import_ifw_rules))!!
+        exportIfwRulePreference = findPreference(getString(R.string.key_pref_export_ifw_rules))!!
+        resetIfwPreference = findPreference(getString(R.string.key_pref_reset_ifw_rules))!!
+        importMatRulesPreference = findPreference(getString(R.string.key_pref_import_mat_rules))!!
+        autoBlockPreference = findPreference(getString(R.string.key_pref_auto_block))!!
+        forceDozePreference = findPreference(getString(R.string.key_pref_force_doze))!!
+        aboutPreference = findPreference(getString(R.string.key_pref_about))!!
     }
 
     private fun initPresenter() {
@@ -96,19 +81,19 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
     }
 
     private fun initListener() {
-        listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
             // TODO add later
         }
-        prefs.registerOnSharedPreferenceChangeListener(listener)
-        exportRulePreference?.onPreferenceClickListener = this
-        importRulePreference?.onPreferenceClickListener = this
-        exportIfwRulePreference?.onPreferenceClickListener = this
-        importIfwRulePreference?.onPreferenceClickListener = this
-        importMatRulesPreference?.onPreferenceClickListener = this
-        resetIfwPreference?.onPreferenceClickListener = this
-        autoBlockPreference?.onPreferenceClickListener = this
-        forceDozePreference?.onPreferenceClickListener = this
-        aboutPreference?.onPreferenceClickListener = this
+        preferences.registerOnSharedPreferenceChangeListener(listener)
+        exportRulePreference.onPreferenceClickListener = this
+        importRulePreference.onPreferenceClickListener = this
+        exportIfwRulePreference.onPreferenceClickListener = this
+        importIfwRulePreference.onPreferenceClickListener = this
+        importMatRulesPreference.onPreferenceClickListener = this
+        resetIfwPreference.onPreferenceClickListener = this
+        autoBlockPreference.onPreferenceClickListener = this
+        forceDozePreference.onPreferenceClickListener = this
+        aboutPreference.onPreferenceClickListener = this
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -138,18 +123,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
 
     @SuppressLint("CheckResult")
     override fun showDialog(title: String, message: String, action: () -> Unit) {
-        RxPermissions(requireActivity())
-            .request(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-            .subscribe { result ->
-                if (result) {
-                    showConfirmationDialog(title, message, action)
-                } else {
-                    showRequirePermissionDialog()
-                }
-            }
+        showConfirmationDialog(title, message, action)
     }
 
     override fun showDialog(
@@ -253,7 +227,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
     }
 
     private fun initAutoBlockAndDoze() {
-        if (autoBlockPreference?.isChecked == false && forceDozePreference?.isChecked == false) {
+        if (!autoBlockPreference.isChecked && !forceDozePreference.isChecked) {
             logger.d("Canceling scheduled work.")
             WorkManager.getInstance().cancelAllWork()
         } else {

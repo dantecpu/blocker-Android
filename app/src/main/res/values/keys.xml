@@ -3,12 +3,8 @@
     <string name="key_pref_controller_settings">pref_key_controller_settings</string>
     <string name="key_pref_controller_type">pref_controllerType</string>
     <string name="key_pref_controller_type_default_value">ifw</string>
-    <string name="key_pref_rule_path">pref_key_rule_path</string>
-    <string name="key_pref_rule_path_default_value">/Blocker/rules/</string>
     <string name="key_pref_rules">pref_key_rules</string>
     <string name="key_pref_ifw">pref_key_ifw</string>
-    <string name="key_pref_ifw_rule_path">pref_key_ifw_rule_path</string>
-    <string name="key_pref_ifw_rule_path_default_value">/Blocker/ifw/</string>
     <string name="key_pref_export_rules">pref_key_export_rules</string>
     <string name="key_pref_import_rules">pref_key_import_rules</string>
     <string name="key_pref_export_ifw_rules">pref_key_export_ifw_rules</string>

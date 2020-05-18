@@ -5,11 +5,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import java.util.*
 
+
 /**
  * Created by Mercury on 2018/1/30.
  */
 
-class FragmentAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+class FragmentAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private val fragments = ArrayList<Fragment>()
     private val fragmentTitles = ArrayList<String>()
 

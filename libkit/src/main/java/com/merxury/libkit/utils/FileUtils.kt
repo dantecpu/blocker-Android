@@ -106,8 +106,11 @@ object FileUtils {
     }
 
     @JvmStatic
-    fun getExternalStoragePath(): String {
-        return Environment.getExternalStorageDirectory().absolutePath + File.separator
+    fun getExternalStoragePath(context: Context): String {
+        return context.getExternalFilesDir(null).toString() +
+                File.separator + "files" +
+                File.separator + "blocker" +
+                File.separator
     }
 
     @JvmStatic
@@ -164,7 +167,10 @@ object FileUtils {
                 val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 val type = split[0]
                 if ("primary".equals(type, ignoreCase = true)) {
-                    return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+                    return context.getExternalFilesDir(null).toString() +
+                            File.separator + "files" +
+                            File.separator + "blocker" +
+                            File.separator + split[1]
                 }
                 // TODO handle non-primary volumes
             } else if (isDownloadsDocument(uri)) {

@@ -1,7 +1,7 @@
 package com.merxury.blocker.ui.home
 
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.elvishew.xlog.XLog
 import com.merxury.blocker.R
 import com.merxury.blocker.util.AppLauncher

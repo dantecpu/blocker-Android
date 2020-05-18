@@ -48,8 +48,6 @@
     <string name="fail">失败</string>
     <string name="title_activity_settings">设置</string>
     <string name="pref_rule_settings">规则</string>
-    <string name="pref_rule_path_summary">规则将会保存至此文件夹</string>
-    <string name="pref_rule_path_title">选择路径</string>
     <string name="import_rules">导入规则</string>
     <string name="pref_ifw_settings">IFW 规则</string>
     <string name="about">关于</string>

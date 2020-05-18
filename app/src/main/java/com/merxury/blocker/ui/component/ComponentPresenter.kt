@@ -1,7 +1,6 @@
 package com.merxury.blocker.ui.component
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ComponentInfo
@@ -23,13 +22,13 @@ import com.merxury.libkit.utils.ApplicationUtil
 import com.merxury.libkit.utils.ManagerUtils
 import com.merxury.libkit.utils.PermissionUtils
 import com.merxury.libkit.utils.ServiceHelper
-import com.tbruyelle.rxpermissions2.RxPermissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.File
+
 
 class ComponentPresenter(val context: Context, var view: ComponentContract.View?, val packageName: String) : ComponentContract.Presenter, IController {
     override var currentComparator: EComponentComparatorType = EComponentComparatorType.SIMPLE_NAME_ASCENDING
@@ -245,15 +244,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
 
     @SuppressLint("CheckResult")
     override fun exportRule(packageName: String) {
-        RxPermissions(context as Activity)
-                .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe {
-                    if (it) {
-                        exportBlockerRule(packageName)
-                    } else {
-                        view?.showActionFail()
-                    }
-                }
+        exportBlockerRule(packageName)
     }
 
     private fun exportBlockerRule(packageName: String) {
@@ -271,15 +262,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
 
     @SuppressLint("CheckResult")
     override fun importRule(packageName: String) {
-        RxPermissions(context as Activity)
-                .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe {
-                    if (it) {
-                        importBlockerRule(packageName)
-                    } else {
-                        view?.showActionFail()
-                    }
-                }
+        importBlockerRule(packageName)
     }
 
     override fun isServiceRunning(componentName: String): Boolean {

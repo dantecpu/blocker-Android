@@ -16,18 +16,10 @@
     <androidx.preference.PreferenceCategory
         android:key="@string/key_pref_rules"
         android:title="@string/pref_rule_settings">
-        <androidx.preference.EditTextPreference
-            android:defaultValue="@string/key_pref_rule_path_default_value"
-            android:inputType="text"
-            android:key="@string/key_pref_rule_path"
-            android:summary="@string/pref_rule_path_summary"
-            android:title="@string/pref_rule_path_title" />
         <androidx.preference.Preference
-            android:dependency="@string/key_pref_rule_path"
             android:key="@string/key_pref_export_rules"
             android:title="@string/export_rules" />
         <androidx.preference.Preference
-            android:dependency="@string/key_pref_rule_path"
             android:key="@string/key_pref_import_rules"
             android:title="@string/import_rules" />
     </androidx.preference.PreferenceCategory>
@@ -35,18 +27,10 @@
     <androidx.preference.PreferenceCategory
         android:key="@string/key_pref_ifw"
         android:title="@string/pref_ifw_settings">
-        <androidx.preference.EditTextPreference
-            android:defaultValue="@string/key_pref_ifw_rule_path_default_value"
-            android:inputType="text"
-            android:key="@string/key_pref_ifw_rule_path"
-            android:summary="@string/pref_rule_path_summary"
-            android:title="@string/pref_rule_path_title" />
         <androidx.preference.Preference
-            android:dependency="@string/key_pref_ifw_rule_path"
             android:key="@string/key_pref_export_ifw_rules"
             android:title="@string/export_ifw_rules" />
         <androidx.preference.Preference
-            android:dependency="@string/key_pref_ifw_rule_path"
             android:key="@string/key_pref_import_ifw_rules"
             android:title="@string/import_ifw_rules" />
         <androidx.preference.Preference

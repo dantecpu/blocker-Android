@@ -144,7 +144,7 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        if (!userVisibleHint) {
+        if (!isVisible) {
             return false
         }
         val position = (item.menuInfo as ContextMenuRecyclerView.RecyclerContextMenuInfo).position
