@@ -7,9 +7,11 @@ import androidx.core.app.NotificationManagerCompat
 import io.github.newbugger.android.blocker.R
 
 
+// object NotificationUtil {
 class NotificationUtil {
-    val vProcessingIndicatorChannelId = "processing_progress_indicator"
+
     private val vProcessingNotificationId = 1
+    private val vProcessingIndicatorChannelId = "processing_progress_indicator"
     private lateinit var builder: NotificationCompat.Builder
     fun createProcessingNotification(context: Context, total: Int) {
         builder = NotificationCompat.Builder(context, vProcessingIndicatorChannelId)
@@ -44,4 +46,5 @@ class NotificationUtil {
     fun cancelNotification(context: Context) {
         (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(vProcessingNotificationId)
     }
+
 }

@@ -1,25 +1,73 @@
 package io.github.newbugger.android.blocker.ui.settings
 
+import android.app.NotificationManager
 import android.content.Context
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.elvishew.xlog.XLog
 import com.google.gson.Gson
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.exception.RootUnavailableException
 import io.github.newbugger.android.blocker.rule.Rule
 import io.github.newbugger.android.blocker.rule.entity.BlockerRule
-import io.github.newbugger.android.blocker.util.NotificationUtil
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
 import com.stericson.RootTools.RootTools
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
+
 
 class SettingsPresenter(
     private val context: Context,
     private val settingsView: SettingsContract.SettingsView
 ) : SettingsContract.SettingsPresenter {
+
+    private inner class NotificationUtil {
+        private val vProcessingNotificationId = 1
+        private val vProcessingIndicatorChannelId = "processing_progress_indicator"
+        private lateinit var builder: NotificationCompat.Builder
+        fun createProcessingNotification(context: Context, total: Int) {
+            builder = NotificationCompat.Builder(context, vProcessingIndicatorChannelId)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(context.getString(R.string.processing))
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setProgress(total, 0, true)
+                    .setOnlyAlertOnce(true)
+                    .setAutoCancel(true)
+            val notificationManager = NotificationManagerCompat.from(context)
+            notificationManager.notify(vProcessingNotificationId, builder.build())
+        }
+
+        fun finishProcessingNotification(context: Context, count: Int) {
+            // {Count} components were set, {count} succeeded,{count} failed
+            builder.setContentTitle(context.getString(R.string.done))
+                    .setContentText(context.getString(R.string.notification_done, count))
+                    .setSubText("Blocker")
+                    .setProgress(0, 0, false)
+            val notificationManager = NotificationManagerCompat.from(context)
+            notificationManager.notify(vProcessingNotificationId, builder.build())
+        }
+
+        fun updateProcessingNotification(context: Context, appLabel: String, current: Int, total: Int) {
+            builder.setProgress(total, current, false)
+                    .setContentText(context.getString(R.string.processing_indicator, current, total))
+                    .setSubText(appLabel)
+            val notificationManager = NotificationManagerCompat.from(context)
+            notificationManager.notify(vProcessingNotificationId, builder.build())
+        }
+
+        fun cancelNotification(context: Context) {
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(vProcessingNotificationId)
+        }
+    }
+
     private val logger = XLog.tag("SettingsPresenter").build()
     private val exceptionHandler = CoroutineExceptionHandler { _, e: Throwable ->
         logger.e("Caught an exception:", e)

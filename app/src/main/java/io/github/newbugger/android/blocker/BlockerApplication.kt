@@ -14,16 +14,17 @@ import com.elvishew.xlog.printer.AndroidPrinter
 import com.elvishew.xlog.printer.file.FilePrinter
 import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator
-import io.github.newbugger.android.blocker.util.NotificationUtil
 import moe.shizuku.api.ShizukuClient
 
+
 class BlockerApplication : Application() {
+
     override fun onCreate() {
         super.onCreate()
         initLogger()
         context = this
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelId = NotificationUtil().vProcessingIndicatorChannelId
+            val channelId = "processing_progress_indicator"
             val channelName = context.getString(R.string.processing_progress_indicator)
             createNotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
         }
@@ -55,4 +56,5 @@ class BlockerApplication : Application() {
         lateinit var context: Context
         const val LOG_FILENAME = "blocker_log.log"
     }
+
 }
