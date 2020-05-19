@@ -8,6 +8,7 @@ import io.github.newbugger.android.blocker.core.IController
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import moe.shizuku.api.ShizukuPackageManagerV26
 
+
 class ShizukuController(val context: Context) : IController {
     override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
         ShizukuPackageManagerV26.setComponentEnabledSetting(ComponentName(packageName, componentName), state, 0, 0)

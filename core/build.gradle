@@ -33,4 +33,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':ifw-api')
     implementation project(':libkit')
+    implementation 'moe.shizuku.privilege:api:3.2.0'
+    implementation 'me.weishu:free_reflection:2.2.0'
 }

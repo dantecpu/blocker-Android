@@ -1,9 +1,11 @@
 package io.github.newbugger.android.blocker.ui.component
 
+// import android.content.Intent
+// import android.content.pm.PackageManager
+// import moe.shizuku.api.ShizukuClient
+
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.SparseArray
@@ -13,25 +15,36 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import com.elvishew.xlog.XLog
 import com.google.android.material.tabs.TabLayout
-import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
 import io.github.newbugger.android.blocker.ui.Constants
 import io.github.newbugger.android.blocker.util.AppLauncher
 import io.github.newbugger.android.blocker.util.setupActionBar
+import io.github.newbugger.android.blocker.R
+import io.github.newbugger.android.blocker.core.root.EControllerMethod
+import io.github.newbugger.android.blocker.util.PreferenceUtil
+import io.github.newbugger.android.blocker.util.ShizukuBinder
 import io.github.newbugger.android.libkit.entity.Application
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
-import kotlinx.android.synthetic.main.activity_component.*
-import kotlinx.android.synthetic.main.application_brief_info_layout.*
-import moe.shizuku.api.ShizukuClient
+import kotlinx.android.synthetic.main.activity_component.component_collapsing_toolbar
+import kotlinx.android.synthetic.main.activity_component.component_viewpager
+import kotlinx.android.synthetic.main.activity_component.component_tabs
+import kotlinx.android.synthetic.main.activity_component.component_toolbar
+import kotlinx.android.synthetic.main.application_brief_info_layout.app_info_app_name
+import kotlinx.android.synthetic.main.application_brief_info_layout.app_info_app_package_name
+import kotlinx.android.synthetic.main.application_brief_info_layout.app_info_icon
+import kotlinx.android.synthetic.main.application_brief_info_layout.app_info_min_sdk_version
+import kotlinx.android.synthetic.main.application_brief_info_layout.app_info_target_sdk_version
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+
 
 class ComponentActivity : AppCompatActivity(), IActivityView {
 
     private lateinit var application: Application
     private lateinit var adapter: FragmentAdapter
     private val logger = XLog.tag("ComponentActivity").build()
+    private val shizukuBinder = ShizukuBinder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +57,14 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         setupViewPager()
         setupTab()
         showApplicationBriefInfo(application)
+        if (PreferenceUtil.getControllerType(this) == EControllerMethod.SHIZUKU)
+            shizukuBinder.shizukuCreate(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (PreferenceUtil.getControllerType(this) == EControllerMethod.SHIZUKU)
+            shizukuBinder.shizukuDestory(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -53,7 +74,8 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    // only called in API pre-23
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             ShizukuClient.REQUEST_CODE_AUTHORIZATION -> {
                 if (resultCode == ShizukuClient.AUTH_RESULT_OK) {
@@ -65,9 +87,9 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
-    }
+    }*/
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    /*override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             ShizukuClient.REQUEST_CODE_PERMISSION -> if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
                 ShizukuClient.requestAuthorization(this)
@@ -75,7 +97,7 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
                 logger.d("User denied Shizuku permission")
             }
         }
-    }
+    }*/
 
     override fun onBackPressed() {
         findViewById<SearchView>(R.id.menu_search)?.let {

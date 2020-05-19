@@ -33,7 +33,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
     private lateinit var preferences: SharedPreferences
     private lateinit var presenter: SettingsPresenter
 
-    private lateinit var controllerTypePreference: Preference
     private lateinit var exportRulePreference: Preference
     private lateinit var importRulePreference: Preference
     private lateinit var exportIfwRulePreference: Preference
@@ -60,7 +59,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
     }
 
     private fun findPreference() {
-        controllerTypePreference = findPreference(getString(R.string.key_pref_controller_type))!!
         exportRulePreference = findPreference(getString(R.string.key_pref_export_rules))!!
         importRulePreference = findPreference(getString(R.string.key_pref_import_rules))!!
         importIfwRulePreference = findPreference(getString(R.string.key_pref_import_ifw_rules))!!

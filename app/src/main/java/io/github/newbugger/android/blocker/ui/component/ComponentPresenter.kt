@@ -31,7 +31,7 @@ import java.io.File
 
 
 class ComponentPresenter(val context: Context, var view: ComponentContract.View?, val packageName: String) : ComponentContract.Presenter, IController {
-    override var currentComparator: EComponentComparatorType = EComponentComparatorType.SIMPLE_NAME_ASCENDING
+    override var currentComparator: EComponentComparatorType = EComponentComparatorType.NAME_ASCENDING  // changed order
     private val pm: PackageManager
     private val logger = XLog.tag(this.javaClass.simpleName).build()
     private val serviceHelper by lazy { ServiceHelper(packageName) }
@@ -66,7 +66,11 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         view?.setLoadingIndicator(true)
         doAsync(exceptionHandler) {
             if (type == EComponentType.SERVICE) {
-                serviceHelper.refresh()
+                /*if (PreferenceUtil.getControllerType(context) == EControllerMethod.SHIZUKU)
+                    serviceHelper.refreshShizuku()
+                else
+                    serviceHelper.refreshRoot()*/
+                serviceHelper.refreshRoot()
             }
             val componentList = getComponents(packageName, type)
             val viewModels = initViewModel(componentList)

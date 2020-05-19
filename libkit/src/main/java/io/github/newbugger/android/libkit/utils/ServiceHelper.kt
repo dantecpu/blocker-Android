@@ -26,7 +26,7 @@ class ServiceHelper(private val packageName: String) {
         return false
     }
 
-    fun refresh() {
+    fun refreshRoot() {
         serviceList.clear()
         serviceInfo = try {
             RootCommand.runBlockingCommand("dumpsys activity services -p $packageName")
@@ -36,6 +36,17 @@ class ServiceHelper(private val packageName: String) {
         }
         parseServiceInfo()
     }
+
+    /*fun refreshShizuku() {
+        serviceList.clear()
+        serviceInfo = try {
+            ShizukuApi
+        } catch (e: Exception) {
+            logger.e("Cannot get running service list:", e)
+            ""
+        }
+        parseServiceInfo()
+    }*/
 
     private fun parseServiceInfo() {
         if (serviceInfo.contains("(nothing)")) {

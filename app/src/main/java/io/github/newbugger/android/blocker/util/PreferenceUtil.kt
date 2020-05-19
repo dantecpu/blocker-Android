@@ -10,9 +10,10 @@ object PreferenceUtil {
         // Magic value, but still use it.
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
         return when (pref.getString(context.getString(R.string.key_pref_controller_type), context.getString(R.string.key_pref_controller_type_default_value))) {
+            "ifw" -> EControllerMethod.IFW
             "pm" -> EControllerMethod.PM
             "shizuku" -> EControllerMethod.SHIZUKU
-            else -> EControllerMethod.IFW
+            else -> EControllerMethod.SHIZUKU
         }
     }
 }

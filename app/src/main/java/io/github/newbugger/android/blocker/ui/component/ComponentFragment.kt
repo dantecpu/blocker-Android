@@ -1,18 +1,24 @@
 package io.github.newbugger.android.blocker.ui.component
 
-import android.app.Activity
+// import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.*
+import android.view.ContextMenu
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MenuInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityCompat
+// import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -29,8 +35,9 @@ import io.github.newbugger.android.blocker.util.ToastUtil
 import kotlinx.android.synthetic.main.component_item.view.*
 import kotlinx.android.synthetic.main.fragment_component.*
 import kotlinx.android.synthetic.main.fragment_component.view.*
-import moe.shizuku.api.ShizukuClient
-import moe.shizuku.api.ShizukuClient.REQUEST_CODE_PERMISSION
+// import moe.shizuku.api.ShizukuClient
+// import moe.shizuku.api.ShizukuClient.REQUEST_CODE_PERMISSION
+// import moe.shizuku.api.ShizukuClientHelper
 
 
 class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.ComponentItemListener {
@@ -46,7 +53,6 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
         type = arguments?.getSerializable(Constants.CATEGORY) as EComponentType
         packageName = arguments?.getString(Constants.PACKAGE_NAME) ?: ""
         presenter = ComponentPresenter(requireContext(), this, packageName)
-        initShizuku()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -259,13 +265,10 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
         ToastUtil.showToast(message ?: "null", length)
     }
 
-    private fun initShizuku() {
+    /*private fun initShizuku() {
         context?.let {
-            if (PreferenceUtil.getControllerType(it) != EControllerMethod.SHIZUKU) {
-                return
-            }
-            if (!ShizukuClient.isManagerInstalled(it)) {
-                logger.e("Shizuku is not installed!")
+            if (!ShizukuClientHelper.isManagerV2Installed(it)) {
+                logger.e("Shizuku is not installed or too low version")
                 return
             }
             if (!ShizukuClient.getState().isAuthorized) {
@@ -276,7 +279,7 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
                 }
             }
         }
-    }
+    }*/
 
     private fun setItemsVisibility(menu: Menu, exception: MenuItem, visible: Boolean) {
         for (i in 0 until menu.size()) {
