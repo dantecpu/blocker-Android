@@ -76,11 +76,7 @@ public class Application implements Parcelable {
         this.dataDir = appDetail.dataDir;
         this.label = appDetail.loadLabel(pm).toString();
         File baseApkPath = new File(publicSourceDir);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            minSdkVersion = appDetail.minSdkVersion;
-        } else {
-            minSdkVersion = ApkUtils.INSTANCE.getMinSdkVersion(baseApkPath);
-        }
+        minSdkVersion = appDetail.minSdkVersion;
         this.firstInstallTime = new Date(info.firstInstallTime);
         this.lastUpdateTime = new Date(info.lastUpdateTime);
     }
