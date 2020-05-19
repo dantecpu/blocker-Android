@@ -3,13 +3,13 @@ package io.github.newbugger.android.blocker.ui.settings
 import android.content.Context
 import com.elvishew.xlog.XLog
 import com.google.gson.Gson
+import com.stericson.RootTools.RootTools
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.exception.RootUnavailableException
 import io.github.newbugger.android.blocker.rule.Rule
 import io.github.newbugger.android.blocker.rule.entity.BlockerRule
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
-import com.stericson.RootTools.RootTools
 import io.github.newbugger.android.blocker.util.NotificationUtil
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
