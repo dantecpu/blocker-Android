@@ -1,9 +1,6 @@
 package io.github.newbugger.android.blocker.ui.settings
 
-import android.app.NotificationManager
 import android.content.Context
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.elvishew.xlog.XLog
 import com.google.gson.Gson
 import io.github.newbugger.android.blocker.R
@@ -13,6 +10,7 @@ import io.github.newbugger.android.blocker.rule.entity.BlockerRule
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
 import com.stericson.RootTools.RootTools
+import io.github.newbugger.android.blocker.util.NotificationUtil
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -29,49 +27,11 @@ class SettingsPresenter(
     private val settingsView: SettingsContract.SettingsView
 ) : SettingsContract.SettingsPresenter {
 
-    private inner class NotificationUtil {
-        private val vProcessingNotificationId = 1
-        private val vProcessingIndicatorChannelId = "processing_progress_indicator"
-        private lateinit var builder: NotificationCompat.Builder
-        fun createProcessingNotification(context: Context, total: Int) {
-            builder = NotificationCompat.Builder(context, vProcessingIndicatorChannelId)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(context.getString(R.string.processing))
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
-                    .setProgress(total, 0, true)
-                    .setOnlyAlertOnce(true)
-                    .setAutoCancel(true)
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.notify(vProcessingNotificationId, builder.build())
-        }
-
-        fun finishProcessingNotification(context: Context, count: Int) {
-            // {Count} components were set, {count} succeeded,{count} failed
-            builder.setContentTitle(context.getString(R.string.done))
-                    .setContentText(context.getString(R.string.notification_done, count))
-                    .setSubText("Blocker")
-                    .setProgress(0, 0, false)
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.notify(vProcessingNotificationId, builder.build())
-        }
-
-        fun updateProcessingNotification(context: Context, appLabel: String, current: Int, total: Int) {
-            builder.setProgress(total, current, false)
-                    .setContentText(context.getString(R.string.processing_indicator, current, total))
-                    .setSubText(appLabel)
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.notify(vProcessingNotificationId, builder.build())
-        }
-
-        fun cancelNotification(context: Context) {
-            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(vProcessingNotificationId)
-        }
-    }
-
+    private val notificationUtil = NotificationUtil()
     private val logger = XLog.tag("SettingsPresenter").build()
     private val exceptionHandler = CoroutineExceptionHandler { _, e: Throwable ->
         logger.e("Caught an exception:", e)
-        NotificationUtil().cancelNotification(context)
+        notificationUtil.cancelNotification(context)
     }
     private val uiScope = CoroutineScope(Dispatchers.Main + exceptionHandler)
 
@@ -87,11 +47,11 @@ class SettingsPresenter(
             checkRootAccess()
             val applicationList = ApplicationUtil.getApplicationList(context)
             appCount = applicationList.size
-            NotificationUtil().createProcessingNotification(context, appCount)
+            notificationUtil.createProcessingNotification(context, appCount)
             applicationList.forEach { currentApp ->
                 Rule.export(context, currentApp.packageName)
                 succeedCount++
-                NotificationUtil().updateProcessingNotification(
+                notificationUtil.updateProcessingNotification(
                     context,
                     currentApp.label,
                     (succeedCount + failedCount),
@@ -99,7 +59,7 @@ class SettingsPresenter(
                 )
             }
             delay(1000L)
-            NotificationUtil().finishProcessingNotification(context, succeedCount)
+            notificationUtil.finishProcessingNotification(context, succeedCount)
         }
         settingsView.showExportResult(true, succeedCount, failedCount)
     }
@@ -113,7 +73,7 @@ class SettingsPresenter(
                 Rule.getBlockerRuleFolder(context).absolutePath,
                 Rule.EXTENSION
             )
-            NotificationUtil().createProcessingNotification(context, rulesCount)
+            notificationUtil.createProcessingNotification(context, rulesCount)
             FileUtils.listFiles(Rule.getBlockerRuleFolder(context).absolutePath).filter {
                 it.endsWith(Rule.EXTENSION)
             }.forEach {
@@ -123,7 +83,7 @@ class SettingsPresenter(
                 }
                 Rule.import(context, File(it))
                 restoredCount++
-                NotificationUtil().updateProcessingNotification(
+                notificationUtil.updateProcessingNotification(
                     context,
                     rule.packageName ?: "",
                     restoredCount,
@@ -131,16 +91,16 @@ class SettingsPresenter(
                 )
             }
         }
-        NotificationUtil().finishProcessingNotification(context, restoredCount)
+        notificationUtil.finishProcessingNotification(context, restoredCount)
     }
 
 
     override fun exportAllIfwRules() = uiScope.launch {
         withContext(Dispatchers.IO) {
             checkRootAccess()
-            NotificationUtil().createProcessingNotification(context, 0)
+            notificationUtil.createProcessingNotification(context, 0)
             val exportedCount = Rule.exportIfwRules(context)
-            NotificationUtil().finishProcessingNotification(context, exportedCount)
+            notificationUtil.finishProcessingNotification(context, exportedCount)
         }
     }
 
@@ -148,9 +108,9 @@ class SettingsPresenter(
         var count = 0
         withContext(Dispatchers.IO) {
             checkRootAccess()
-            NotificationUtil().createProcessingNotification(context, 0)
+            notificationUtil.createProcessingNotification(context, 0)
             count = Rule.importIfwRules(context)
-            NotificationUtil().finishProcessingNotification(context, count)
+            notificationUtil.finishProcessingNotification(context, count)
         }
         settingsView.showExportResult(true, count, 0)
     }
@@ -177,11 +137,11 @@ class SettingsPresenter(
     override fun importMatRules(filePath: String?) {
         val errorHandler = CoroutineExceptionHandler { _, e ->
             logger.e(e)
-            NotificationUtil().finishProcessingNotification(context, 0)
+            notificationUtil.finishProcessingNotification(context, 0)
         }
         CoroutineScope(Dispatchers.IO + errorHandler).launch {
             checkRootAccess()
-            NotificationUtil().createProcessingNotification(context, 0)
+            notificationUtil.createProcessingNotification(context, 0)
             if (filePath == null) {
                 throw NullPointerException("File path cannot be null")
             }
@@ -190,10 +150,10 @@ class SettingsPresenter(
                 throw FileNotFoundException("Cannot find MyAndroidTools Rule File: ${file.path}")
             }
             val result = Rule.importMatRules(context, file) { context, name, current, total ->
-                NotificationUtil().updateProcessingNotification(context, name, current, total)
+                notificationUtil.updateProcessingNotification(context, name, current, total)
             }
             delay(1000L)
-            NotificationUtil().finishProcessingNotification(
+            notificationUtil.finishProcessingNotification(
                 context,
                 result.failedCount + result.succeedCount
             )
