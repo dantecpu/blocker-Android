@@ -1,12 +1,10 @@
 package io.github.newbugger.android.blocker.ui.settings
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -27,7 +25,6 @@ import io.github.newbugger.android.libkit.utils.FileUtils
 import java.util.concurrent.TimeUnit
 
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.SettingsView,
     Preference.OnPreferenceClickListener {
 

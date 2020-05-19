@@ -1,12 +1,10 @@
 package io.github.newbugger.android.blocker
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import com.elvishew.xlog.LogConfiguration
 import com.elvishew.xlog.LogLevel
 import com.elvishew.xlog.XLog
@@ -23,17 +21,14 @@ class BlockerApplication : Application() {
         super.onCreate()
         initLogger()
         context = this
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelId = "processing_progress_indicator"
-            val channelName = context.getString(R.string.processing_progress_indicator)
-            createNotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-        }
+        createNotificationChannel()
         ShizukuClient.initialize(this)
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(channelId: String, channelName: String, importance: Int) {
-        val channel = NotificationChannel(channelId, channelName, importance)
+    private fun createNotificationChannel() {
+        val channelId = "processing_progress_indicator"
+        val channelName = context.getString(R.string.processing_progress_indicator)
+        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
