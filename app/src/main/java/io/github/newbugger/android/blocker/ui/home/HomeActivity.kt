@@ -9,22 +9,20 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import io.github.newbugger.android.blocker.BlockerApplication
+import com.mikepenz.materialdrawer.Drawer
+import com.mikepenz.materialdrawer.DrawerBuilder
+import com.mikepenz.materialdrawer.model.DividerDrawerItem
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
 import io.github.newbugger.android.blocker.ui.settings.SettingsActivity
 import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
-import com.mikepenz.materialdrawer.Drawer
-import com.mikepenz.materialdrawer.DrawerBuilder
-import com.mikepenz.materialdrawer.model.DividerDrawerItem
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
 import kotlinx.android.synthetic.main.activity_home.*
 
 
@@ -63,10 +61,6 @@ class HomeActivity : AppCompatActivity(), IActivityView {
             .withIdentifier(2)
             .withName(R.string.action_settings)
             .withIcon(R.drawable.ic_settings)
-        val emailItem = SecondaryDrawerItem()
-            .withIdentifier(3)
-            .withName(R.string.report)
-            .withIcon(R.drawable.ic_email)
         drawer = DrawerBuilder()
             .withActivity(this)
             .withTranslucentStatusBar(true)
@@ -76,14 +70,12 @@ class HomeActivity : AppCompatActivity(), IActivityView {
             .addDrawerItems(
                 listItem,
                 settingItem,
-                DividerDrawerItem(),
-                emailItem
+                DividerDrawerItem()
             )
             .withOnDrawerItemClickListener { _, _, drawerItem ->
                 when (drawerItem?.identifier) {
                     1L -> startActivity(Intent(this@HomeActivity, HomeActivity::class.java))
                     2L -> startActivity(Intent(this@HomeActivity, SettingsActivity::class.java))
-                    3L -> showReportScreen()
                 }
                 false
             }
@@ -157,22 +149,5 @@ class HomeActivity : AppCompatActivity(), IActivityView {
         if (drawer.isDrawerOpen) {
             drawer.closeDrawer()
         }
-    }
-
-    private fun showReportScreen() {
-        val logFile = filesDir.resolve(BlockerApplication.LOG_FILENAME)
-        val emailIntent = Intent(Intent.ACTION_SEND)
-            .setType("vnd.android.cursor.dir/email")
-            .putExtra(Intent.EXTRA_EMAIL, arrayOf("mercuryleee@gmail.com"))
-            .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.report_subject_template))
-            .putExtra(Intent.EXTRA_TEXT, getString(R.string.report_content_template))
-        if (logFile.exists()) {
-            val logUri = FileProvider.getUriForFile(
-                this,
-                "io.github.newbugger.android.blocker.provider", //(use your app signature + ".provider" )
-                logFile)
-            emailIntent.putExtra(Intent.EXTRA_STREAM, logUri)
-        }
-        startActivity(Intent.createChooser(emailIntent , getString(R.string.send_email)))
     }
 }
