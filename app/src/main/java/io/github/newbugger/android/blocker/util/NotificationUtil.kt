@@ -7,14 +7,14 @@ import androidx.core.app.NotificationManagerCompat
 import io.github.newbugger.android.blocker.R
 
 
-// object NotificationUtil {
-class NotificationUtil {
+object NotificationUtil {
 
-    private val vProcessingNotificationId = 1
-    private val vProcessingIndicatorChannelId = "processing_progress_indicator"
-    private lateinit var builder: NotificationCompat.Builder
-    fun createProcessingNotification(context: Context, total: Int) {
-        builder = NotificationCompat.Builder(context, vProcessingIndicatorChannelId)
+    fun createProcessingNotification(context: Context, total: Int):
+            NotificationCompat.Builder {
+        val vProcessingNotificationId = 1
+        val vProcessingIndicatorChannelId = "processing_progress_indicator"
+        val builder: NotificationCompat.Builder =
+                NotificationCompat.Builder(context, vProcessingIndicatorChannelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(context.getString(R.string.processing))
                 .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -23,27 +23,33 @@ class NotificationUtil {
                 .setAutoCancel(true)
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(vProcessingNotificationId, builder.build())
+        return builder
     }
 
-    fun finishProcessingNotification(context: Context, count: Int) {
+    fun finishProcessingNotification(context: Context, count: Int,
+                                     builder: NotificationCompat.Builder) {
         // {Count} components were set, {count} succeeded,{count} failed
         builder.setContentTitle(context.getString(R.string.done))
                 .setContentText(context.getString(R.string.notification_done, count))
                 .setSubText("Blocker")
                 .setProgress(0, 0, false)
         val notificationManager = NotificationManagerCompat.from(context)
+        val vProcessingNotificationId = 1
         notificationManager.notify(vProcessingNotificationId, builder.build())
     }
 
-    fun updateProcessingNotification(context: Context, appLabel: String, current: Int, total: Int) {
+    fun updateProcessingNotification(context: Context, appLabel: String, current: Int, total: Int,
+                                     builder: NotificationCompat.Builder) {
         builder.setProgress(total, current, false)
                 .setContentText(context.getString(R.string.processing_indicator, current, total))
                 .setSubText(appLabel)
         val notificationManager = NotificationManagerCompat.from(context)
+        val vProcessingNotificationId = 1
         notificationManager.notify(vProcessingNotificationId, builder.build())
     }
 
     fun cancelNotification(context: Context) {
+        val vProcessingNotificationId = 1
         (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(vProcessingNotificationId)
     }
 
