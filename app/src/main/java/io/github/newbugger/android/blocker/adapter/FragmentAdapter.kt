@@ -19,9 +19,9 @@ class FragmentAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_R
         fragmentTitles.add(title)
     }
 
-    fun getFragments(): List<Fragment> {
+    /*fun getFragments(): List<Fragment> {
         return fragments
-    }
+    }*/
 
     override fun getItem(position: Int): Fragment {
         return fragments[position]

@@ -4,22 +4,17 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import com.elvishew.xlog.XLog
-import com.stericson.RootTools.RootTools
 import io.github.newbugger.android.libkit.RootCommand
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
 
 
 object FileUtils {
     private val logger = XLog.tag("FileUtils").build()
 
-    @JvmStatic
+    /*@JvmStatic
     fun copy(source: String, dest: String): Boolean {
         logger.i("Copy $source to $dest")
         try {
@@ -39,7 +34,7 @@ object FileUtils {
             return false
         }
         return true
-    }
+    }*/
 
     @JvmStatic
     fun cat(source: String, dest: String) {
@@ -88,22 +83,22 @@ object FileUtils {
         return RootCommand.runBlockingCommand(comm)
     }
 
-    @JvmStatic
+    /*@JvmStatic
     fun copyWithRoot(source: String, dest: String): Boolean {
         logger.i("Copy $source to $dest with root permission")
         return RootTools.copyFile(source, dest, false, true)
-    }
+    }*/
 
-    @JvmStatic
+    /*@JvmStatic
     fun isExternalStorageWritable(): Boolean {
         return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
-    }
+    }*/
 
-    @JvmStatic
+    /*@JvmStatic
     fun isExternalStorageReadable(): Boolean {
         return Environment.getExternalStorageState() in
                 setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)
-    }
+    }*/
 
     @JvmStatic
     fun getExternalStoragePath(context: Context): String {
@@ -125,7 +120,7 @@ object FileUtils {
         return result
     }
 
-    @JvmStatic
+    /*@JvmStatic
     fun getFileName(path: String): String {
         val trimmedPath = path.trim()
         if (trimmedPath.isEmpty()) {
@@ -138,7 +133,7 @@ object FileUtils {
         } else {
             filename.substring(0, extensionDotPosition)
         }
-    }
+    }*/
 
     @JvmStatic
     fun getFileCounts(pathString: String, filter: String): Int {

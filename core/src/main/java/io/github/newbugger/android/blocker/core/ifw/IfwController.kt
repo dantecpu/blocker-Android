@@ -13,13 +13,14 @@ import io.github.newbugger.android.ifw.entity.ComponentType
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import java.lang.Exception
 
+
 class IfwController(val context: Context) : IController {
     private lateinit var controller: IntentFirewall
     private lateinit var packageInfo: PackageInfo
 
     override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
         init(packageName)
-        val type = getComponentType(packageName, componentName)
+        val type = getComponentType(componentName)
         if (type == ComponentType.PROVIDER) {
             return when (state) {
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> ComponentControllerProxy.getInstance(EControllerMethod.PM, context).disable(packageName, componentName)
@@ -58,7 +59,7 @@ class IfwController(val context: Context) : IController {
         }
         componentList.forEach {
             init(it.packageName)
-            val type = getComponentType(it.packageName, it.name)
+            val type = getComponentType(it.name)
             if (controller.remove(it.packageName, it.name, type)) {
                 succeededCount++
             }
@@ -75,7 +76,7 @@ class IfwController(val context: Context) : IController {
         }
         componentList.forEach {
             init(it.packageName)
-            val type = getComponentType(it.packageName, it.name)
+            val type = getComponentType(it.name)
             if (controller.add(it.packageName, it.name, type)) {
                 succeededCount++
             }
@@ -108,7 +109,7 @@ class IfwController(val context: Context) : IController {
         }
     }
 
-    private fun getComponentType(packageName: String, componentName: String): ComponentType {
+    private fun getComponentType(componentName: String): ComponentType {
         packageInfo.receivers?.forEach {
             if (it.name == componentName) {
                 return ComponentType.BROADCAST

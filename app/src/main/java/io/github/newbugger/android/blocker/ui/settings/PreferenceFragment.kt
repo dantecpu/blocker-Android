@@ -8,8 +8,6 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.preference.ListPreference
-import androidx.preference.PreferenceManager
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -17,6 +15,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
@@ -270,20 +269,20 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
             .show()
     }
 
-    private fun showRequirePermissionDialog() {
+    /*private fun showRequirePermissionDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.warning)
             .setMessage(R.string.require_permission_message)
             .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
             .create()
             .show()
-    }
+    }*/
 
     companion object {
         private const val ABOUT_URL = "https://github.com/lihenggui/blocker"
         private const val SCHEDULED_WORK_TAG = "BlockerScheduledWork"
 
-        private val sBindPreferenceSummaryToValueListener =
+        /*private val sBindPreferenceSummaryToValueListener =
             Preference.OnPreferenceChangeListener { preference, value ->
                 val stringValue = value.toString()
                 if (preference is ListPreference) {
@@ -298,9 +297,9 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
                     preference.summary = stringValue
                 }
                 true
-            }
+            }*/
 
-        private fun bindPreferenceSummaryToValue(preference: Preference?) {
+        /*private fun bindPreferenceSummaryToValue(preference: Preference?) {
             preference?.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
             sBindPreferenceSummaryToValueListener.onPreferenceChange(
                 preference,
@@ -308,6 +307,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
                     .getDefaultSharedPreferences(preference?.context)
                     .getString(preference?.key, "")
             )
-        }
+        }*/
     }
 }

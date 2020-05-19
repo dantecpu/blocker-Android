@@ -1,10 +1,9 @@
 package io.github.newbugger.android.ifw;
 
 import android.content.Context;
-
 import com.elvishew.xlog.Logger;
 import com.elvishew.xlog.XLog;
-import io.github.newbugger.android.ifw.IntentFirewall;
+import com.stericson.RootTools.RootTools;
 import io.github.newbugger.android.ifw.entity.Activity;
 import io.github.newbugger.android.ifw.entity.Broadcast;
 import io.github.newbugger.android.ifw.entity.Component;
@@ -14,19 +13,16 @@ import io.github.newbugger.android.ifw.entity.Rules;
 import io.github.newbugger.android.ifw.entity.Service;
 import io.github.newbugger.android.libkit.utils.FileUtils;
 import io.github.newbugger.android.libkit.utils.StorageUtils;
-import com.stericson.RootTools.RootTools;
-
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import androidx.annotation.NonNull;
-import io.github.newbugger.android.ifw.IntentFirewall;
 
 public class IntentFirewallImpl implements IntentFirewall {
 

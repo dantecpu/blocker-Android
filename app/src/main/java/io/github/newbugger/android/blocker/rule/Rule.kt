@@ -89,7 +89,7 @@ object Rule {
                 ?: return RulesResult(false, 0, 0)
         var succeedCount = 0
         var failedCount = 0
-        val total = appRule.components.size
+        // val total = appRule.components.size
         val controller = getController(context)
         var ifwController: IntentFirewall? = null
         // Detects if contains IFW rules, if exists, create a new controller.
@@ -128,26 +128,6 @@ object Rule {
             return RulesResult(false, succeedCount, failedCount)
         }
         return RulesResult(true, succeedCount, failedCount)
-    }
-
-    fun exportAll(context: Context) {
-        val appList = ApplicationUtil.getThirdPartyApplicationList(context)
-        appList.forEach {
-            val packageName = it.packageName
-            export(context, packageName)
-        }
-    }
-
-    fun importAll(context: Context) {
-        val appList = ApplicationUtil.getThirdPartyApplicationList(context)
-        appList.forEach {
-            val packageName = it.packageName
-            val file = File(getBlockerRuleFolder(context), packageName + EXTENSION)
-            if (file.exists()) {
-                file.delete()
-            }
-            import(context, file)
-        }
     }
 
     fun importMatRules(context: Context, file: File, action: (context: Context, name: String, current: Int, total: Int) -> Unit): RulesResult {

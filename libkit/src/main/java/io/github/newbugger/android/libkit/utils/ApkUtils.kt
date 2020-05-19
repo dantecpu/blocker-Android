@@ -38,7 +38,7 @@ object ApkUtils {
             return null
         }
 
-    /**
+    /*
      * Parses AndroidManifest of the given apkFile and returns the value of
      * minSdkVersion using undocumented API which is marked as
      * "not to be used by applications"
@@ -47,7 +47,7 @@ object ApkUtils {
      * @param apkFile
      * @return minSdkVersion or -1 if not found in Manifest
      */
-    fun getMinSdkVersion(apkFile: File): Int {
+    /* fun getMinSdkVersion(apkFile: File): Int {
         try {
             val parser = getParserForManifest(apkFile)
             while (parser.next() != XmlPullParser.END_DOCUMENT) {
@@ -67,7 +67,7 @@ object ApkUtils {
             logger.e(e.message)
         }
         return -1
-    }
+    } */
 
     fun getActivities(pm: PackageManager, packageName: String): MutableList<ActivityInfo> {
         val activities = mutableListOf<ActivityInfo>()
@@ -97,7 +97,7 @@ object ApkUtils {
         return activities
     }
 
-    fun getPackageName(apkFile: File): String {
+    /* fun getPackageName(apkFile: File): String {
         var packageName: String? = null
         try {
             val parser = getParserForManifest(apkFile)
@@ -118,7 +118,7 @@ object ApkUtils {
             logger.e(e.message)
         }
         return ""
-    }
+    } */
 
 
     /**

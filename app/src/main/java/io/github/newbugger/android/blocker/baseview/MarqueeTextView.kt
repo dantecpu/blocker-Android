@@ -1,8 +1,10 @@
 package io.github.newbugger.android.blocker.baseview
 
+/*
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
+
 
 class MarqueeTextView : AppCompatTextView {
     constructor(context: Context) : super(context)
@@ -15,3 +17,4 @@ class MarqueeTextView : AppCompatTextView {
         return true
     }
 }
+*/

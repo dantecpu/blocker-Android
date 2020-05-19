@@ -91,7 +91,6 @@
     <string name="send_email">发送电子邮件</string>
     <string name="report_subject_template">Blocker反馈: (请填写您的主题)</string>
     <string name="report_content_template">（请详细描述您的问题：）</string>
-    <string name="require_permission_message">Blocker需要您授予权限才可继续操作</string>
     <string name="processing_progress_indicator">进度指示条</string>
     <string name="copy_component_name">复制名称</string>
     <string name="copy_full_name">复制全名</string>

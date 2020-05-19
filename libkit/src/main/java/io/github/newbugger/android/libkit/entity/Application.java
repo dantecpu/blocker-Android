@@ -4,19 +4,13 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import io.github.newbugger.android.libkit.utils.ApkUtils;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.util.Date;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import java.util.Date;
+
 
 /**
  * Created by Mercury on 2017/12/30.
@@ -38,8 +32,8 @@ public class Application implements Parcelable {
     };
 
     private String packageName;
-    private String versionName;
-    private int versionCode;
+    private final String versionName;
+    private final int versionCode;
     private boolean enabled;
     private boolean blocked;
     private int targetSdkVersion;
@@ -51,9 +45,6 @@ public class Application implements Parcelable {
     private String label;
     private Date firstInstallTime;
     private Date lastUpdateTime;
-
-    private Application() {
-    }
 
     private Application(@NonNull PackageInfo info) {
         this.packageName = info.packageName;
@@ -75,7 +66,6 @@ public class Application implements Parcelable {
         this.publicSourceDir = appDetail.sourceDir;
         this.dataDir = appDetail.dataDir;
         this.label = appDetail.loadLabel(pm).toString();
-        File baseApkPath = new File(publicSourceDir);
         minSdkVersion = appDetail.minSdkVersion;
         this.firstInstallTime = new Date(info.firstInstallTime);
         this.lastUpdateTime = new Date(info.lastUpdateTime);
@@ -111,108 +101,36 @@ public class Application implements Parcelable {
         this.packageName = packageName;
     }
 
-    public String getVersionName() {
-        return versionName;
-    }
-
-    public void setVersionName(String versionName) {
-        this.versionName = versionName;
-    }
-
-    public int getVersionCode() {
-        return versionCode;
-    }
-
-    public void setVersionCode(int versionCode) {
-        this.versionCode = versionCode;
-    }
-
     public boolean isEnabled() {
         return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public int getTargetSdkVersion() {
         return targetSdkVersion;
     }
 
-    public void setTargetSdkVersion(int targetSdkVersion) {
-        this.targetSdkVersion = targetSdkVersion;
-    }
-
     public String getLabel() {
         return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public int getMinSdkVersion() {
         return minSdkVersion;
     }
 
-    public void setMinSdkVersion(int minSdkVersion) {
-        this.minSdkVersion = minSdkVersion;
-    }
-
-    public String getNonLocalizedLabel() {
-        return nonLocalizedLabel;
-    }
-
-    public void setNonLocalizedLabel(String nonLocalizedLabel) {
-        this.nonLocalizedLabel = nonLocalizedLabel;
-    }
-
-    public String getSourceDir() {
-        return sourceDir;
-    }
-
-    public void setSourceDir(String sourceDir) {
-        this.sourceDir = sourceDir;
-    }
-
-    public String getPublicSourceDir() {
-        return publicSourceDir;
-    }
-
-    public void setPublicSourceDir(String publicSourceDir) {
-        this.publicSourceDir = publicSourceDir;
-    }
-
-    public String getDataDir() {
-        return dataDir;
-    }
-
-    public void setDataDir(String dataDir) {
-        this.dataDir = dataDir;
-    }
-
     public Date getFirstInstallTime() {
         return firstInstallTime;
-    }
-
-    public void setFirstInstallTime(Date firstInstallTime) {
-        this.firstInstallTime = firstInstallTime;
     }
 
     public Date getLastUpdateTime() {
         return lastUpdateTime;
     }
 
-    public void setLastUpdateTime(Date lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
-    }
-
     public boolean isBlocked() {
         return blocked;
     }
 
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
+    public void setBlocked(boolean setBlocked) {
+        this.blocked = setBlocked;
     }
 
     @Override
