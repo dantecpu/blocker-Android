@@ -29,7 +29,6 @@ interface ComponentContract {
         fun sortComponentList(components: List<ComponentItemViewModel>, type: EComponentComparatorType): List<ComponentItemViewModel>
         fun addToIFW(packageName: String, componentName: String, type: EComponentType)
         fun removeFromIFW(packageName: String, componentName: String, type: EComponentType)
-        fun launchActivity(packageName: String, componentName: String)
         fun checkIFWState(packageName: String, componentName: String): Boolean
         fun getComponentViewModel(packageName: String, componentName: String): ComponentItemViewModel
         fun updateComponentViewModel(viewModel: ComponentItemViewModel)

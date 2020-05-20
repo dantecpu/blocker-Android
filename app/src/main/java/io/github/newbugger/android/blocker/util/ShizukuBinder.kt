@@ -17,18 +17,14 @@ class ShizukuBinder {
 
     private val shizukuBinderReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            logger.e("shizukuBinderReceiver: " + ShizukuService.getBinder())
+            logger.d("shizukuBinderReceiver: " + ShizukuService.getBinder())
         }
-    }
-
-    private fun shizukuCheck() {
-        while (ShizukuService.pingBinder()) break
-        shizukuTestV3()
     }
 
     // https://github.com/RikkaApps/Shizuku/blob/master/sample/src/main/java/moe/shizuku/
     // sample/MainActivity.java
     private fun shizukuTestV3() {
+        while (ShizukuService.pingBinder()) break
         try {
             val remoteProcess = ShizukuService.newProcess(arrayOf("sh"), null, null)
             remoteProcess.outputStream.apply {
@@ -44,33 +40,41 @@ class ShizukuBinder {
                     string.append(c.toChar())
                 }
                 input.close()
-                logger.e("newProcess: $remoteProcess")
-                logger.e("waitFor: " + remoteProcess.waitFor())
-                logger.e("output: $string")
+                logger.d("newProcess: $remoteProcess")
+                logger.d("waitFor: " + remoteProcess.waitFor())
+                logger.d("output: $string")
             }
         } catch (tr: Throwable) {
             logger.e("newProcess", tr)
         }
     }
 
-    fun shizukuCreate(context: Context) {
+    private fun shizukuBroadcast(context: Context) {
         val action = "moe.shizuku.client.intent.action.SEND_BINDER"
         LocalBroadcastManager.getInstance(context)
-                .registerReceiver(shizukuBinderReceiver,
-                        IntentFilter(action))
+                .registerReceiver(
+                        shizukuBinderReceiver,
+                        IntentFilter(action)
+                )
+    }
+
+    fun shizukuCreate(context: Context) {
+        shizukuLogTest()
         if (!ShizukuClientHelper.isManagerV2Installed(context)) {
             logger.e("Shizuku is not installed or too low version")
             return
         }
-        shizukuCheck()
+        shizukuBroadcast(context)
+        shizukuTestV3()
     }
 
     fun shizukuDestory(context: Context) {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(shizukuBinderReceiver)
+        shizukuLogTest()
     }
 
-    fun shizukuLogTest() {
-        logger.e("Cannot get running service shizukuBinder")
+    private fun shizukuLogTest() {
+        logger.d("this is a shizukuBinder test.")
     }
 
 }

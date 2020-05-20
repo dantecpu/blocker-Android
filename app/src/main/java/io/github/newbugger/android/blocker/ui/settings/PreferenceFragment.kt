@@ -10,19 +10,13 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
 import com.elvishew.xlog.XLog
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.util.ToastUtil
-import io.github.newbugger.android.blocker.work.ScheduledWork
 import io.github.newbugger.android.libkit.utils.FileUtils
-import java.util.concurrent.TimeUnit
 
 
 class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.SettingsView,
@@ -39,8 +33,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
     private lateinit var importIfwRulePreference: Preference
     private lateinit var resetIfwPreference: Preference
     private lateinit var importMatRulesPreference: Preference
-    private lateinit var autoBlockPreference: CheckBoxPreference
-    private lateinit var forceDozePreference: CheckBoxPreference
     private lateinit var aboutPreference: Preference
 
     private val matRulePathRequestCode = 100
@@ -65,8 +57,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
         exportIfwRulePreference = findPreference(getString(R.string.key_pref_export_ifw_rules))!!
         resetIfwPreference = findPreference(getString(R.string.key_pref_reset_ifw_rules))!!
         importMatRulesPreference = findPreference(getString(R.string.key_pref_import_mat_rules))!!
-        autoBlockPreference = findPreference(getString(R.string.key_pref_auto_block))!!
-        forceDozePreference = findPreference(getString(R.string.key_pref_force_doze))!!
         aboutPreference = findPreference(getString(R.string.key_pref_about))!!
     }
 
@@ -85,8 +75,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
         importIfwRulePreference.onPreferenceClickListener = this
         importMatRulesPreference.onPreferenceClickListener = this
         resetIfwPreference.onPreferenceClickListener = this
-        autoBlockPreference.onPreferenceClickListener = this
-        forceDozePreference.onPreferenceClickListener = this
         aboutPreference.onPreferenceClickListener = this
     }
 
@@ -176,27 +164,27 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
             ) {
                 presenter.resetIFW()
             }
-            autoBlockPreference, forceDozePreference -> initAutoBlockAndDoze()
             aboutPreference -> showAbout()
             else -> return false
         }
         return true
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            matRulePathRequestCode -> {
-                if (resultCode == Activity.RESULT_OK) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                matRulePathRequestCode -> {
                     val filePath = FileUtils.getUriPath(requireContext(), data?.data)
                     showDialog(
-                        getString(R.string.warning),
-                        getString(R.string.import_all_rules_warning_message),
-                        filePath
+                            getString(R.string.warning),
+                            getString(R.string.import_all_rules_warning_message),
+                            filePath
                     ) {
                         presenter.importMatRules(it)
                     }
                 }
+                else -> return
             }
         }
     }
@@ -218,35 +206,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
             .setShowTitle(true)
             .build()
             .launchUrl(requireContext(), Uri.parse(ABOUT_URL))
-    }
-
-    private fun initAutoBlockAndDoze() {
-        if (!autoBlockPreference.isChecked && !forceDozePreference.isChecked) {
-            logger.d("Canceling scheduled work.")
-            WorkManager.getInstance().cancelAllWork()
-        } else {
-            warnExperimentalFeature()
-            val scheduleWork = PeriodicWorkRequest.Builder(
-                ScheduledWork::class.java,
-                PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS
-            ).build()
-            WorkManager.getInstance().enqueueUniquePeriodicWork(
-                SCHEDULED_WORK_TAG,
-                ExistingPeriodicWorkPolicy.KEEP,
-                scheduleWork
-            )
-            logger.d("Scheduled work activated")
-        }
-    }
-
-    private fun warnExperimentalFeature() {
-        context?.let {
-            AlertDialog.Builder(it)
-                .setTitle(R.string.warning)
-                .setMessage(R.string.experimental_features_warning)
-                .setPositiveButton(android.R.string.yes) { dialog, _ -> dialog.dismiss() }
-                .show()
-        }
     }
 
     private fun showConfirmationDialog(
@@ -275,7 +234,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
 
     companion object {
         private const val ABOUT_URL = "https://github.com/lihenggui/blocker"
-        private const val SCHEDULED_WORK_TAG = "BlockerScheduledWork"
 
         /*private val sBindPreferenceSummaryToValueListener =
             Preference.OnPreferenceChangeListener { preference, value ->

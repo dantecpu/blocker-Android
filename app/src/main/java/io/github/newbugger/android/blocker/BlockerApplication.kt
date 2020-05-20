@@ -12,7 +12,6 @@ import com.elvishew.xlog.printer.AndroidPrinter
 import com.elvishew.xlog.printer.file.FilePrinter
 import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator
-import moe.shizuku.api.ShizukuClient
 
 
 class BlockerApplication : Application() {
@@ -22,7 +21,6 @@ class BlockerApplication : Application() {
         initLogger()
         context = this
         createNotificationChannel()
-        ShizukuClient.initialize(this)
     }
 
     private fun createNotificationChannel() {

@@ -158,7 +158,6 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
         when (item.itemId) {
             R.id.block_by_ifw -> presenter.addToIFW(component.packageName, component.name, type)
             R.id.enable_by_ifw -> presenter.removeFromIFW(component.packageName, component.name, type)
-            R.id.launch_activity -> presenter.launchActivity(component.packageName, component.name)
             R.id.copy_component_name -> copyToClipboard(component.simpleName)
             R.id.copy_full_name -> copyToClipboard(component.name)
         }

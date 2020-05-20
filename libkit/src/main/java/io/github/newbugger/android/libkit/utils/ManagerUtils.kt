@@ -5,13 +5,6 @@ import io.github.newbugger.android.libkit.entity.ETrimMemoryLevel
 
 
 object ManagerUtils {
-    /*fun launchApplication(packageName: String) {
-        RootCommand.runBlockingCommand("monkey -p $packageName -c android.intent.category.LAUNCHER 1")
-    }*/
-
-    fun launchActivity(packageName: String, activityName: String) {
-        RootCommand.runBlockingCommand("am start -n $packageName/$activityName")
-    }
 
     fun forceStop(packageName: String) {
         RootCommand.runBlockingCommand("am force-stop $packageName")

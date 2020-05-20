@@ -16,4 +16,9 @@ object PreferenceUtil {
             else -> EControllerMethod.SHIZUKU
         }
     }
+
+    fun checkShizukuType(context: Context): Boolean {
+        return getControllerType(context) == EControllerMethod.SHIZUKU
+    }
+
 }

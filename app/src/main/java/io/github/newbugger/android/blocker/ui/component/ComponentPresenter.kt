@@ -19,7 +19,6 @@ import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
 import io.github.newbugger.android.libkit.entity.getSimpleName
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
-import io.github.newbugger.android.libkit.utils.ManagerUtils
 import io.github.newbugger.android.libkit.utils.PermissionUtils
 import io.github.newbugger.android.libkit.utils.ServiceHelper
 import kotlinx.coroutines.Dispatchers
@@ -62,11 +61,12 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun loadComponents(packageName: String, type: EComponentType) {
-        logger.i("Load components for $packageName, type: $type")
+        // logger.d("Load components for $packageName, type: $type")
         view?.setLoadingIndicator(true)
         doAsync(exceptionHandler) {
-            if (type == EComponentType.SERVICE) {
-                /*if (PreferenceUtil.getControllerType(context) == EControllerMethod.SHIZUKU)
+            if (type == EComponentType.SERVICE &&
+                    !PreferenceUtil.checkShizukuType(context)) {
+                /*if (PreferenceUtil.checkShizukuType(context))
                     serviceHelper.refreshShizuku()
                 else
                     serviceHelper.refreshRoot()*/
@@ -91,7 +91,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun enable(packageName: String, componentName: String): Boolean {
-        logger.i("Enable component: $componentName")
+        // logger.d("Enable component: $componentName")
         val handler = { e: Throwable ->
             GlobalScope.launch(Dispatchers.Main) {
                 DialogUtil().showWarningDialogWithMessage(context, e)
@@ -119,7 +119,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun disable(packageName: String, componentName: String): Boolean {
-        logger.i("Disable component: $componentName")
+        // logger.d("Disable component: $componentName")
         val handler = { e: Throwable ->
             GlobalScope.launch(Dispatchers.Main) {
                 DialogUtil().showWarningDialogWithMessage(context, e)
@@ -136,7 +136,8 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         return true
     }
 
-    override fun sortComponentList(components: List<ComponentItemViewModel>, type: EComponentComparatorType): List<ComponentItemViewModel> {
+    override fun sortComponentList(components: List<ComponentItemViewModel>, type: EComponentComparatorType):
+            List<ComponentItemViewModel> {
         val sortedComponents = when (type) {
             EComponentComparatorType.SIMPLE_NAME_ASCENDING -> components.sortedBy { it.simpleName }
             EComponentComparatorType.SIMPLE_NAME_DESCENDING -> components.sortedByDescending { it.simpleName }
@@ -147,7 +148,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun addToIFW(packageName: String, componentName: String, type: EComponentType) {
-        logger.i("Disable component via IFW: $componentName")
+        // logger.d("Disable component via IFW: $componentName")
         doAsync(exceptionHandler) {
             ifwController.disable(packageName, componentName)
             uiThread {
@@ -157,18 +158,12 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun removeFromIFW(packageName: String, componentName: String, type: EComponentType) {
-        logger.i("Disable component via IFW: $componentName")
+        // logger.d("Disable component via IFW: $componentName")
         doAsync(exceptionHandler) {
             ifwController.enable(packageName, componentName)
             uiThread {
                 view?.refreshComponentState(componentName)
             }
-        }
-    }
-
-    override fun launchActivity(packageName: String, componentName: String) {
-        doAsync(exceptionHandler) {
-            ManagerUtils.launchActivity(packageName, componentName)
         }
     }
 
@@ -196,10 +191,13 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun updateComponentViewModel(viewModel: ComponentItemViewModel) {
-        viewModel.state = ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(viewModel.packageName, viewModel.name))
-        viewModel.ifwState = ifwController.checkComponentEnableState(viewModel.packageName, viewModel.name)
-        if (type == EComponentType.SERVICE) {
-            viewModel.isRunning = isServiceRunning(viewModel.name)
+        viewModel.state = ApplicationUtil.checkComponentIsEnabled(pm,
+                ComponentName(viewModel.packageName, viewModel.name))
+        if (!PreferenceUtil.checkShizukuType(context)) {
+            viewModel.ifwState = ifwController.checkComponentEnableState(viewModel.packageName, viewModel.name)
+            if (type == EComponentType.SERVICE) {
+                viewModel.isRunning = isServiceRunning(viewModel.name)
+            }
         }
     }
 
@@ -228,11 +226,14 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
             }
             val components = getComponents(packageName, type)
             ifwController.batchEnable(components) { componentInfo ->
-                if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager, ComponentName(componentInfo.packageName, componentInfo.name))) {
-                    if (PreferenceUtil.getControllerType(context) == EControllerMethod.SHIZUKU) {
-                        ComponentControllerProxy.getInstance(EControllerMethod.SHIZUKU, context).enable(componentInfo.packageName, componentInfo.name)
+                if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager,
+                                ComponentName(componentInfo.packageName, componentInfo.name))) {
+                    if (PreferenceUtil.checkShizukuType(context)) {
+                        ComponentControllerProxy.getInstance(EControllerMethod.SHIZUKU, context)
+                                .enable(componentInfo.packageName, componentInfo.name)
                     } else {
-                        ComponentControllerProxy.getInstance(EControllerMethod.PM, context).enable(componentInfo.packageName, componentInfo.name)
+                        ComponentControllerProxy.getInstance(EControllerMethod.PM, context)
+                                .enable(componentInfo.packageName, componentInfo.name)
                     }
                 }
                 uiThread {

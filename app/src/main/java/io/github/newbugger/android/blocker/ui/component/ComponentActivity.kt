@@ -21,7 +21,6 @@ import io.github.newbugger.android.blocker.ui.Constants
 import io.github.newbugger.android.blocker.util.AppLauncher
 import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.blocker.R
-import io.github.newbugger.android.blocker.core.root.EControllerMethod
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ShizukuBinder
 import io.github.newbugger.android.libkit.entity.Application
@@ -57,13 +56,13 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         setupViewPager()
         setupTab()
         showApplicationBriefInfo(application)
-        if (PreferenceUtil.getControllerType(this) == EControllerMethod.SHIZUKU)
+        if (PreferenceUtil.checkShizukuType(this))
             shizukuBinder.shizukuCreate(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (PreferenceUtil.getControllerType(this) == EControllerMethod.SHIZUKU)
+        if (PreferenceUtil.checkShizukuType(this))
             shizukuBinder.shizukuDestory(this)
     }
 

@@ -1,10 +1,10 @@
 package io.github.newbugger.android.blocker.util
 
 import android.content.Context
-import android.content.pm.IPackageManager
-import android.content.pm.PackageInfo
-import android.content.pm.ParceledListSlice
-import android.content.pm.UserInfo
+//import android.content.pm.IPackageManager
+//import android.content.pm.PackageInfo
+//import android.content.pm.ParceledListSlice
+//import android.content.pm.UserInfo
 import android.os.Parcel
 import android.os.RemoteException
 import com.elvishew.xlog.Logger
@@ -13,7 +13,7 @@ import moe.shizuku.api.ShizukuBinderWrapper
 import moe.shizuku.api.ShizukuService
 import moe.shizuku.api.SystemServiceHelper
 
-
+/*
 class ShizukuApi {
 
     private val logger: Logger = XLog.tag("ShizukuApi").build()
@@ -59,4 +59,4 @@ class ShizukuApi {
         return res
     }
 
-}
+}*/
