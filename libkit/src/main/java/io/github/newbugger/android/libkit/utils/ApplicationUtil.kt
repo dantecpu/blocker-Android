@@ -94,8 +94,7 @@ object ApplicationUtil {
         val activities = ArrayList<ActivityInfo>()
         try {
             var flags = PackageManager.GET_ACTIVITIES
-            flags =
-                    flags or PackageManager.MATCH_DISABLED_COMPONENTS
+            flags = flags or PackageManager.MATCH_DISABLED_COMPONENTS
             val components = pm.getPackageInfo(packageName, flags).activities
             if (components != null && components.isNotEmpty()) {
                 Collections.addAll(activities, *components)
@@ -121,8 +120,7 @@ object ApplicationUtil {
         val receivers = ArrayList<ActivityInfo>()
         try {
             var flags = PackageManager.GET_RECEIVERS
-            flags =
-                    flags or PackageManager.MATCH_DISABLED_COMPONENTS
+            flags = flags or PackageManager.MATCH_DISABLED_COMPONENTS
             val components = pm.getPackageInfo(packageName, flags).receivers
             if (components != null && components.isNotEmpty()) {
                 Collections.addAll(receivers, *components)
@@ -144,8 +142,7 @@ object ApplicationUtil {
         val services = ArrayList<ServiceInfo>()
         try {
             var flags = PackageManager.GET_SERVICES
-            flags =
-                    flags or PackageManager.MATCH_DISABLED_COMPONENTS
+            flags = flags or PackageManager.MATCH_DISABLED_COMPONENTS
             val components = pm.getPackageInfo(packageName, flags).services
             if (components != null && components.isNotEmpty()) {
                 Collections.addAll(services, *components)
@@ -168,8 +165,7 @@ object ApplicationUtil {
         val providers = ArrayList<ProviderInfo>()
         try {
             var flags = PackageManager.GET_PROVIDERS
-            flags =
-                    flags or PackageManager.MATCH_DISABLED_COMPONENTS
+            flags = flags or PackageManager.MATCH_DISABLED_COMPONENTS
             val components = pm.getPackageInfo(packageName, flags).providers
             if (components != null && components.isNotEmpty()) {
                 Collections.addAll(providers, *components)
@@ -223,8 +219,7 @@ object ApplicationUtil {
         var flags = PackageManager.GET_ACTIVITIES or PackageManager.GET_PROVIDERS or
                 PackageManager.GET_RECEIVERS or PackageManager.GET_SERVICES or
                 PackageManager.GET_INTENT_FILTERS
-        flags =
-                flags or PackageManager.MATCH_DISABLED_COMPONENTS
+        flags = flags or PackageManager.MATCH_DISABLED_COMPONENTS
         var info = PackageInfo()
         try {
             info = pm.getPackageInfo(packageName, flags)
