@@ -12,7 +12,7 @@ import java.io.File
 
 
 object FileUtils {
-    private val logger = XLog.tag("FileUtils").build()
+    private val logger = XLog.tag("io.github.newbugger.android.libkit.utils.FileUtils").build()
 
     /*@JvmStatic
     fun copy(source: String, dest: String): Boolean {

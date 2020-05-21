@@ -29,7 +29,7 @@ public class IntentFirewallImpl implements IntentFirewall {
     private static final String EXTENSION = ".xml";
     private static final String FILTER_TEMPLATE = "%s/%s";
     private static IntentFirewallImpl instance;
-    private final Logger logger = XLog.tag("IntentFirewallImpl").build();
+    private final Logger logger = XLog.tag("io.github.newbugger.android.ifw.IntentFirewallImpl").build();
     private final String filename;
     private Rules rules;
     private final String tmpPath;

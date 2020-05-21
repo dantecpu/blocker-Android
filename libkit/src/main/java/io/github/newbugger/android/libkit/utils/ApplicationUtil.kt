@@ -19,7 +19,7 @@ object ApplicationUtil {
     private const val BLOCKER_PACKAGE_NAME = "io.github.newbugger.android.blocker"
     private const val BLOCKED_CONF_NAME = "Blocked"
     private const val BLOCKED_APP_LIST_KEY = "key_blocked_app_list"
-    private val logger = XLog.tag("ApplicationUtil").build()
+    private val logger = XLog.tag("io.github.newbugger.android.libkit.utils.ApplicationUtil").build()
 
     /**
      * Get a list of installed applications on device

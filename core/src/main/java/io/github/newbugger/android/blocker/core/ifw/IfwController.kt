@@ -18,30 +18,34 @@ class IfwController(val context: Context) : IController {
     private lateinit var controller: IntentFirewall
     private lateinit var packageInfo: PackageInfo
 
-    override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
-        init(packageName)
-        val type = getComponentType(componentName)
-        if (type == ComponentType.PROVIDER) {
-            return when (state) {
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> ComponentControllerProxy.getInstance(EControllerMethod.PM, context).disable(packageName, componentName)
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> ComponentControllerProxy.getInstance(EControllerMethod.PM, context).enable(packageName, componentName)
+    override fun switchComponent(packageName: String, componentName: String?, state: Int): Boolean {
+        // TODO: Package or Component (1)
+        if (componentName == null) return false
+        // if (componentName != null) {
+            init(packageName)
+            val type = getComponentType(componentName)
+            if (type == ComponentType.PROVIDER) {
+                return when (state) {
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> ComponentControllerProxy.getInstance(EControllerMethod.PM, context).disable(packageName, componentName)
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> ComponentControllerProxy.getInstance(EControllerMethod.PM, context).enable(packageName, componentName)
+                    else -> false
+                }
+            }
+            val result = when (state) {
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> controller.add(packageName, componentName, type)
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> controller.remove(packageName, componentName, type)
                 else -> false
             }
-        }
-        val result = when (state) {
-            PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> controller.add(packageName, componentName, type)
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> controller.remove(packageName, componentName, type)
-            else -> false
-        }
-        if (result) {
-            try {
-                controller.save()
-            }catch (e: Exception) {
-                controller.removeCache()
-                throw e
+            if (result) {
+                try {
+                    controller.save()
+                } catch (e: Exception) {
+                    controller.removeCache()
+                    throw e
+                }
             }
-        }
-        return result
+            return result
+        // }
     }
 
     override fun enable(packageName: String, componentName: String): Boolean {
@@ -132,4 +136,5 @@ class IfwController(val context: Context) : IController {
         }
         return ComponentType.UNKNOWN
     }
+
 }

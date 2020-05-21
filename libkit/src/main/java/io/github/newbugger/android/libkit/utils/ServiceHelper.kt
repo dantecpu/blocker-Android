@@ -4,7 +4,7 @@ import com.elvishew.xlog.XLog
 import io.github.newbugger.android.libkit.RootCommand
 
 class ServiceHelper(private val packageName: String) {
-    private val logger = XLog.tag("ServiceHelper").build()
+    private val logger = XLog.tag("io.github.newbugger.android.libkit.utils.ServiceHelper").build()
     private var serviceInfo: String = ""
     private val serviceList: MutableList<String> = mutableListOf()
 

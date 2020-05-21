@@ -24,7 +24,7 @@ import io.reactivex.disposables.Disposable;
  */
 
 public class RootCommand {
-    private static final Logger logger = XLog.tag("RootCommand").build();
+    private static final Logger logger = XLog.tag("io.github.newbugger.android.libkit.RootCommand").build();
 
     @NonNull
     public synchronized static String runBlockingCommand(final String comm) throws RootDeniedException, IOException, TimeoutException {

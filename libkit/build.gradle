@@ -5,7 +5,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion 28
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -37,7 +37,8 @@ dependencies {
     //RootTools and RootShell support
     api(name: 'RootTools', ext: 'aar')
     api(name: 'RootShell', ext: 'aar')
-    //Shizuku API
+    // shizuku
+    implementation 'moe.shizuku.privilege:api:3.2.0'
     // api 'moe.shizuku.privilege:api-base:9'
     // api 'moe.shizuku.privilege:api-26:4'
     api 'com.google.code.gson:gson:2.8.5'

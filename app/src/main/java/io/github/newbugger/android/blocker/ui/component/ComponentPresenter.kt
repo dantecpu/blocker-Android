@@ -32,7 +32,7 @@ import java.io.File
 class ComponentPresenter(val context: Context, var view: ComponentContract.View?, val packageName: String) : ComponentContract.Presenter, IController {
     override var currentComparator: EComponentComparatorType = EComponentComparatorType.NAME_ASCENDING  // changed order
     private val pm: PackageManager
-    private val logger = XLog.tag(this.javaClass.simpleName).build()
+    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.component.ComponentPresenter").build()
     private val serviceHelper by lazy { ServiceHelper(packageName) }
     private val ifwController by lazy { ComponentControllerProxy.getInstance(EControllerMethod.IFW, context) }
     private val controller: IController by lazy {
@@ -86,7 +86,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         }
     }
 
-    override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
+    override fun switchComponent(packageName: String, componentName: String?, state: Int): Boolean {
         return controller.switchComponent(packageName, componentName, state)
     }
 

@@ -29,7 +29,7 @@ class SettingsPresenter(
 ) : SettingsContract.SettingsPresenter {
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
-    private val logger = XLog.tag("SettingsPresenter").build()
+    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.settings.SettingsPresenter").build()
     private val exceptionHandler = CoroutineExceptionHandler { _, e: Throwable ->
         logger.e("Caught an exception:", e)
         NotificationUtil.cancelNotification(context)

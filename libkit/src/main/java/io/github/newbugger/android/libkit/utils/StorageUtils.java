@@ -67,7 +67,7 @@ public class StorageUtils {
                     .getMethod("getBoolean", String.class, boolean.class)
                     .invoke(null, SYSTEM_PROPERTY_EFS_ENABLED, false);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            Log.e("StorgeUtils", "Cannot access internal method", e);
+            Log.e("StorageUtils", "Cannot access internal method", e);
             return false;
         }
     }

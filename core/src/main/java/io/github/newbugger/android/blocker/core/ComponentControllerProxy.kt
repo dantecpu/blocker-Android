@@ -19,7 +19,7 @@ class ComponentControllerProxy private constructor(method: EControllerMethod, co
         EControllerMethod.SHIZUKU -> ShizukuController(context)
     }
 
-    override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
+    override fun switchComponent(packageName: String, componentName: String?, state: Int): Boolean {
         return controller.switchComponent(packageName, componentName, state)
     }
 

@@ -1,24 +1,16 @@
 package io.github.newbugger.android.blocker.ui.component
 
-// import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.ContextMenu
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-// import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -35,9 +27,6 @@ import io.github.newbugger.android.blocker.util.ToastUtil
 import kotlinx.android.synthetic.main.component_item.view.*
 import kotlinx.android.synthetic.main.fragment_component.*
 import kotlinx.android.synthetic.main.fragment_component.view.*
-// import moe.shizuku.api.ShizukuClient
-// import moe.shizuku.api.ShizukuClient.REQUEST_CODE_PERMISSION
-// import moe.shizuku.api.ShizukuClientHelper
 
 
 class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.ComponentItemListener {
@@ -46,7 +35,7 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     private lateinit var componentAdapter: ComponentsRecyclerViewAdapter
     private lateinit var packageName: String
     private lateinit var type: EComponentType
-    private val logger = XLog.tag("ComponentFragment").build()
+    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.component.ComponentFragment").build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -389,4 +378,5 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
             }
         }
     }
+
 }

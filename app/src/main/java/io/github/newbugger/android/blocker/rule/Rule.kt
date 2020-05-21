@@ -28,7 +28,7 @@ import java.io.FileWriter
 
 object Rule {
     const val EXTENSION = ".json"
-    private val logger = XLog.tag("Rule").build()
+    private val logger = XLog.tag("io.github.newbugger.android.blocker.rule.Rule").build()
 
     // TODO remove template code
     fun export(context: Context, packageName: String): RulesResult {

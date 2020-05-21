@@ -1,32 +1,30 @@
 package io.github.newbugger.android.blocker.util
 
-import android.content.BroadcastReceiver
+import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.elvishew.xlog.Logger
-import com.elvishew.xlog.XLog
+import android.content.pm.PackageManager
+import android.util.Log
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import moe.shizuku.api.RemoteProcess
+import moe.shizuku.api.ShizukuApiConstants
 import moe.shizuku.api.ShizukuClientHelper
 import moe.shizuku.api.ShizukuService
 
 
-class ShizukuBinder {
+// https://github.com/RikkaApps/Shizuku/blob/master/sample/src/main/java/moe/shizuku/
+// sample/MainActivity.java
 
-    private val logger: Logger = XLog.tag("ShizukuBinder").build()
+object ShizukuBinder {
 
-    private val shizukuBinderReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            logger.d("shizukuBinderReceiver: " + ShizukuService.getBinder())
-        }
-    }
+    private const val TAG = "io.github.newbugger.android.blocker.util.ShizukuBinder"
 
-    // https://github.com/RikkaApps/Shizuku/blob/master/sample/src/main/java/moe/shizuku/
-    // sample/MainActivity.java
-    private fun shizukuTestV3() {
-        while (ShizukuService.pingBinder()) break
+    private const val REQUEST_CODE_PERMISSION_V3 = 1
+
+    fun shizukuTestV3() {
+        while (!ShizukuService.pingBinder()) break
         try {
-            val remoteProcess = ShizukuService.newProcess(arrayOf("sh"), null, null)
+            val remoteProcess: RemoteProcess = ShizukuService.newProcess(arrayOf("sh"), null, null)
             remoteProcess.outputStream.apply {
                 write("echo test\n".toByteArray())
                 write("id\n".toByteArray())
@@ -40,41 +38,35 @@ class ShizukuBinder {
                     string.append(c.toChar())
                 }
                 input.close()
-                logger.d("newProcess: $remoteProcess")
-                logger.d("waitFor: " + remoteProcess.waitFor())
-                logger.d("output: $string")
+                Log.d(TAG, "fun shizukuTestV3: newProcess: $remoteProcess")
+                Log.d(TAG, "fun shizukuTestV3: waitFor: " + remoteProcess.waitFor())
+                Log.d(TAG, "fun shizukuTestV3: output: $string")
             }
         } catch (tr: Throwable) {
-            logger.e("newProcess", tr)
+            Log.e(TAG, "fun shizukuTestV3: err: ", tr)
         }
     }
 
-    private fun shizukuBroadcast(context: Context) {
-        val action = "moe.shizuku.client.intent.action.SEND_BINDER"
-        LocalBroadcastManager.getInstance(context)
-                .registerReceiver(
-                        shizukuBinderReceiver,
-                        IntentFilter(action)
-                )
-    }
-
-    fun shizukuCreate(context: Context) {
-        shizukuLogTest()
-        if (!ShizukuClientHelper.isManagerV2Installed(context)) {
-            logger.e("Shizuku is not installed or too low version")
-            return
+    fun shizukuRequestPermission(context: Context): Boolean {
+        return if (ActivityCompat.checkSelfPermission(context,
+                        ShizukuApiConstants.PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(context as Activity,
+                    arrayOf(ShizukuApiConstants.PERMISSION), REQUEST_CODE_PERMISSION_V3)
+            Log.d(TAG, "requesting shizuku permission ..")
+            false
+        } else {
+            true
         }
-        shizukuBroadcast(context)
-        shizukuTestV3()
     }
 
-    fun shizukuDestory(context: Context) {
-        LocalBroadcastManager.getInstance(context).unregisterReceiver(shizukuBinderReceiver)
-        shizukuLogTest()
-    }
-
-    private fun shizukuLogTest() {
-        logger.d("this is a shizukuBinder test.")
+    fun shizukuIsInstalled(context: Context): Boolean {
+        ShizukuClientHelper.isManagerV3Installed(context).also {
+            if (!it) {
+                Log.d(TAG, "Shizuku Manager is not installed or too low version")
+                Toast.makeText(context, "Shizuku Manager not installed or too low.", Toast.LENGTH_LONG).show()
+            }
+            return it
+        }
     }
 
 }

@@ -5,7 +5,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion 28
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -34,5 +34,4 @@ dependencies {
     implementation project(':ifw-api')
     implementation project(':libkit')
     implementation 'moe.shizuku.privilege:api:3.2.0'
-    implementation 'me.weishu:free_reflection:2.2.0'
 }

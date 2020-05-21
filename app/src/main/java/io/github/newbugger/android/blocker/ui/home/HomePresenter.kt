@@ -18,7 +18,7 @@ import org.jetbrains.anko.uiThread
 
 class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Presenter {
     private var context: Context? = null
-    private val logger = XLog.tag(this.javaClass.simpleName).build()
+    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.home.HomePresenter").build()
     private val exceptionHandler = { e: Throwable ->
         GlobalScope.launch(Dispatchers.Main) {
             DialogUtil().showWarningDialogWithMessage(context, e)

@@ -13,7 +13,7 @@ import java.io.IOException
 import java.lang.reflect.InvocationTargetException
 
 object ApkUtils {
-    private val logger = XLog.tag("ApkUtils").build()
+    private val logger = XLog.tag("io.github.newbugger.android.libkit.utils.ApkUtils").build()
 
     /**
      * Get [AssetManager] using reflection

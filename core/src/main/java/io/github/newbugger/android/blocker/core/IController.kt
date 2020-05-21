@@ -19,7 +19,7 @@ interface IController {
      * @return true : changed component state successfully
      * false: cannot disable component
      */
-    fun switchComponent(packageName: String, componentName: String, state: Int): Boolean
+    fun switchComponent(packageName: String, componentName: String?, state: Int): Boolean
 
     fun enable(packageName: String, componentName: String): Boolean
 

@@ -22,7 +22,7 @@ import io.github.newbugger.android.libkit.utils.FileUtils
 class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.SettingsView,
     Preference.OnPreferenceClickListener {
 
-    private val logger = XLog.tag("PreferenceFragment")
+    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.settings.PreferenceFragment").build()
     private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var preferences: SharedPreferences
     private lateinit var presenter: SettingsPresenter
