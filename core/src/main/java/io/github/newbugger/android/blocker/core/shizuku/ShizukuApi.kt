@@ -22,14 +22,21 @@ object ShizukuApi {
         val reply = Parcel.obtain()
         data.also {
             when (name) {
-                is String -> it.writeString(name)
-                is ComponentName -> name.writeToParcel(it, 0)
-                else -> return
+                is String ->
+                    it.writeString(name)
+                is ComponentName ->
+                    name.writeToParcel(it, 0)
+                else ->
+                    return
             }
-            if (state == PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
-                it.writeInt(PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
-            else
-                it.writeInt(state)
+            when (state) {
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED ->
+                    it.writeInt(PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED ->
+                    it.writeInt(PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
+                else ->
+                    it.writeInt(state)
+            }
         }
         try {
             ShizukuService.transactRemote(data, reply, 0)
