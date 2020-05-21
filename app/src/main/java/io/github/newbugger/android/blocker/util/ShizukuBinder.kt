@@ -25,6 +25,9 @@ object ShizukuBinder {
     private const val REQUEST_CODE_PERMISSION_V3 = 1
 
     fun shizukuTestV3() {
+        while (!ShizukuService.pingBinder()) {
+            Log.d(TAG, "shizukuTestV3: binder is null, keep waiting ..")
+        }
         try {
             val remoteProcess: RemoteProcess = ShizukuService.newProcess(arrayOf("sh"), null, null)
             remoteProcess.outputStream.apply {
@@ -40,20 +43,22 @@ object ShizukuBinder {
                     string.append(c.toChar())
                 }
                 input.close()
-                Log.d(TAG, "fun shizukuTestV3: newProcess: $remoteProcess")
-                Log.d(TAG, "fun shizukuTestV3: waitFor: " + remoteProcess.waitFor())
-                Log.d(TAG, "fun shizukuTestV3: output: $string")
+                Log.d(TAG, "shizukuTestV3: newProcess: $remoteProcess")
+                Log.d(TAG, "shizukuTestV3: waitFor: " + remoteProcess.waitFor())
+                Log.d(TAG, "shizukuTestV3: output: $string")
             }
         } catch (tr: Throwable) {
-            Log.e(TAG, "fun shizukuTestV3: err: ", tr)
+            Log.e(TAG, "shizukuTestV3: err: ", tr)
         }
     }
 
     fun shizukuUnSetBroadcast(context: Context, shizukuBinderReceiver: BroadcastReceiver) {
+        Log.d(TAG, "shizukuUnSetBroadcast: unset.")
         LocalBroadcastManager.getInstance(context).unregisterReceiver(shizukuBinderReceiver)
     }
 
     fun shizukuSetBroadcast(context: Context, shizukuBinderReceiver: BroadcastReceiver) {
+        Log.d(TAG, "shizukuSetBroadcast: set.")
         val action = "moe.shizuku.client.intent.action.SEND_BINDER"
         LocalBroadcastManager.getInstance(context).registerReceiver(shizukuBinderReceiver, IntentFilter(action))
     }
@@ -66,6 +71,7 @@ object ShizukuBinder {
             Log.d(TAG, "requesting shizuku permission ..")
             false
         } else {
+            Log.d(TAG, "shizuku permission requested.")
             true
         }
     }
@@ -73,7 +79,7 @@ object ShizukuBinder {
     fun shizukuIsInstalled(context: Context): Boolean {
         ShizukuClientHelper.isManagerV3Installed(context).also {
             if (!it) {
-                Log.d(TAG, "Shizuku Manager is not installed or too low version")
+                Log.d(TAG, "Shizuku Manager is not installed or too low version.")
                 Toast.makeText(context, "Shizuku Manager not installed or too low.", Toast.LENGTH_LONG).show()
             }
             return it

@@ -15,6 +15,7 @@ import com.elvishew.xlog.printer.AndroidPrinter
 import com.elvishew.xlog.printer.file.FilePrinter
 import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator
+import me.weishu.reflection.Reflection
 import moe.shizuku.api.ShizukuClientHelper
 import moe.shizuku.api.ShizukuService
 
@@ -33,18 +34,19 @@ class BlockerApplication : Application() {
     // and call the OnBinderReceivedListener (again, a static field is used to store the listener)
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
-        ShizukuClientHelper.OnBinderReceivedListener {
-            Log.d("BlockerApplication", "attachBaseContext: onBinderReceived")
+        Reflection.unseal(base)
+        ShizukuClientHelper.setBinderReceivedListener {
+            Log.d("blocker.Application", "attachBaseContext: onBinderReceived")
             while (ShizukuService.getBinder() == null) {
-                Log.d("BlockerApplication", "attachBaseContext: binder is null, keep waiting ..")
+                Log.d("blocker.Application", "ShizukuService: binder is null, keep waiting ..")
             }
             try {
                 val action = "moe.shizuku.client.intent.action.SEND_BINDER"
                 LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(action))
+                Log.d("blocker.Application", "sendBroadcast: broadcast sent")
             } catch (tr: Throwable) {
-                Log.e("BlockerApplication", "attachBaseContext: can't contact with remote", tr)
-            } finally {
-                return@OnBinderReceivedListener
+                Log.e("blocker.Application", "catch: can't contact with remote", tr)
+                return@setBinderReceivedListener
             }
         }
     }

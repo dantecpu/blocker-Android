@@ -9,7 +9,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elvishew.xlog.XLog
 import com.google.android.material.tabs.TabLayout
 import io.github.newbugger.android.blocker.R

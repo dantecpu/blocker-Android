@@ -26,7 +26,7 @@ object ShizukuApi {
             reply.readException()
             true
         } catch (e: RemoteException) {
-            Log.e("ShizukuApi", "IPackageManager#setApplicationEnabledSetting", e)
+            Log.e("blocker.ShizukuApi", "IPackageManager#setApplicationEnabledSetting", e)
             false
         } finally {
             data.recycle()
