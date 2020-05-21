@@ -16,7 +16,6 @@ import com.elvishew.xlog.printer.file.FilePrinter
 import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator
 import moe.shizuku.api.ShizukuClientHelper
-import moe.shizuku.api.ShizukuMultiProcessHelper
 import moe.shizuku.api.ShizukuService
 
 
@@ -27,25 +26,25 @@ class BlockerApplication : Application() {
         initLogger()
         context = this
         createNotificationChannel()
-        initShizuku()
     }
 
+    // Inside ShizukuBinderReceiveProvider, things are very simple
+    // the received binder is stored to a static field in ShizukuService
+    // and call the OnBinderReceivedListener (again, a static field is used to store the listener)
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
-        ShizukuClientHelper.setBinderReceivedListener {
+        ShizukuClientHelper.OnBinderReceivedListener {
             Log.d("BlockerApplication", "attachBaseContext: onBinderReceived")
-            if (ShizukuService.getBinder() == null) {
-                Log.d("BlockerApplication", "attachBaseContext: binder is null")
-                return@setBinderReceivedListener
-            } else {
-                try {
-                    val action = "moe.shizuku.client.intent.action.SEND_BINDER"
-                    ShizukuService.pingBinder()
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(action))
-                } catch (tr: Throwable) {
-                    Log.e("BlockerApplication", "attachBaseContext: can't contact with remote", tr)
-                    return@setBinderReceivedListener
-                }
+            while (ShizukuService.getBinder() == null) {
+                Log.d("BlockerApplication", "attachBaseContext: binder is null, keep waiting ..")
+            }
+            try {
+                val action = "moe.shizuku.client.intent.action.SEND_BINDER"
+                LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(action))
+            } catch (tr: Throwable) {
+                Log.e("BlockerApplication", "attachBaseContext: can't contact with remote", tr)
+            } finally {
+                return@OnBinderReceivedListener
             }
         }
     }
@@ -69,10 +68,6 @@ class BlockerApplication : Application() {
             .fileNameGenerator(ChangelessFileNameGenerator(LOG_FILENAME))
             .build()
         XLog.init(config, androidPrinter, filePrinter)
-    }
-
-    private fun initShizuku() {
-        ShizukuMultiProcessHelper.initialize(this, !getProcessName().endsWith(":ShizukuBinderReceiver"))
     }
 
     companion object {

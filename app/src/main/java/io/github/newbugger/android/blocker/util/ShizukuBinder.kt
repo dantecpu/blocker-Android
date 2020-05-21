@@ -1,11 +1,14 @@
 package io.github.newbugger.android.blocker.util
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import moe.shizuku.api.RemoteProcess
 import moe.shizuku.api.ShizukuApiConstants
 import moe.shizuku.api.ShizukuClientHelper
@@ -22,7 +25,6 @@ object ShizukuBinder {
     private const val REQUEST_CODE_PERMISSION_V3 = 1
 
     fun shizukuTestV3() {
-        while (!ShizukuService.pingBinder()) break
         try {
             val remoteProcess: RemoteProcess = ShizukuService.newProcess(arrayOf("sh"), null, null)
             remoteProcess.outputStream.apply {
@@ -45,6 +47,15 @@ object ShizukuBinder {
         } catch (tr: Throwable) {
             Log.e(TAG, "fun shizukuTestV3: err: ", tr)
         }
+    }
+
+    fun shizukuUnSetBroadcast(context: Context, shizukuBinderReceiver: BroadcastReceiver) {
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(shizukuBinderReceiver)
+    }
+
+    fun shizukuSetBroadcast(context: Context, shizukuBinderReceiver: BroadcastReceiver) {
+        val action = "moe.shizuku.client.intent.action.SEND_BINDER"
+        LocalBroadcastManager.getInstance(context).registerReceiver(shizukuBinderReceiver, IntentFilter(action))
     }
 
     fun shizukuRequestPermission(context: Context): Boolean {

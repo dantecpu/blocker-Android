@@ -52,14 +52,5 @@
             android:exported="true"
             android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
 
-        <receiver android:name=".ui.component.ShizukuBinderReceiver"
-            android:enabled="true"
-            android:exported="false"
-            android:process=":ShizukuBinderReceiver">
-            <intent-filter>
-                <action android:name="io.github.newbugger.android.blocker.ShizukuBinder"/>
-            </intent-filter>
-        </receiver>
-
     </application>
 </manifest>

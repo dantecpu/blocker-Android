@@ -1,13 +1,7 @@
 package io.github.newbugger.android.blocker.ui.component
 
-// import android.content.Intent
-// import android.content.pm.PackageManager
-// import moe.shizuku.api.ShizukuClient
-
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.SparseArray
@@ -22,10 +16,7 @@ import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
 import io.github.newbugger.android.blocker.ui.Constants
-import io.github.newbugger.android.blocker.util.AppLauncher
-import io.github.newbugger.android.blocker.util.PreferenceUtil
-import io.github.newbugger.android.blocker.util.ShizukuBinder
-import io.github.newbugger.android.blocker.util.setupActionBar
+import io.github.newbugger.android.blocker.util.*
 import io.github.newbugger.android.libkit.entity.Application
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_component.*
@@ -55,12 +46,12 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
 
     override fun onStart() {
         super.onStart()
-        shizukuSetup()
+        shizukuSetUp()
     }
 
     override fun onStop() {
-        super.onStop()
         shizukuSetDown()
+        super.onStop()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -69,31 +60,6 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    // only called in API pre-23
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            ShizukuClient.REQUEST_CODE_AUTHORIZATION -> {
-                if (resultCode == ShizukuClient.AUTH_RESULT_OK) {
-                    ShizukuClient.setToken(data)
-                } else {
-                    logger.d("User denied Shizuku permission")
-                }
-                return
-            }
-            else -> super.onActivityResult(requestCode, resultCode, data)
-        }
-    }*/
-
-    /*override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            ShizukuClient.REQUEST_CODE_PERMISSION -> if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
-                ShizukuClient.requestAuthorization(this)
-            } else {
-                logger.d("User denied Shizuku permission")
-            }
-        }
-    }*/
 
     override fun onBackPressed() {
         findViewById<SearchView>(R.id.menu_search)?.let {
@@ -192,33 +158,21 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
     private fun shizukuSetDown() {
         this.let {
             if (!PreferenceUtil.checkShizukuType(it)) return
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(shizukuBinderReceiver)
+            ShizukuBinder.shizukuUnSetBroadcast(it, shizukuBinderReceiver)
         }
     }
 
-    private fun shizukuSetup() {
+    private fun shizukuSetUp() {
         this.let {
             if (!PreferenceUtil.checkShizukuType(it)) return
             if (!ShizukuBinder.shizukuIsInstalled(it)) return
             if (!ShizukuBinder.shizukuRequestPermission(it)) return
+            ShizukuBinder.shizukuSetBroadcast(it, shizukuBinderReceiver)
+            ShizukuBinder.shizukuTestV3()
         }
-        shizukuGetBroadcast()
-        ShizukuBinder.shizukuTestV3()
-        shizukuSendBroadcast()
     }
 
-    private fun shizukuGetBroadcast() {
-        val action = "moe.shizuku.client.intent.action.SEND_BINDER"
-        LocalBroadcastManager.getInstance(this).registerReceiver(shizukuBinderReceiver, IntentFilter(action))
-    }
-
-    private fun shizukuSendBroadcast() {
-        val action = "io.github.newbugger.android.blocker.ShizukuBinder"
-        // val pack = "io.github.newbugger.android.blocker.ui.component"
-        sendBroadcast(Intent(action).setPackage(packageName))
-    }
-
-    private val shizukuBinderReceiver = ShizukuBinderReceiver()
+    private val shizukuBinderReceiver = ShizukuReceiver()
     /*private val shizukuBinderReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             logger.d("onReceive binder: " + ShizukuService.getBinder())

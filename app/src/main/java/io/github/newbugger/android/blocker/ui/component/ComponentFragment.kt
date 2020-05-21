@@ -253,22 +253,6 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
         ToastUtil.showToast(message ?: "null", length)
     }
 
-    /*private fun initShizuku() {
-        context?.let {
-            if (!ShizukuClientHelper.isManagerV2Installed(it)) {
-                logger.e("Shizuku is not installed or too low version")
-                return
-            }
-            if (!ShizukuClient.getState().isAuthorized) {
-                if (ShizukuClient.checkSelfPermission(it)) {
-                    ShizukuClient.requestAuthorization(activity)
-                } else {
-                    ActivityCompat.requestPermissions(activity as Activity, arrayOf(ShizukuClient.PERMISSION_V23), REQUEST_CODE_PERMISSION)
-                }
-            }
-        }
-    }*/
-
     private fun setItemsVisibility(menu: Menu, exception: MenuItem, visible: Boolean) {
         for (i in 0 until menu.size()) {
             val item = menu.getItem(i)

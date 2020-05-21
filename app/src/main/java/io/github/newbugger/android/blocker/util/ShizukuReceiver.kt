@@ -1,4 +1,4 @@
-package io.github.newbugger.android.blocker.ui.component
+package io.github.newbugger.android.blocker.util
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,10 +7,10 @@ import android.util.Log
 import moe.shizuku.api.ShizukuService
 
 
-class ShizukuBinderReceiver : BroadcastReceiver() {
+class ShizukuReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d("io.github.newbugger.android.blocker.ui.component.ShizukuBinderReceiver",
+        Log.d("io.github.newbugger.android.blocker.util.ShizukuReceiver",
                 "onReceive binder: " + ShizukuService.getBinder()
         )
     }

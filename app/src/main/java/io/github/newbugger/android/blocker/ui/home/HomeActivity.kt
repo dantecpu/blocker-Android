@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager.widget.ViewPager
-import com.elvishew.xlog.XLog
 import com.google.android.material.tabs.TabLayout
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
@@ -30,7 +29,6 @@ import kotlinx.android.synthetic.main.activity_home.*
 class HomeActivity : AppCompatActivity(), IActivityView {
     private lateinit var drawer: Drawer
     private lateinit var drawerLayout: DrawerLayout
-    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.home.HomeActivity").build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
