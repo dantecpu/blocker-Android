@@ -45,12 +45,7 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
 
     override fun onStart() {
         super.onStart()
-        shizukuSetUp()
-    }
-
-    override fun onStop() {
-        shizukuSetDown()
-        super.onStop()
+        shizukuSetup()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -154,24 +149,16 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         colorAnimation.start()
     }
 
-    private fun shizukuSetDown() {
-        this.let {
-            if (!PreferenceUtil.checkShizukuType(it)) return
-            ShizukuBinder.shizukuUnSetBroadcast(it, shizukuBinderReceiver)
-        }
-    }
-
-    private fun shizukuSetUp() {
+    private fun shizukuSetup() {
         this.let {
             if (!PreferenceUtil.checkShizukuType(it)) return
             if (!ShizukuBinder.shizukuIsInstalled(it)) return
             if (!ShizukuBinder.shizukuRequestPermission(it)) return
-            ShizukuBinder.shizukuSetBroadcast(it, shizukuBinderReceiver)
-            ShizukuBinder.shizukuTestV3()
+            // ShizukuBinder.shizukuTestV3()
         }
     }
 
-    private val shizukuBinderReceiver = ShizukuReceiver()
+    // private val shizukuBinderReceiver = ShizukuReceiver()
     /*private val shizukuBinderReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             logger.d("onReceive binder: " + ShizukuService.getBinder())

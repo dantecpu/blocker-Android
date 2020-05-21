@@ -13,7 +13,8 @@ class ShizukuController(val context: Context) : IController {
     override fun switchComponent(packageName: String, componentName: String?, state: Int): Boolean {
         // ShizukuPackageManagerV26.setComponentEnabledSetting(ComponentName(packageName, componentName), state, 0, 0)
         if (componentName != null)
-            ShizukuApi.setComponentWrapper(ComponentName(packageName, componentName), state, ShizukuApi.getPackageManager())
+            // ShizukuApi.setComponentWrapper(ComponentName(packageName, componentName), state, ShizukuApi.getPackageManager())
+            ShizukuApi.setPackageRemote(packageName, state)
         else
             ShizukuApi.setComponentWrapper(packageName, state, ShizukuApi.getPackageManager())
         return true

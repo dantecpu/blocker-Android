@@ -52,5 +52,14 @@
             android:exported="true"
             android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
 
+        <!-- method 1: broadcast receiver on manifest -->
+        <receiver android:name=".util.ShizukuReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="io.github.newbugger.android.blocker.intent.BROADCAST"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 </manifest>

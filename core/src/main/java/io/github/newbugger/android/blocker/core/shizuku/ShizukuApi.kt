@@ -2,9 +2,8 @@ package io.github.newbugger.android.blocker.core.shizuku
 
 import android.content.ComponentName
 import android.content.pm.IPackageManager
+import android.content.pm.PackageManager
 import android.os.Parcel
-import android.os.RemoteException
-import android.util.Log
 import moe.shizuku.api.ShizukuBinderWrapper
 import moe.shizuku.api.ShizukuService
 import moe.shizuku.api.SystemServiceHelper
@@ -13,21 +12,25 @@ import moe.shizuku.api.SystemServiceHelper
 object ShizukuApi {
 
     // method 2: use transactRemote directly
-    fun setComponentRemote(name: String, state: Int) : Boolean {
+    // only available for APP disabler, cuz parcel cannot write ComponentName value
+    fun setPackageRemote(name: String, state: Int) {
         val data = SystemServiceHelper.obtainParcel("package",
                 "android.content.pm.IPackageManager",
-                "setComponentEnabledSetting"
+                "setApplicationEnabledSetting"
         )
         val reply = Parcel.obtain()
-        data.writeString(name)
-        data.writeInt(state)
-        return try{
+        data.apply {
+            writeString(name)
+            if (state == PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
+                writeInt(PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
+            else
+                writeInt(state)
+        }
+        try {
             ShizukuService.transactRemote(data, reply, 0)
             reply.readException()
-            true
-        } catch (e: RemoteException) {
-            Log.e("blocker.ShizukuApi", "IPackageManager#setApplicationEnabledSetting", e)
-            false
+        } catch (tr: Throwable) {
+            throw RuntimeException(tr.message, tr)
         } finally {
             data.recycle()
             reply.recycle()
@@ -35,6 +38,7 @@ object ShizukuApi {
     }
 
     // method 1: use ShizukuBinderWrapper
+    // TODO: complete the interface Class code
     fun setComponentWrapper(name: Any, state: Int, mIPackageManager: IPackageManager) {
         try {
             if (name is ComponentName)

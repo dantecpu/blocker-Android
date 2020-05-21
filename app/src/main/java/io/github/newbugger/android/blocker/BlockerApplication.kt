@@ -37,11 +37,11 @@ class BlockerApplication : Application() {
         Reflection.unseal(base)
         ShizukuClientHelper.setBinderReceivedListener {
             Log.d("blocker.Application", "attachBaseContext: onBinderReceived")
-            while (ShizukuService.getBinder() == null) {
+            while (ShizukuService.getBinder() == null || !ShizukuService.pingBinder()) {
                 Log.d("blocker.Application", "ShizukuService: binder is null, keep waiting ..")
             }
             try {
-                val action = "moe.shizuku.client.intent.action.SEND_BINDER"
+                val action = "io.github.newbugger.android.blocker.intent.BROADCAST"
                 LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(action))
                 Log.d("blocker.Application", "sendBroadcast: broadcast sent")
             } catch (tr: Throwable) {
