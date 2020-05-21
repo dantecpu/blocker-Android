@@ -49,7 +49,7 @@ public class Application implements Parcelable {
     private Application(@NonNull PackageInfo info) {
         this.packageName = info.packageName;
         this.versionName = info.versionName;
-        this.versionCode = info.versionCode;
+        this.versionCode = 1;
         ApplicationInfo appDetails = info.applicationInfo;
         if (appDetails != null) {
             this.targetSdkVersion = appDetails.targetSdkVersion;

@@ -6,19 +6,14 @@ package io.github.newbugger.android.blocker.ui.component
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.SparseArray
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.elvishew.xlog.XLog
@@ -35,9 +30,6 @@ import io.github.newbugger.android.libkit.entity.Application
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_component.*
 import kotlinx.android.synthetic.main.application_brief_info_layout.*
-import moe.shizuku.api.ShizukuApiConstants
-import moe.shizuku.api.ShizukuClientHelper
-import moe.shizuku.api.ShizukuService
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
