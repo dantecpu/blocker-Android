@@ -25,9 +25,9 @@ class BlockerApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         initLogger()
-        initShizuku()
         context = this
         createNotificationChannel()
+        initShizuku()
     }
 
     override fun attachBaseContext(base: Context?) {
@@ -72,9 +72,7 @@ class BlockerApplication : Application() {
     }
 
     private fun initShizuku() {
-        val action = "moe.shizuku.client.intent.action.SEND_BINDER"
         ShizukuMultiProcessHelper.initialize(this, !getProcessName().endsWith(":ShizukuBinderReceiver"))
-        LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(action))
     }
 
     companion object {
