@@ -17,5 +17,7 @@ public interface IPackageManager extends IInterface {
         public static IPackageManager asInterface(IBinder obj) {
             throw new UnsupportedOperationException();
         }
+
     }
+
 }

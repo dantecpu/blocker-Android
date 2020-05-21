@@ -13,18 +13,23 @@ object ShizukuApi {
 
     // method 2: use transactRemote directly
     // only available for APP disabler, cuz parcel cannot write ComponentName value
-    fun setPackageRemote(name: String, state: Int) {
+    // update: found in AIDL file
+    fun setComponentRemote(name: Any, state: Int) {
         val data = SystemServiceHelper.obtainParcel("package",
                 "android.content.pm.IPackageManager",
                 "setApplicationEnabledSetting"
         )
         val reply = Parcel.obtain()
-        data.apply {
-            writeString(name)
+        data.also {
+            when (name) {
+                is String -> it.writeString(name)
+                is ComponentName -> name.writeToParcel(it, 0)
+                else -> return
+            }
             if (state == PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
-                writeInt(PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
+                it.writeInt(PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
             else
-                writeInt(state)
+                it.writeInt(state)
         }
         try {
             ShizukuService.transactRemote(data, reply, 0)
@@ -41,10 +46,11 @@ object ShizukuApi {
     // TODO: complete the interface Class code
     fun setComponentWrapper(name: Any, state: Int, mIPackageManager: IPackageManager) {
         try {
-            if (name is ComponentName)
-                mIPackageManager.setComponentEnabledSetting(name, state, 0, 0)
-            else if (name is String)
-                mIPackageManager.setApplicationEnabledSetting(name, state, 0, 0)
+            when (name) {
+                is String -> mIPackageManager.setApplicationEnabledSetting(name, state, 0, 0)
+                is ComponentName -> mIPackageManager.setComponentEnabledSetting(name, state, 0, 0)
+                else -> return
+            }
         } catch (tr: Throwable) {
             throw RuntimeException(tr.message, tr)
         }

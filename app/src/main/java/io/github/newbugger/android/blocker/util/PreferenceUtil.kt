@@ -21,4 +21,10 @@ object PreferenceUtil {
         return getControllerType(context) == EControllerMethod.SHIZUKU
     }
 
+    // TODO: preference for Transact mode, when the ListPreference is ready
+    fun checkTransactType(context: Context): Boolean {
+        val pref = PreferenceManager.getDefaultSharedPreferences(context)
+        return pref.getString(context.getString(R.string.key_pref_transact_type), context.getString(R.string.key_pref_transact_type_default_value)) == "wrapper"
+    }
+
 }

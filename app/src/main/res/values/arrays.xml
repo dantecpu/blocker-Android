@@ -10,4 +10,12 @@
         <item>pm</item>
         <item>shizuku</item>
     </string-array>
+    <string-array name="pref_transactType_entries">
+        <item>ShizukuBinderWrapper</item>
+        <item>transactRemote</item>
+    </string-array>
+    <string-array name="pref_transactType_value">
+        <item>wrapper</item>
+        <item>remote</item>
+    </string-array>
 </resources>

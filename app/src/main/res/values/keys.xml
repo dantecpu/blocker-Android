@@ -3,6 +3,9 @@
     <string name="key_pref_controller_settings">pref_key_controller_settings</string>
     <string name="key_pref_controller_type">pref_controllerType</string>
     <string name="key_pref_controller_type_default_value">shizuku</string>
+    <string name="key_pref_transact_settings">pref_key_transact_settings</string>
+    <string name="key_pref_transact_type">pref_transactType</string>
+    <string name="key_pref_transact_type_default_value">wrapper</string>
     <string name="key_pref_rules">pref_key_rules</string>
     <string name="key_pref_ifw">pref_key_ifw</string>
     <string name="key_pref_export_rules">pref_key_export_rules</string>

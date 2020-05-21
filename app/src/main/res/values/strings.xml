@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" translatable="false" tools:ignore="MissingTranslation">
     <string name="app_name">Blocker</string>
     <string name="system_app_tab_text">System</string>
     <string name="third_party_app_tab_text">Third party</string>
@@ -48,6 +48,9 @@
     <string name="pref_controller_settings">Controller Settings</string>
     <string name="pref_controller_chooser_title">Choose Controller</string>
     <string name="pref_controller_type">Controller Type</string>
+    <string name="pref_transact_settings">Transact Settings</string>
+    <string name="pref_transact_chooser_title">Choose Transact</string>
+    <string name="pref_transact_type">Transact Type</string>
     <string name="fail">Failed</string>
     <string name="pref_rule_settings">Rules</string>
     <string name="export_rules">Export Rules</string>
