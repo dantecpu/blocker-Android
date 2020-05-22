@@ -24,6 +24,7 @@ import io.github.newbugger.android.blocker.core.root.EControllerMethod
 import io.github.newbugger.android.blocker.ui.Constants
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
+import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import kotlinx.android.synthetic.main.component_item.view.*
 import kotlinx.android.synthetic.main.fragment_component.*
 import kotlinx.android.synthetic.main.fragment_component.view.*
@@ -211,14 +212,13 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     }
 
     // here to click button and switch component
-    // behavior is only defined by button is on or off
-    // TODO: add a button for Application disabled state
+    // the behavior is only defined by button is on or off
+    // only use this when not on shizuku mode
     override fun onSwitchClick(name: String, isChecked: Boolean) {
-        if (isChecked) {
+        if (isChecked && !PreferenceUtil.checkShizukuType(requireContext()))
             presenter.enable(packageName, name)
-        } else {
+        else
             presenter.disable(packageName, name)
-        }
     }
 
     override fun showDisableAllAlert() {

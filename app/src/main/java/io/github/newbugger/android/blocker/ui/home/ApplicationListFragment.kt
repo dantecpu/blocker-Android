@@ -18,7 +18,6 @@ import io.github.newbugger.android.blocker.ui.Constants
 import io.github.newbugger.android.blocker.ui.component.ComponentActivity
 import io.github.newbugger.android.blocker.util.ToastUtil
 import io.github.newbugger.android.libkit.entity.Application
-import io.github.newbugger.android.libkit.entity.ETrimMemoryLevel
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import kotlinx.android.synthetic.main.app_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_app_list.*
@@ -172,8 +171,6 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
             R.id.force_stop -> presenter.forceStop(packageName)
             R.id.enable_application -> presenter.enableApplication(packageName)
             R.id.disable_application -> presenter.disableApplication(packageName)
-            R.id.clear_data -> presenter.clearData(packageName)
-            R.id.trim_memory -> presenter.trimMemory(packageName, ETrimMemoryLevel.COMPLETE)
         }
         return true
     }
@@ -202,10 +199,6 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
 
     override fun showToastMessage(message: String?, length: Int) {
         ToastUtil.showToast(message ?: "", length)
-    }
-
-    override fun showDataCleared() {
-        Toast.makeText(context, R.string.data_cleared, Toast.LENGTH_SHORT).show()
     }
 
     override fun showForceStopped() {

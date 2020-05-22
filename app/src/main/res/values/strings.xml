@@ -76,13 +76,9 @@
     <string name="force_stop">Force Stop</string>
     <string name="disable">Disable</string>
     <string name="enable">Enable</string>
-    <string name="clear_data">Clear Data</string>
-    <string name="trim_memory">Trim Memory</string>
-    <string name="details">Details</string>
     <string name="block">Block</string>
     <string name="unblock">Unblock</string>
     <string name="force_stopped">Application stopped</string>
-    <string name="data_cleared">Data Cleared</string>
     <string name="copy_component_name">Copy Name</string>
     <string name="copy_full_name">Copy Full Name</string>
     <string name="component_name">Component Name</string>

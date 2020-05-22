@@ -1,12 +1,14 @@
 package io.github.newbugger.android.blocker.ui.home
 
 import android.content.Context
+import android.content.pm.PackageManager
 import androidx.preference.PreferenceManager
 import com.elvishew.xlog.XLog
 import io.github.newbugger.android.blocker.R
+import io.github.newbugger.android.blocker.core.shizuku.ShizukuApi
 import io.github.newbugger.android.blocker.util.DialogUtil
+import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.libkit.entity.Application
-import io.github.newbugger.android.libkit.entity.ETrimMemoryLevel
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ManagerUtils
 import kotlinx.coroutines.Dispatchers
@@ -75,9 +77,14 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
         }
     }
 
+    // too simple implement: long press at app list then click Disable menu
+    // indeed do not need component presenter
     override fun enableApplication(packageName: String) {
         doAsync(exceptionHandler) {
-            ManagerUtils.enableApplication(packageName)
+            if (!PreferenceUtil.checkShizukuType(context!!))
+                ManagerUtils.enableApplication(packageName)
+            else
+                ShizukuApi.setComponentRemote(packageName, null, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
             uiThread {
                 homeView?.updateState(packageName)
             }
@@ -86,28 +93,17 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
 
     override fun disableApplication(packageName: String) {
         doAsync(exceptionHandler) {
-            ManagerUtils.disableApplication(packageName)
+            if (!PreferenceUtil.checkShizukuType(context!!))
+                ManagerUtils.disableApplication(packageName)
+            else
+                ShizukuApi.setComponentRemote(packageName, null, PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
             uiThread {
                 homeView?.updateState(packageName)
             }
         }
     }
 
-    override fun clearData(packageName: String) {
-        doAsync(exceptionHandler) {
-            ManagerUtils.clearData(packageName)
-            uiThread {
-                homeView?.showDataCleared()
-            }
-        }
-    }
-
-    override fun trimMemory(packageName: String, level: ETrimMemoryLevel) {
-        doAsync(exceptionHandler) {
-            ManagerUtils.trimMemory(packageName, level)
-        }
-    }
-
+    // TODO: what is blockApplication ?
     override fun blockApplication(packageName: String) {
         doAsync(exceptionHandler) {
             ApplicationUtil.addBlockedApplication(context!!, packageName)

@@ -1,7 +1,6 @@
 package io.github.newbugger.android.libkit.utils
 
 import io.github.newbugger.android.libkit.RootCommand
-import io.github.newbugger.android.libkit.entity.ETrimMemoryLevel
 
 
 object ManagerUtils {
@@ -26,11 +25,4 @@ object ManagerUtils {
         RootCommand.runBlockingCommand("pm enable $packageName")
     }
 
-    fun clearData(packageName: String) {
-        RootCommand.runBlockingCommand("pm clear $packageName")
-    }
-
-    fun trimMemory(packageName: String, level: ETrimMemoryLevel) {
-        RootCommand.runBlockingCommand("am send-trim-memory $packageName ${level.name}")
-    }
 }
