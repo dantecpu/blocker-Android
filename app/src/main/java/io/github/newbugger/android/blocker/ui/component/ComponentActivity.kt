@@ -15,7 +15,7 @@ import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
 import io.github.newbugger.android.blocker.ui.Constants
-import io.github.newbugger.android.blocker.util.*
+import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.entity.Application
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_component.*
@@ -41,11 +41,6 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         setupViewPager()
         setupTab()
         showApplicationBriefInfo(application)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        shizukuSetup()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -146,22 +141,6 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         colorAnimation.duration = 500
         colorAnimation.start()
     }
-
-    private fun shizukuSetup() {
-        this.let {
-            if (!PreferenceUtil.checkShizukuType(it)) return
-            if (!ShizukuBinder.shizukuIsInstalled(it)) return
-            if (!ShizukuBinder.shizukuRequestPermission(it)) return
-            // ShizukuBinder.shizukuTestV3()
-        }
-    }
-
-    // private val shizukuBinderReceiver = ShizukuReceiver()
-    /*private val shizukuBinderReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            logger.d("onReceive binder: " + ShizukuService.getBinder())
-        }
-    }*/
 
     companion object {
         private val CODENAME: SparseArray<String> = SparseArray(32)

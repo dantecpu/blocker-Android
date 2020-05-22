@@ -2,6 +2,7 @@ package io.github.newbugger.android.blocker.ui.home
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -21,6 +22,8 @@ import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
 import io.github.newbugger.android.blocker.ui.settings.SettingsActivity
+import io.github.newbugger.android.blocker.util.PreferenceUtil
+import io.github.newbugger.android.blocker.util.ShizukuBinder
 import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_home.*
@@ -43,6 +46,11 @@ class HomeActivity : AppCompatActivity(), IActivityView {
             setupWithViewPager(app_viewpager)
             setupTab(this)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        shizukuSetup(this)
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -150,5 +158,21 @@ class HomeActivity : AppCompatActivity(), IActivityView {
             drawer.closeDrawer()
         }
     }
+
+    private fun shizukuSetup(context: Context) {
+        context.let {
+            if (!PreferenceUtil.checkShizukuType(it)) return
+            if (!ShizukuBinder.shizukuIsInstalled(it)) return
+            if (!ShizukuBinder.shizukuRequestPermission(it)) return
+            // ShizukuBinder.shizukuTestV3()
+        }
+    }
+
+    // private val shizukuBinderReceiver = ShizukuReceiver()
+    /*private val shizukuBinderReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            logger.d("onReceive binder: " + ShizukuService.getBinder())
+        }
+    }*/
 
 }
