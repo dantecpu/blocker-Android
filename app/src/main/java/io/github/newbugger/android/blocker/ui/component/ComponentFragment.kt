@@ -24,7 +24,6 @@ import io.github.newbugger.android.blocker.core.root.EControllerMethod
 import io.github.newbugger.android.blocker.ui.Constants
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
-import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import kotlinx.android.synthetic.main.component_item.view.*
 import kotlinx.android.synthetic.main.fragment_component.*
 import kotlinx.android.synthetic.main.fragment_component.view.*

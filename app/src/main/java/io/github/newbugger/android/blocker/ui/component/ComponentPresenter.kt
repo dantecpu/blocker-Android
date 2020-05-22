@@ -11,15 +11,14 @@ import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.core.ComponentControllerProxy
 import io.github.newbugger.android.blocker.core.IController
 import io.github.newbugger.android.blocker.core.root.EControllerMethod
-import io.github.newbugger.android.blocker.exception.RootUnavailableException
 import io.github.newbugger.android.blocker.rule.Rule
 import io.github.newbugger.android.blocker.rule.entity.RulesResult
 import io.github.newbugger.android.blocker.util.DialogUtil
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
 import io.github.newbugger.android.libkit.entity.getSimpleName
+import io.github.newbugger.android.libkit.root.LibsuCommand
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
-import io.github.newbugger.android.libkit.utils.PermissionUtils
 import io.github.newbugger.android.libkit.utils.ServiceHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -208,9 +207,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
 
     override fun disableAllComponents(packageName: String, type: EComponentType) {
         doAsync(exceptionHandler) {
-            if (!PermissionUtils.isRootAvailable) {
-                throw RootUnavailableException()
-            }
+            LibsuCommand.check()
             val components = getComponents(packageName, type)
             controller.batchDisable(components) { componentInfo ->
                 uiThread {
@@ -226,9 +223,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
 
     override fun enableAllComponents(packageName: String, type: EComponentType) {
         doAsync(exceptionHandler) {
-            if (!PermissionUtils.isRootAvailable) {
-                throw RootUnavailableException()
-            }
+            LibsuCommand.check()
             val components = getComponents(packageName, type)
             ifwController.batchEnable(components) { componentInfo ->
                 if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager,

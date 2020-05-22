@@ -4,12 +4,11 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import com.elvishew.xlog.XLog
 import com.google.gson.Gson
-import com.stericson.RootTools.RootTools
 import io.github.newbugger.android.blocker.R
-import io.github.newbugger.android.blocker.exception.RootUnavailableException
 import io.github.newbugger.android.blocker.rule.Rule
 import io.github.newbugger.android.blocker.rule.entity.BlockerRule
 import io.github.newbugger.android.blocker.util.NotificationUtil
+import io.github.newbugger.android.libkit.root.LibsuCommand
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -45,7 +44,7 @@ class SettingsPresenter(
             logger.e(e)
         }
         withContext(Dispatchers.IO + errorHandler) {
-            checkRootAccess()
+            LibsuCommand.check()
             val applicationList = ApplicationUtil.getApplicationList(context)
             appCount = applicationList.size
             notificationBuilder = NotificationUtil.createProcessingNotification(context, appCount)
@@ -70,7 +69,7 @@ class SettingsPresenter(
         var restoredCount = 0
         var rulesCount: Int
         withContext(Dispatchers.IO) {
-            checkRootAccess()
+            LibsuCommand.check()
             rulesCount = FileUtils.getFileCounts(
                 Rule.getBlockerRuleFolder(context).absolutePath,
                 Rule.EXTENSION
@@ -100,7 +99,7 @@ class SettingsPresenter(
 
     override fun exportAllIfwRules() = uiScope.launch {
         withContext(Dispatchers.IO) {
-            checkRootAccess()
+            LibsuCommand.check()
             notificationBuilder = NotificationUtil.createProcessingNotification(context, 0)
             val exportedCount = Rule.exportIfwRules(context)
             NotificationUtil.finishProcessingNotification(context, exportedCount, notificationBuilder)
@@ -110,7 +109,7 @@ class SettingsPresenter(
     override fun importAllIfwRules() = uiScope.launch {
         var count = 0
         withContext(Dispatchers.IO) {
-            checkRootAccess()
+            LibsuCommand.check()
             notificationBuilder = NotificationUtil.createProcessingNotification(context, 0)
             count = Rule.importIfwRules(context)
             NotificationUtil.finishProcessingNotification(context, count, notificationBuilder)
@@ -126,7 +125,7 @@ class SettingsPresenter(
         CoroutineScope(Dispatchers.Main + errorHandler).launch {
             var result = false
             withContext(Dispatchers.IO) {
-                checkRootAccess()
+                LibsuCommand.check()
                 result = Rule.resetIfw()
             }
             if (result) {
@@ -143,7 +142,7 @@ class SettingsPresenter(
             NotificationUtil.finishProcessingNotification(context, 0, notificationBuilder)
         }
         CoroutineScope(Dispatchers.IO + errorHandler).launch {
-            checkRootAccess()
+            LibsuCommand.check()
             notificationBuilder = NotificationUtil.createProcessingNotification(context, 0)
             if (filePath == null) {
                 throw NullPointerException("File path cannot be null")
@@ -172,9 +171,4 @@ class SettingsPresenter(
 
     }
 
-    private fun checkRootAccess() {
-        if (!RootTools.isAccessGiven()) {
-            throw RootUnavailableException()
-        }
-    }
 }

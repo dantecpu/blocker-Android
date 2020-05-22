@@ -1,7 +1,7 @@
 package io.github.newbugger.android.libkit.utils
 
 import com.elvishew.xlog.XLog
-import io.github.newbugger.android.libkit.RootCommand
+import io.github.newbugger.android.libkit.root.LibsuCommand
 
 class ServiceHelper(private val packageName: String) {
     private val logger = XLog.tag("io.github.newbugger.android.libkit.utils.ServiceHelper").build()
@@ -29,7 +29,7 @@ class ServiceHelper(private val packageName: String) {
     fun refreshRoot() {
         serviceList.clear()
         serviceInfo = try {
-            RootCommand.runBlockingCommand("dumpsys activity services -p $packageName")
+            LibsuCommand.output(LibsuCommand.command("dumpsys activity services -p $packageName")).joinToString(separator = "\n")
         } catch (e: Exception) {
             logger.e("Cannot get running service list:", e)
             ""

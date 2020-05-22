@@ -27,11 +27,7 @@ dependencies {
     api "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
     api "io.reactivex.rxjava2:rxjava:$rxjava_version"
     api 'com.elvishew:xlog:1.6.0'
-    //RootTools and RootShell support
-    api(name: 'RootTools', ext: 'aar')
-    api(name: 'RootShell', ext: 'aar')
-    // shizuku
-    // api 'moe.shizuku.privilege:api-base:9'
-    // api 'moe.shizuku.privilege:api-26:4'
+    // topjohnwu libsu https://github.com/topjohnwu/libsu
+    api "com.github.topjohnwu.libsu:core:2.5.1"
     api 'com.google.code.gson:gson:2.8.5'
 }

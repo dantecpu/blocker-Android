@@ -7,7 +7,7 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import com.elvishew.xlog.XLog
-import io.github.newbugger.android.libkit.RootCommand
+import io.github.newbugger.android.libkit.root.LibsuCommand
 import java.io.File
 
 
@@ -38,13 +38,13 @@ object FileUtils {
 
     @JvmStatic
     fun cat(source: String, dest: String) {
-        RootCommand.runBlockingCommand("cat '$source' > '$dest'")
+        LibsuCommand.command("cat '$source' > '$dest'")
     }
 
     @JvmStatic
     fun isExist(path: String): Boolean {
         return try {
-            val output = RootCommand.runBlockingCommand("[ -f '$path' ] && echo \"yes\" || echo \"no\"")
+            val output = LibsuCommand.output(LibsuCommand.command("[ -f '$path' ] && echo \"yes\" || echo \"no\"")).toString()
             when (output.trim()) {
                 "yes" -> true
                 else -> false
@@ -57,12 +57,11 @@ object FileUtils {
 
     @JvmStatic
     fun listFiles(path: String): List<String> {
-        val output = RootCommand.runBlockingCommand("find '$path'")
-        if (output.contains("No such file or directory")) {
+        val output = LibsuCommand.output(LibsuCommand.command("find '$path'"))
+        if (!output.contains("No such file or directory")) {
             return ArrayList()
         }
-        val files = output.split("\n")
-        return files.filterNot { it.isEmpty() || it == path }
+        return output.filterNot { it.isEmpty() || it == path }
     }
 
     @JvmStatic
@@ -71,7 +70,7 @@ object FileUtils {
             true -> "chmod $permission '$path'"
             false -> "chmod -R $permission '$path'"
         }
-        RootCommand.runBlockingCommand(comm)
+        LibsuCommand.command(comm)
     }
 
     @JvmStatic
@@ -80,7 +79,7 @@ object FileUtils {
         if (!isExist(path)) {
             return ""
         }
-        return RootCommand.runBlockingCommand(comm)
+        return LibsuCommand.output(LibsuCommand.command(comm)).toString()
     }
 
     /*@JvmStatic
@@ -114,7 +113,7 @@ object FileUtils {
         } else {
             "rm -f '$file'"
         }
-        val output = RootCommand.runBlockingCommand(comm)
+        val output = LibsuCommand.output(LibsuCommand.command(comm)).toString()
         val result = output.trim().isEmpty()
         logger.d("Delete file $file, result = $result")
         return result

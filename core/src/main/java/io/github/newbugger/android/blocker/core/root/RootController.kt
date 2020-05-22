@@ -6,9 +6,9 @@ import android.content.pm.ComponentInfo
 import android.content.pm.PackageManager
 import com.elvishew.xlog.XLog
 import io.github.newbugger.android.blocker.core.IController
-import io.github.newbugger.android.libkit.RootCommand
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
-import com.stericson.RootTools.RootTools
+import io.github.newbugger.android.libkit.root.LibsuCommand
+
 
 /**
  * Created by Mercury on 2017/12/31.
@@ -18,10 +18,6 @@ import com.stericson.RootTools.RootTools
 class RootController(val context: Context) : IController {
     private val logger = XLog.tag("io.github.newbugger.android.blocker.core.root.RootController").build()
 
-    init {
-        RootTools.debugMode = true
-    }
-
     override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
         val comm: String = when (state) {
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> removeEscapeCharacter(String.format(ENABLE_COMPONENT_TEMPLATE, packageName, componentName))
@@ -30,9 +26,7 @@ class RootController(val context: Context) : IController {
         }
         logger.d("command:$comm, componentState is $state")
         try {
-            val commandOutput = RootCommand.runBlockingCommand(comm)
-            logger.d("Command output: $commandOutput")
-            return !commandOutput.contains(FAILED_EXCEPTION_MSG)
+            return LibsuCommand.code(LibsuCommand.command(comm))
         } catch (e: Exception) {
             throw e
         }
@@ -83,6 +77,6 @@ class RootController(val context: Context) : IController {
     companion object {
         private const val DISABLE_COMPONENT_TEMPLATE = "pm disable %s/%s"
         private const val ENABLE_COMPONENT_TEMPLATE = "pm enable %s/%s"
-        private const val FAILED_EXCEPTION_MSG = "java.lang.IllegalArgumentException"
     }
+
 }

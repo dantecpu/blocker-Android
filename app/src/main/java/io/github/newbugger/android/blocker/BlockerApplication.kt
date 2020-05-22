@@ -15,6 +15,9 @@ import com.elvishew.xlog.printer.AndroidPrinter
 import com.elvishew.xlog.printer.file.FilePrinter
 import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator
+import com.topjohnwu.superuser.BuildConfig
+import com.topjohnwu.superuser.Shell
+import io.github.newbugger.android.blocker.core.libsu.LibsuInitializer
 import me.weishu.reflection.Reflection
 import moe.shizuku.api.ShizukuClientHelper
 import moe.shizuku.api.ShizukuService
@@ -70,6 +73,14 @@ class BlockerApplication : Application() {
             .fileNameGenerator(ChangelessFileNameGenerator(LOG_FILENAME))
             .build()
         XLog.init(config, androidPrinter, filePrinter)
+    }
+
+    // from: topjohnwu/Magisk/blob/master/app/src/main/java/com/topjohnwu/magisk/core/App.kt
+    init {
+        Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR)
+        Shell.Config.verboseLogging(BuildConfig.DEBUG)
+        Shell.Config.setTimeout(10)
+        Shell.Config.addInitializers(LibsuInitializer::class.java)
     }
 
     companion object {
