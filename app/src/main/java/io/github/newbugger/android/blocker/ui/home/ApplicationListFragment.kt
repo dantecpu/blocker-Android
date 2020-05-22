@@ -169,13 +169,11 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
         when (item.itemId) {
             R.id.block_application -> presenter.blockApplication(packageName)
             R.id.unblock_application -> presenter.unblockApplication(packageName)
-            R.id.launch_application -> presenter.launchApplication(packageName)
             R.id.force_stop -> presenter.forceStop(packageName)
             R.id.enable_application -> presenter.enableApplication(packageName)
             R.id.disable_application -> presenter.disableApplication(packageName)
             R.id.clear_data -> presenter.clearData(packageName)
             R.id.trim_memory -> presenter.trimMemory(packageName, ETrimMemoryLevel.COMPLETE)
-            R.id.details -> presenter.showDetails(packageName)
         }
         return true
     }

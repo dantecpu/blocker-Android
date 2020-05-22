@@ -7,9 +7,6 @@
         android:id="@+id/enable_by_ifw"
         android:title="@string/enable_by_ifw" />
     <item
-        android:id="@+id/launch_activity"
-        android:title="@string/launch_activity" />
-    <item
         android:id="@+id/copy_component_name"
         android:title="@string/copy_component_name" />
     <item

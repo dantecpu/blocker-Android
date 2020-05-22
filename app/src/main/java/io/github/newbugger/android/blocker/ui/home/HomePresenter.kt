@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.preference.PreferenceManager
 import com.elvishew.xlog.XLog
 import io.github.newbugger.android.blocker.R
-import io.github.newbugger.android.blocker.util.AppLauncher
 import io.github.newbugger.android.blocker.util.DialogUtil
 import io.github.newbugger.android.libkit.entity.Application
 import io.github.newbugger.android.libkit.entity.ETrimMemoryLevel
@@ -15,6 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+
 
 class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Presenter {
     private var context: Context? = null
@@ -69,12 +69,6 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
         return sortedList.asSequence().sortedWith(compareBy({ !it.isBlocked }, { !it.isEnabled })).toMutableList()
     }
 
-    override fun launchApplication(packageName: String) {
-        context?.let {
-            AppLauncher.startApplication(it, packageName)
-        }
-    }
-
     override fun forceStop(packageName: String) {
         doAsync(exceptionHandler) {
             ManagerUtils.forceStop(packageName)
@@ -111,12 +105,6 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     override fun trimMemory(packageName: String, level: ETrimMemoryLevel) {
         doAsync(exceptionHandler) {
             ManagerUtils.trimMemory(packageName, level)
-        }
-    }
-
-    override fun showDetails(packageName: String) {
-        context?.let {
-            AppLauncher.showApplicationDetails(it, packageName)
         }
     }
 

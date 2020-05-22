@@ -127,9 +127,6 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
         activity?.menuInflater?.inflate(R.menu.component_list_long_click_menu, menu)
-        if (type != EComponentType.ACTIVITY) {
-            menu.removeItem(R.id.launch_activity)
-        }
         context?.let {
             if (PreferenceUtil.getControllerType(it) == EControllerMethod.IFW) {
                 menu.removeItem(R.id.block_by_ifw)

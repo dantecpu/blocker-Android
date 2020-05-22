@@ -122,9 +122,7 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
                 app_info_icon.setImageDrawable(icon)
             }
         }
-        app_info_icon.setOnClickListener { AppLauncher.startApplication(this, application.packageName) }
     }
-
 
     private fun changeColor(color: Int) {
         component_toolbar.setBackgroundColor(color)

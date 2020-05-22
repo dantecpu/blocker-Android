@@ -7,7 +7,6 @@
     <string name="provider">Content Provider</string>
     <string name="activity">Activity</string>
     <string name="service">Service</string>
-    <string name="app_cannot_start">This application cannot be started directly</string>
     <string name="no_app_message">OOps, I cannot find any application.</string>
     <string name="no_component_message">OOps, I cannot find any component here.</string>
     <string name="application_label">Name: %1$s</string>
@@ -31,7 +30,6 @@
     <string name="search">Search</string>
     <string name="block_by_ifw">Block By IFW</string>
     <string name="enable_by_ifw">Enable by IFW</string>
-    <string name="launch_activity">Launch Activity</string>
     <string name="cancel">Cancel</string>
     <string name="target_sdk_version">Target SDK Version: %1$s</string>
     <string name="block_all">Block All</string>
@@ -76,13 +74,11 @@
     <string name="processing_indicator">(%1$d/%2$d)</string>
     <string name="file_manager_required">You need to install a file manager from store first.</string>
     <string name="force_stop">Force Stop</string>
-    <string name="launch_application">Launch Application</string>
     <string name="disable">Disable</string>
     <string name="enable">Enable</string>
     <string name="clear_data">Clear Data</string>
     <string name="trim_memory">Trim Memory</string>
     <string name="details">Details</string>
-    <string name="starting_application">Starting application, please wait</string>
     <string name="block">Block</string>
     <string name="unblock">Unblock</string>
     <string name="force_stopped">Application stopped</string>
