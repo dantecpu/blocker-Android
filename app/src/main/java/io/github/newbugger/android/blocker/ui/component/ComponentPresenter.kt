@@ -86,18 +86,18 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         }
     }
 
-    override fun switchComponent(packageName: String, componentName: String?, state: Int): Boolean {
+    override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
         return controller.switchComponent(packageName, componentName, state)
     }
 
     override fun enable(packageName: String, componentName: String): Boolean {
         // logger.d("Enable component: $componentName")
-        val handler = { e: Throwable ->
+        val handler = { t: Throwable ->
             GlobalScope.launch(Dispatchers.Main) {
-                DialogUtil().showWarningDialogWithMessage(context, e)
+                DialogUtil().showWarningDialogWithMessage(context, t)
                 view?.refreshComponentState(componentName)
             }
-            logger.e(e)
+            logger.e(t)
         }
         doAsync(handler) {
             val controllerType = PreferenceUtil.getControllerType(context)
@@ -171,6 +171,10 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         return ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(packageName, componentName))
     }
 
+    override fun checkPackageEnableState(packageName: String): Boolean {
+        return ApplicationUtil.checkPackageIsEnabled(pm, packageName)
+    }
+
     override fun batchEnable(componentList: List<ComponentInfo>, action: (info: ComponentInfo) -> Unit): Int {
         TODO("Won't implemented")
     }
@@ -193,6 +197,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     override fun updateComponentViewModel(viewModel: ComponentItemViewModel) {
         viewModel.state = ApplicationUtil.checkComponentIsEnabled(pm,
                 ComponentName(viewModel.packageName, viewModel.name))
+        // TODO: get checkComponentEnableState using shizuku service
         if (!PreferenceUtil.checkShizukuType(context)) {
             viewModel.ifwState = ifwController.checkComponentEnableState(viewModel.packageName, viewModel.name)
             if (type == EComponentType.SERVICE) {

@@ -10,16 +10,18 @@ import io.github.newbugger.android.libkit.utils.ApplicationUtil
 
 class ShizukuController(val context: Context) : IController {
 
-    override fun switchComponent(packageName: String, componentName: String?, state: Int): Boolean {
-        // TODO: temporarily use both two transact method
-        if (componentName != null) {
-            ShizukuApi.setComponentWrapper(ComponentName(packageName, componentName), state, ShizukuApi.getPackageManager())
-            ShizukuApi.setComponentRemote(ComponentName(packageName, componentName), state)
+    override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
+        // TODO: temporarily use one transact method
+        // TODO: always disable the whole package when on shizuku service
+        /*if (componentName != null) {
+            ShizukuApi.setComponentWrapper(packageName, componentName, state)
+            ShizukuApi.setComponentRemote(packageName, componentName, state)
         }
         else {
-            ShizukuApi.setComponentWrapper(packageName, state, ShizukuApi.getPackageManager())
-            ShizukuApi.setComponentRemote(packageName, state)
-        }
+            ShizukuApi.setComponentWrapper(packageName, null, state)
+            ShizukuApi.setComponentRemote(packageName, null, state)
+        }*/
+        ShizukuApi.setComponentRemote(packageName, null, state)
         return true
     }
 
@@ -55,6 +57,10 @@ class ShizukuController(val context: Context) : IController {
 
     override fun checkComponentEnableState(packageName: String, componentName: String): Boolean {
         return ApplicationUtil.checkComponentIsEnabled(context.packageManager, ComponentName(packageName, componentName))
+    }
+
+    override fun checkPackageEnableState(packageName: String): Boolean {
+        return ApplicationUtil.checkPackageIsEnabled(context.packageManager, packageName)
     }
 
 }

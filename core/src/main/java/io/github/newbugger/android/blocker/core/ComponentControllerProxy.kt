@@ -19,7 +19,7 @@ class ComponentControllerProxy private constructor(method: EControllerMethod, co
         EControllerMethod.SHIZUKU -> ShizukuController(context)
     }
 
-    override fun switchComponent(packageName: String, componentName: String?, state: Int): Boolean {
+    override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
         return controller.switchComponent(packageName, componentName, state)
     }
 
@@ -33,6 +33,10 @@ class ComponentControllerProxy private constructor(method: EControllerMethod, co
 
     override fun checkComponentEnableState(packageName: String, componentName: String): Boolean {
         return controller.checkComponentEnableState(packageName, componentName)
+    }
+
+    override fun checkPackageEnableState(packageName: String): Boolean {
+        return controller.checkPackageEnableState(packageName)
     }
 
     override fun batchEnable(componentList: List<ComponentInfo>, action: (info: ComponentInfo) -> Unit): Int {

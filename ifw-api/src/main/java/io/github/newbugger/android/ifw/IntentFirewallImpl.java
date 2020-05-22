@@ -180,6 +180,11 @@ public class IntentFirewallImpl implements IntentFirewall {
     }
 
     @Override
+    public boolean getPackageEnableState(String packageName) {
+        return true;  // fake body
+    }
+
+    @Override
     public void clear() {
         clear(filename);
     }

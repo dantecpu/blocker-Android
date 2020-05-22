@@ -22,7 +22,7 @@ class RootController(val context: Context) : IController {
         RootTools.debugMode = true
     }
 
-    override fun switchComponent(packageName: String, componentName: String?, state: Int): Boolean {
+    override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
         val comm: String = when (state) {
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> removeEscapeCharacter(String.format(ENABLE_COMPONENT_TEMPLATE, packageName, componentName))
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> removeEscapeCharacter(String.format(DISABLE_COMPONENT_TEMPLATE, packageName, componentName))
@@ -74,6 +74,10 @@ class RootController(val context: Context) : IController {
 
     override fun checkComponentEnableState(packageName: String, componentName: String): Boolean {
         return ApplicationUtil.checkComponentIsEnabled(context.packageManager, ComponentName(packageName, componentName))
+    }
+
+    override fun checkPackageEnableState(packageName: String): Boolean {
+        return ApplicationUtil.checkPackageIsEnabled(context.packageManager, packageName)
     }
 
     companion object {

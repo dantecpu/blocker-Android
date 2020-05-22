@@ -261,6 +261,18 @@ object ApplicationUtil {
         return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED || state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
     }
 
+    fun checkPackageIsEnabled(pm: PackageManager, packageName: String): Boolean {
+        val state: Int
+        try {
+            state = pm.getApplicationEnabledSetting(packageName)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logger.e(e.message)
+            return false
+        }
+        return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED || state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
+    }
+
     /**
      * check an application is installed or not
      *

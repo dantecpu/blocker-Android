@@ -213,6 +213,9 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
 
     }
 
+    // here to click button and switch component
+    // behavior is only defined by button is on or off
+    // TODO: add a button for Application disabled state
     override fun onSwitchClick(name: String, isChecked: Boolean) {
         if (isChecked) {
             presenter.enable(packageName, name)
