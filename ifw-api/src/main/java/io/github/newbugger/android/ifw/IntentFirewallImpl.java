@@ -3,7 +3,6 @@ package io.github.newbugger.android.ifw;
 import android.content.Context;
 import com.elvishew.xlog.Logger;
 import com.elvishew.xlog.XLog;
-import com.stericson.RootTools.RootTools;
 import io.github.newbugger.android.ifw.entity.Activity;
 import io.github.newbugger.android.ifw.entity.Broadcast;
 import io.github.newbugger.android.ifw.entity.Component;
@@ -196,7 +195,8 @@ public class IntentFirewallImpl implements IntentFirewall {
         }
         String rulePath = StorageUtils.getIfwFolder() + filename;
         logger.d("delete file: " + rulePath);
-        RootTools.deleteFileOrDirectory(rulePath, false);
+        // TODO: implement this
+        // RootTools.deleteFileOrDirectory(rulePath, false);
     }
 
     @Override
