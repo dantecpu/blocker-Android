@@ -2,7 +2,6 @@ package io.github.newbugger.android.libkit;
 
 import com.elvishew.xlog.Logger;
 import com.elvishew.xlog.XLog;
-import com.example.RootTools.BuildConfig;
 import com.stericson.RootShell.exceptions.RootDeniedException;
 import com.stericson.RootShell.execution.Command;
 import com.stericson.RootTools.RootTools;

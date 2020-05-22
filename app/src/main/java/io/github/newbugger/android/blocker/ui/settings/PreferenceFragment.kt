@@ -158,12 +158,12 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
                 presenter.importAllIfwRules()
             }
             importMatRulesPreference -> selectMatFile()
-            resetIfwPreference -> showDialog(
+            /* resetIfwPreference -> showDialog(
                 getString(R.string.warning),
                 getString(R.string.reset_ifw_warning_message)
             ) {
                 presenter.resetIFW()
-            }
+            } */
             aboutPreference -> showAbout()
             else -> return false
         }
