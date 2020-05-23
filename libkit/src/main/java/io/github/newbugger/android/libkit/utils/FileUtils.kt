@@ -17,7 +17,7 @@ object FileUtils {
     @JvmStatic
     fun isExist(path: String): Boolean {
         return try {
-            val output = LibsuCommand.output(LibsuCommand.command("[ -f '$path' ] && echo \"yes\" || echo \"no\"")).toString()
+            val output = LibsuCommand.output(LibsuCommand.command("[ -f '$path' ] && echo \"yes\" || echo \"no\"")).joinToString(separator = ", ")
             when (output.trim()) {
                 "yes" -> true
                 else -> false
@@ -31,7 +31,7 @@ object FileUtils {
     @JvmStatic
     fun listFiles(path: String): List<String> {
         val output = LibsuCommand.output(LibsuCommand.command("find '$path'"))
-        if (output.toString().contains("No such file or directory")) {
+        if (output.joinToString(separator = ", ").contains("No such file or directory")) {
             return ArrayList()
         }
         return output.filterNot { it.isEmpty() || it == path }
@@ -57,7 +57,7 @@ object FileUtils {
         if (!isExist(path)) {
             return ""
         }
-        return LibsuCommand.output(LibsuCommand.command(comm)).joinToString(separator = "\n")
+        return LibsuCommand.output(LibsuCommand.command(comm)).joinToString(separator = ", ")
     }
 
     @JvmStatic
@@ -107,7 +107,7 @@ object FileUtils {
 
     @JvmStatic
     fun copy(source: String, dest: String): File {
-        val comm = "cp -f $source $dest"
+        val comm = "cp -rf $source $dest"
         LibsuCommand.command(comm)
         Log.d(tag, "Copy $source to $dest")
         return File(dest)
@@ -120,7 +120,7 @@ object FileUtils {
         } else {
             "rm -f '$file'"
         }
-        val output = LibsuCommand.output(LibsuCommand.command(comm)).toString()
+        val output = LibsuCommand.output(LibsuCommand.command(comm)).joinToString(separator = ", ")
         val result = output.trim().isEmpty()
         Log.d(tag, "Delete file $file, result = $result")
         return result

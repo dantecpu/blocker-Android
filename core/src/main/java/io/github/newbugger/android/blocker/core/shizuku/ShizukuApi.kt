@@ -48,6 +48,7 @@ object ShizukuApi {
         } catch (e: RemoteException) {
             // TODO: how to put RemoteException into Throwable RuntimeException, for Oops window ?
             Log.e("io.github.newbugger.android.blocker.core.shizuku", "ShizukuApi", e)
+            throw RemoteException(e.message)
         } finally {
             data.recycle()
             reply.recycle()

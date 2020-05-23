@@ -29,7 +29,7 @@ class ServiceHelper(private val packageName: String) {
     fun refreshRoot() {
         serviceList.clear()
         serviceInfo = try {
-            LibsuCommand.output(LibsuCommand.command("dumpsys activity services -p $packageName")).toString()
+            LibsuCommand.output(LibsuCommand.command("dumpsys activity services -p $packageName")).joinToString(separator = ", ")
         } catch (e: Exception) {
             e.printStackTrace()
             ""

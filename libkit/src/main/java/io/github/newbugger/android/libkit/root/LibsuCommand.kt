@@ -13,13 +13,14 @@ object LibsuCommand {
     }
 
     fun command(comm: String): Shell.Result {
-        return try {
+        try {
             check()
-            val result = Shell.su(comm).exec()
-            Log.d("io.github.newbugger.android.libkit.root.LibsuCommand", result.out.joinToString(separator = "\n"))
-            result
-        } catch (tr: Throwable) {
-            throw RuntimeException(tr.message, tr)
+            return Shell.su(comm).exec().also {
+                Log.d("io.github.newbugger.android.libkit.root.LibsuCommand",
+                        it.out.joinToString(separator = ", "))
+            }
+        } catch (e: Exception) {
+            throw Exception(e)
         }
     }
 
@@ -40,5 +41,10 @@ object LibsuCommand {
             e.printStackTrace()
         }
     }
+
+    /*fun test(): String {
+        // list<String>.toString == [test,test,test,test]
+        return Shell.sh("echo -e 'test\ntest\ntest\ntest'").exec().out.toString()
+    }*/
 
 }
