@@ -25,6 +25,7 @@ import io.github.newbugger.android.blocker.ui.settings.SettingsActivity
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ShizukuBinder
 import io.github.newbugger.android.blocker.util.setupActionBar
+import io.github.newbugger.android.libkit.root.LibsuCommand
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -51,6 +52,11 @@ class HomeActivity : AppCompatActivity(), IActivityView {
     override fun onStart() {
         super.onStart()
         shizukuSetup(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        LibsuCommand.close()
     }
 
     private fun setupViewPager(viewPager: ViewPager) {

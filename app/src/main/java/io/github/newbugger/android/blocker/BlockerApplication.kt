@@ -16,6 +16,7 @@ import com.elvishew.xlog.printer.file.FilePrinter
 import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator
 import com.topjohnwu.superuser.BuildConfig
+import com.topjohnwu.superuser.BusyBoxInstaller
 import com.topjohnwu.superuser.Shell
 import io.github.newbugger.android.blocker.core.libsu.LibsuInitializer
 import me.weishu.reflection.Reflection
@@ -80,7 +81,7 @@ class BlockerApplication : Application() {
         Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR)
         Shell.Config.verboseLogging(BuildConfig.DEBUG)
         Shell.Config.setTimeout(10)
-        Shell.Config.addInitializers(LibsuInitializer::class.java)
+        Shell.Config.addInitializers(BusyBoxInstaller::class.java, LibsuInitializer::class.java)
     }
 
     companion object {

@@ -2,6 +2,7 @@ package io.github.newbugger.android.libkit.root
 
 import android.util.Log
 import com.topjohnwu.superuser.Shell
+import java.io.IOException
 
 
 object LibsuCommand {
@@ -27,6 +28,14 @@ object LibsuCommand {
 
     fun output(u: Shell.Result): List<String> {
         return u.out
+    }
+
+    fun close() {
+        try {
+            Shell.getCachedShell()?.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 
 }

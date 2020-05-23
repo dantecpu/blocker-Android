@@ -29,7 +29,7 @@ class ServiceHelper(private val packageName: String) {
     fun refreshRoot() {
         serviceList.clear()
         serviceInfo = try {
-            LibsuCommand.output(LibsuCommand.command("dumpsys activity services -p $packageName")).joinToString(separator = "\n")
+            LibsuCommand.output(LibsuCommand.command("dumpsys activity services -p $packageName")).toString()
         } catch (e: Exception) {
             logger.e("Cannot get running service list:", e)
             ""
