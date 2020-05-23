@@ -163,6 +163,8 @@ public class IntentFirewallImpl implements IntentFirewall {
         return result;
     }
 
+    // show IFW state when on ifw controller
+    // show pm state when on other controller
     @Override
     public boolean getComponentEnableState(String packageName, String componentName) {
         List<ComponentFilter> filters = new ArrayList<>();

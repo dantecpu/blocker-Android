@@ -207,7 +207,6 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
 
     override fun disableAllComponents(packageName: String, type: EComponentType) {
         doAsync(exceptionHandler) {
-            LibsuCommand.check()
             val components = getComponents(packageName, type)
             controller.batchDisable(components) { componentInfo ->
                 uiThread {
@@ -223,7 +222,6 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
 
     override fun enableAllComponents(packageName: String, type: EComponentType) {
         doAsync(exceptionHandler) {
-            LibsuCommand.check()
             val components = getComponents(packageName, type)
             ifwController.batchEnable(components) { componentInfo ->
                 if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager,

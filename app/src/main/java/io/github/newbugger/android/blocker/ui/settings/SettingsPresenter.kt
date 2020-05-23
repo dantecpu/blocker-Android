@@ -44,7 +44,6 @@ class SettingsPresenter(
             logger.e(e)
         }
         withContext(Dispatchers.IO + errorHandler) {
-            LibsuCommand.check()
             val applicationList = ApplicationUtil.getApplicationList(context)
             appCount = applicationList.size
             notificationBuilder = NotificationUtil.createProcessingNotification(context, appCount)
@@ -69,7 +68,6 @@ class SettingsPresenter(
         var restoredCount = 0
         var rulesCount: Int
         withContext(Dispatchers.IO) {
-            LibsuCommand.check()
             rulesCount = FileUtils.getFileCounts(
                 Rule.getBlockerRuleFolder(context).absolutePath,
                 Rule.EXTENSION
@@ -99,7 +97,6 @@ class SettingsPresenter(
 
     override fun exportAllIfwRules() = uiScope.launch {
         withContext(Dispatchers.IO) {
-            LibsuCommand.check()
             notificationBuilder = NotificationUtil.createProcessingNotification(context, 0)
             val exportedCount = Rule.exportIfwRules(context)
             NotificationUtil.finishProcessingNotification(context, exportedCount, notificationBuilder)
@@ -109,7 +106,6 @@ class SettingsPresenter(
     override fun importAllIfwRules() = uiScope.launch {
         var count = 0
         withContext(Dispatchers.IO) {
-            LibsuCommand.check()
             notificationBuilder = NotificationUtil.createProcessingNotification(context, 0)
             count = Rule.importIfwRules(context)
             NotificationUtil.finishProcessingNotification(context, count, notificationBuilder)
@@ -123,9 +119,8 @@ class SettingsPresenter(
             settingsView.showMessage(R.string.ifw_reset_error)
         }
         CoroutineScope(Dispatchers.Main + errorHandler).launch {
-            var result = false
+            var result: Boolean
             withContext(Dispatchers.IO) {
-                LibsuCommand.check()
                 result = Rule.resetIfw()
             }
             if (result) {
@@ -142,7 +137,6 @@ class SettingsPresenter(
             NotificationUtil.finishProcessingNotification(context, 0, notificationBuilder)
         }
         CoroutineScope(Dispatchers.IO + errorHandler).launch {
-            LibsuCommand.check()
             notificationBuilder = NotificationUtil.createProcessingNotification(context, 0)
             if (filePath == null) {
                 throw NullPointerException("File path cannot be null")

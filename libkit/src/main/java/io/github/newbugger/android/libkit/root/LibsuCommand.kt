@@ -7,13 +7,14 @@ import java.io.IOException
 
 object LibsuCommand {
 
-    fun check() {
+    private fun check() {
         if (!Shell.rootAccess())
             throw RootUnavailableException()
     }
 
     fun command(comm: String): Shell.Result {
         return try {
+            check()
             val result = Shell.su(comm).exec()
             Log.d("io.github.newbugger.android.libkit.root.LibsuCommand", result.out.joinToString(separator = "\n"))
             result
@@ -23,10 +24,12 @@ object LibsuCommand {
     }
 
     fun code(u: Shell.Result): Boolean {
+        check()
         return u.isSuccess
     }
 
     fun output(u: Shell.Result): List<String> {
+        check()
         return u.out
     }
 
