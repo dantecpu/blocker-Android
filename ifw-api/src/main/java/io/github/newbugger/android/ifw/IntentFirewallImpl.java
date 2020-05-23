@@ -1,8 +1,8 @@
 package io.github.newbugger.android.ifw;
 
 import android.content.Context;
-import com.elvishew.xlog.Logger;
-import com.elvishew.xlog.XLog;
+import android.util.Log;
+
 import io.github.newbugger.android.ifw.entity.Activity;
 import io.github.newbugger.android.ifw.entity.Broadcast;
 import io.github.newbugger.android.ifw.entity.Component;
@@ -28,7 +28,7 @@ public class IntentFirewallImpl implements IntentFirewall {
     private static final String EXTENSION = ".xml";
     private static final String FILTER_TEMPLATE = "%s/%s";
     private static IntentFirewallImpl instance;
-    private final Logger logger = XLog.tag("io.github.newbugger.android.ifw.IntentFirewallImpl").build();
+    private static final String tag = "io.github.newbugger.android.ifw.IntentFirewallImpl";
     private final String filename;
     private Rules rules;
     private final String tmpPath;
@@ -123,7 +123,7 @@ public class IntentFirewallImpl implements IntentFirewall {
             }
         }
         filters.add(new ComponentFilter(filterRule));
-        logger.i("Added component:" + packageName + "/" + componentName);
+        Log.d(tag, "Added component:" + packageName + "/" + componentName);
         return true;
     }
 
@@ -196,7 +196,7 @@ public class IntentFirewallImpl implements IntentFirewall {
             return;
         }
         String rulePath = StorageUtils.getIfwFolder() + filename;
-        logger.d("delete file: " + rulePath);
+        Log.d(tag, "delete file: " + rulePath);
         // TODO: implement this
         // RootTools.deleteFileOrDirectory(rulePath, false);
     }
@@ -251,7 +251,7 @@ public class IntentFirewallImpl implements IntentFirewall {
             }
             return result;
         }catch (Exception e) {
-            logger.e("Cannot delete cache file: " + cacheDir, e);
+            Log.e(tag, "Cannot delete cache file: " + cacheDir, e);
             return false;
         }
     }
@@ -279,7 +279,6 @@ public class IntentFirewallImpl implements IntentFirewall {
     }
 
     private void handleException(Exception e) {
-        logger.e(e.getMessage());
         e.printStackTrace();
     }
 

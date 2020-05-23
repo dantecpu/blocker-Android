@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.elvishew.xlog.XLog
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.baseview.ContextMenuRecyclerView
 import io.github.newbugger.android.blocker.core.root.EControllerMethod
@@ -35,7 +34,6 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     private lateinit var componentAdapter: ComponentsRecyclerViewAdapter
     private lateinit var packageName: String
     private lateinit var type: EComponentType
-    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.component.ComponentFragment").build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

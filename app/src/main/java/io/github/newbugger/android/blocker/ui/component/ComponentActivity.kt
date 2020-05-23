@@ -9,7 +9,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import com.elvishew.xlog.XLog
 import com.google.android.material.tabs.TabLayout
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.adapter.FragmentAdapter
@@ -28,7 +27,7 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
 
     private lateinit var application: Application
     private lateinit var adapter: FragmentAdapter
-    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.component.ComponentActivity").build()
+    private val tag = "io.github.newbugger.android.blocker.ui.component.ComponentActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

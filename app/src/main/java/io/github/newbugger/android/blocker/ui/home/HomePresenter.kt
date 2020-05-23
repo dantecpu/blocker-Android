@@ -3,7 +3,6 @@ package io.github.newbugger.android.blocker.ui.home
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.preference.PreferenceManager
-import com.elvishew.xlog.XLog
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.core.shizuku.ShizukuApi
 import io.github.newbugger.android.blocker.util.DialogUtil
@@ -20,12 +19,12 @@ import org.jetbrains.anko.uiThread
 
 class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Presenter {
     private var context: Context? = null
-    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.home.HomePresenter").build()
+    private val tag = "io.github.newbugger.android.blocker.ui.home.HomePresenter"
     private val exceptionHandler = { e: Throwable ->
         GlobalScope.launch(Dispatchers.Main) {
             DialogUtil().showWarningDialogWithMessage(context, e)
         }
-        logger.e(e)
+        e.printStackTrace()
     }
 
     override fun start(context: Context) {

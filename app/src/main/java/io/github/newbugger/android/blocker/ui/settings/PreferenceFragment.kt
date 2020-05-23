@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -13,7 +14,6 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import com.elvishew.xlog.XLog
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.util.ToastUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
@@ -22,7 +22,6 @@ import io.github.newbugger.android.libkit.utils.FileUtils
 class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.SettingsView,
     Preference.OnPreferenceClickListener {
 
-    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.settings.PreferenceFragment").build()
     private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var preferences: SharedPreferences
     private lateinit var presenter: SettingsPresenter
@@ -36,6 +35,8 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
     private lateinit var aboutPreference: Preference
 
     private val matRulePathRequestCode = 100
+
+    private val tagg = "io.github.newbugger.android.blocker.ui.settings.PreferenceFragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,7 +131,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
         if (preference == null) {
             return false
         }
-        logger.d("onPreferenceClick: ${preference.key}")
+        Log.d(tagg, "onPreferenceClick: ${preference.key}")
         when (preference) {
             exportRulePreference -> showDialog(
                 getString(R.string.warning),

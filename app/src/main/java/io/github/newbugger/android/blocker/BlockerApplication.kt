@@ -8,13 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.elvishew.xlog.LogConfiguration
-import com.elvishew.xlog.LogLevel
-import com.elvishew.xlog.XLog
-import com.elvishew.xlog.printer.AndroidPrinter
-import com.elvishew.xlog.printer.file.FilePrinter
-import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy
-import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator
 import com.topjohnwu.superuser.BuildConfig
 import com.topjohnwu.superuser.BusyBoxInstaller
 import com.topjohnwu.superuser.Shell
@@ -28,7 +21,6 @@ class BlockerApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        initLogger()
         context = this
         createNotificationChannel()
     }
@@ -61,19 +53,6 @@ class BlockerApplication : Application() {
         val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
-    }
-
-    private fun initLogger() {
-        val config = LogConfiguration.Builder()
-            .logLevel(LogLevel.ALL)
-            .t()
-            .build()
-        val androidPrinter = AndroidPrinter()
-        val filePrinter = FilePrinter.Builder(filesDir.absolutePath)
-            .backupStrategy(NeverBackupStrategy())
-            .fileNameGenerator(ChangelessFileNameGenerator(LOG_FILENAME))
-            .build()
-        XLog.init(config, androidPrinter, filePrinter)
     }
 
     // from: topjohnwu/Magisk/blob/master/app/src/main/java/com/topjohnwu/magisk/core/App.kt

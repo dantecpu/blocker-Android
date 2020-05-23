@@ -177,7 +177,7 @@ class HomeActivity : AppCompatActivity(), IActivityView {
     // private val shizukuBinderReceiver = ShizukuReceiver()
     /*private val shizukuBinderReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            logger.d("onReceive binder: " + ShizukuService.getBinder())
+            Log.d(tag, "onReceive binder: " + ShizukuService.getBinder())
         }
     }*/
 

@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.pm.ComponentInfo
 import android.content.pm.PackageManager
 import android.widget.Toast
-import com.elvishew.xlog.XLog
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.core.ComponentControllerProxy
 import io.github.newbugger.android.blocker.core.IController
@@ -17,7 +16,6 @@ import io.github.newbugger.android.blocker.util.DialogUtil
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
 import io.github.newbugger.android.libkit.entity.getSimpleName
-import io.github.newbugger.android.libkit.root.LibsuCommand
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ServiceHelper
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +29,7 @@ import java.io.File
 class ComponentPresenter(val context: Context, var view: ComponentContract.View?, val packageName: String) : ComponentContract.Presenter, IController {
     override var currentComparator: EComponentComparatorType = EComponentComparatorType.NAME_ASCENDING  // changed order
     private val pm: PackageManager
-    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.component.ComponentPresenter").build()
+    private val tag = "io.github.newbugger.android.blocker.ui.component.ComponentPresenter"
     private val serviceHelper by lazy { ServiceHelper(packageName) }
     private val ifwController by lazy { ComponentControllerProxy.getInstance(EControllerMethod.IFW, context) }
     private val controller: IController by lazy {
@@ -42,7 +40,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         GlobalScope.launch(Dispatchers.Main) {
             DialogUtil().showWarningDialogWithMessage(context, e)
         }
-        logger.e(e)
+        e.printStackTrace()
     }
     private lateinit var type: EComponentType
 
@@ -60,7 +58,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun loadComponents(packageName: String, type: EComponentType) {
-        // logger.d("Load components for $packageName, type: $type")
+        // Log.d(tag, "Load components for $packageName, type: $type")
         view?.setLoadingIndicator(true)
         doAsync(exceptionHandler) {
             if (type == EComponentType.SERVICE &&
@@ -90,13 +88,13 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun enable(packageName: String, componentName: String): Boolean {
-        // logger.d("Enable component: $componentName")
+        // Log.d(tag, "Enable component: $componentName")
         val handler = { t: Throwable ->
             GlobalScope.launch(Dispatchers.Main) {
                 DialogUtil().showWarningDialogWithMessage(context, t)
                 view?.refreshComponentState(componentName)
             }
-            logger.e(t)
+            t.printStackTrace()
         }
         doAsync(handler) {
             val controllerType = PreferenceUtil.getControllerType(context)
@@ -118,13 +116,13 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun disable(packageName: String, componentName: String): Boolean {
-        // logger.d("Disable component: $componentName")
+        // Log.d(tag, "Disable component: $componentName")
         val handler = { e: Throwable ->
             GlobalScope.launch(Dispatchers.Main) {
                 DialogUtil().showWarningDialogWithMessage(context, e)
                 view?.refreshComponentState(componentName)
             }
-            logger.e(e)
+            e.printStackTrace()
         }
         doAsync(handler) {
             controller.disable(packageName, componentName)
@@ -147,7 +145,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun addToIFW(packageName: String, componentName: String, type: EComponentType) {
-        // logger.d("Disable component via IFW: $componentName")
+        // Log.d(tag, "Disable component via IFW: $componentName")
         doAsync(exceptionHandler) {
             ifwController.disable(packageName, componentName)
             uiThread {
@@ -157,7 +155,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun removeFromIFW(packageName: String, componentName: String, type: EComponentType) {
-        // logger.d("Disable component via IFW: $componentName")
+        // Log.d(tag, "Disable component via IFW: $componentName")
         doAsync(exceptionHandler) {
             ifwController.enable(packageName, componentName)
             uiThread {

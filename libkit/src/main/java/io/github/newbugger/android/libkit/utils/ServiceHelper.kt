@@ -1,10 +1,10 @@
 package io.github.newbugger.android.libkit.utils
 
-import com.elvishew.xlog.XLog
 import io.github.newbugger.android.libkit.root.LibsuCommand
 
+
 class ServiceHelper(private val packageName: String) {
-    private val logger = XLog.tag("io.github.newbugger.android.libkit.utils.ServiceHelper").build()
+
     private var serviceInfo: String = ""
     private val serviceList: MutableList<String> = mutableListOf()
 
@@ -31,7 +31,7 @@ class ServiceHelper(private val packageName: String) {
         serviceInfo = try {
             LibsuCommand.output(LibsuCommand.command("dumpsys activity services -p $packageName")).toString()
         } catch (e: Exception) {
-            logger.e("Cannot get running service list:", e)
+            e.printStackTrace()
             ""
         }
         parseServiceInfo()
@@ -42,7 +42,7 @@ class ServiceHelper(private val packageName: String) {
         serviceInfo = try {
             ShizukuApi
         } catch (e: Exception) {
-            logger.e("Cannot get running service list:", e)
+            Log.e(tag, "Cannot get running service list:", e)
             ""
         }
         parseServiceInfo()
@@ -62,4 +62,5 @@ class ServiceHelper(private val packageName: String) {
     companion object {
         private const val SERVICE_REGEX = """ServiceRecord\{(.*?) %s\/%s\}"""
     }
+
 }

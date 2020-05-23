@@ -3,7 +3,7 @@ package io.github.newbugger.android.blocker.rule
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ComponentInfo
-import com.elvishew.xlog.XLog
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
@@ -28,11 +28,11 @@ import java.io.FileWriter
 
 object Rule {
     const val EXTENSION = ".json"
-    private val logger = XLog.tag("io.github.newbugger.android.blocker.rule.Rule").build()
+    private const val tag = "io.github.newbugger.android.blocker.rule.Rule"
 
     // TODO remove template code
     fun export(context: Context, packageName: String): RulesResult {
-        logger.i("Backup rules for $packageName")
+        Log.d(tag, "Backup rules for $packageName")
         val pm = context.packageManager
         val applicationInfo = ApplicationUtil.getApplicationComponents(pm, packageName)
         val rule = BlockerRule(packageName = applicationInfo.packageName, versionName = applicationInfo.versionName, versionCode = 1)
@@ -124,7 +124,6 @@ object Rule {
             ifwController?.save()
         } catch (e: Exception) {
             e.printStackTrace()
-            logger.e(e.message)
             return RulesResult(false, succeedCount, failedCount)
         }
         return RulesResult(true, succeedCount, failedCount)
@@ -157,14 +156,13 @@ object Rule {
                 if (result) {
                     succeedCount++
                 } else {
-                    logger.d("Failed to change component state for : $it")
+                    Log.d(tag, "Failed to change component state for : $it")
                     failedCount++
                 }
                 action(context, name, (succeedCount + failedCount), total)
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            logger.e(e.message)
             return RulesResult(false, succeedCount, failedCount)
         }
         return RulesResult(true, succeedCount, failedCount)
@@ -245,7 +243,6 @@ object Rule {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            logger.e(e.message)
             return false
         }
         return result

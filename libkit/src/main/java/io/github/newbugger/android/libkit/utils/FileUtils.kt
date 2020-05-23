@@ -6,17 +6,17 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import com.elvishew.xlog.XLog
+import android.util.Log
 import io.github.newbugger.android.libkit.root.LibsuCommand
 import java.io.File
 
 
 object FileUtils {
-    private val logger = XLog.tag("io.github.newbugger.android.libkit.utils.FileUtils").build()
+    private const val tag = "io.github.newbugger.android.libkit.utils.FileUtils"
 
     /*@JvmStatic
     fun copy(source: String, dest: String): Boolean {
-        logger.i("Copy $source to $dest")
+        Log.d(tag, "Copy $source to $dest")
         try {
             FileInputStream(source).use { input ->
                 FileOutputStream(dest).use { output ->
@@ -30,7 +30,7 @@ object FileUtils {
             }
         } catch (e: IOException) {
             e.printStackTrace()
-            logger.e(e.message)
+            Log.e(tag, e.message)
             return false
         }
         return true
@@ -50,7 +50,7 @@ object FileUtils {
                 else -> false
             }
         } catch (e: Exception) {
-            logger.e(e.message)
+            e.printStackTrace()
             false
         }
     }
@@ -84,7 +84,7 @@ object FileUtils {
 
     /*@JvmStatic
     fun copyWithRoot(source: String, dest: String): Boolean {
-        logger.i("Copy $source to $dest with root permission")
+        Log.d(tag, "Copy $source to $dest with root permission")
         return RootTools.copyFile(source, dest, false, true)
     }*/
 
@@ -115,7 +115,7 @@ object FileUtils {
         }
         val output = LibsuCommand.output(LibsuCommand.command(comm)).toString()
         val result = output.trim().isEmpty()
-        logger.d("Delete file $file, result = $result")
+        Log.d(tag, "Delete file $file, result = $result")
         return result
     }
 
@@ -171,7 +171,7 @@ object FileUtils {
                     val contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), id.toLong())
                     return getDataColumn(context, contentUri, null, null)
                 } catch (e: NumberFormatException) {
-                    logger.e("Error parsing document id", e)
+                    Log.e(tag, "Error parsing document id", e)
                 }
             } else if (isMediaDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
@@ -211,7 +211,7 @@ object FileUtils {
                     return cursor.getString(index)
                 }
             } catch (e: Exception) {
-                logger.e(e)
+                e.printStackTrace()
             } finally {
                 cursor?.close()
             }

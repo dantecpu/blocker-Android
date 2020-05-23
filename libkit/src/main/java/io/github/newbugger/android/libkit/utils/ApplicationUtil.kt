@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.pm.*
-import com.elvishew.xlog.XLog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.newbugger.android.libkit.entity.Application
@@ -15,11 +14,12 @@ import java.util.*
  * A class that gets activities, broadcasts, content providers, and services
  */
 
+
 object ApplicationUtil {
+
     private const val BLOCKER_PACKAGE_NAME = "io.github.newbugger.android.blocker"
     private const val BLOCKED_CONF_NAME = "Blocked"
     private const val BLOCKED_APP_LIST_KEY = "key_blocked_app_list"
-    private val logger = XLog.tag("io.github.newbugger.android.libkit.utils.ApplicationUtil").build()
 
     /**
      * Get a list of installed applications on device
@@ -100,9 +100,9 @@ object ApplicationUtil {
                 Collections.addAll(activities, *components)
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            logger.e("Cannot find specified package.")
+            e.printStackTrace()
         } catch (e: RuntimeException) {
-            logger.e(e.message)
+            e.printStackTrace()
             return ApkUtils.getActivities(pm, packageName)
         }
         return activities
@@ -126,7 +126,7 @@ object ApplicationUtil {
                 Collections.addAll(receivers, *components)
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            logger.e("Cannot find specified package.")
+            e.printStackTrace()
         }
         return receivers
     }
@@ -148,7 +148,7 @@ object ApplicationUtil {
                 Collections.addAll(services, *components)
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            logger.e("Cannot find specified package.")
+            e.printStackTrace()
         }
         return services
     }
@@ -171,7 +171,7 @@ object ApplicationUtil {
                 Collections.addAll(providers, *components)
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            logger.e("Cannot find specified package.")
+            e.printStackTrace()
         }
 
         return providers
@@ -193,7 +193,7 @@ object ApplicationUtil {
         try {
             info = pm.getPackageInfo(packageName, flags)
         } catch (e: PackageManager.NameNotFoundException) {
-            logger.e("Cannot find specified package.")
+            e.printStackTrace()
         }
         return info
     }
@@ -224,10 +224,10 @@ object ApplicationUtil {
         try {
             info = pm.getPackageInfo(packageName, flags)
         } catch (e: RuntimeException) {
-            logger.e(e.message)
+            e.printStackTrace()
             info = getPackageInfoFromManifest(pm, packageName)
         } catch (e: PackageManager.NameNotFoundException) {
-            logger.e("Cannot find specified package.")
+            e.printStackTrace()
         }
         return info
     }
@@ -255,7 +255,6 @@ object ApplicationUtil {
             state = pm.getComponentEnabledSetting(componentName)
         } catch (e: Exception) {
             e.printStackTrace()
-            logger.e(e.message)
             return false
         }
         return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED || state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
@@ -267,7 +266,6 @@ object ApplicationUtil {
             state = pm.getApplicationEnabledSetting(packageName)
         } catch (e: Exception) {
             e.printStackTrace()
-            logger.e(e.message)
             return false
         }
         return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED || state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
@@ -287,7 +285,7 @@ object ApplicationUtil {
             pm.getApplicationInfo(packageName, 0)
             return true
         } catch (e: PackageManager.NameNotFoundException) {
-            logger.d(packageName + "is not installed.")
+            e.printStackTrace()
         }
         return false
     }
@@ -318,4 +316,5 @@ object ApplicationUtil {
         blockedApplication.remove(packageName)
         saveBlockedApplication(context, blockedApplication)
     }
+
 }

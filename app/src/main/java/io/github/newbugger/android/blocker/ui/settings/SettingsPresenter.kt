@@ -2,21 +2,14 @@ package io.github.newbugger.android.blocker.ui.settings
 
 import android.content.Context
 import androidx.core.app.NotificationCompat
-import com.elvishew.xlog.XLog
 import com.google.gson.Gson
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.rule.Rule
 import io.github.newbugger.android.blocker.rule.entity.BlockerRule
 import io.github.newbugger.android.blocker.util.NotificationUtil
-import io.github.newbugger.android.libkit.root.LibsuCommand
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
@@ -28,9 +21,9 @@ class SettingsPresenter(
 ) : SettingsContract.SettingsPresenter {
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
-    private val logger = XLog.tag("io.github.newbugger.android.blocker.ui.settings.SettingsPresenter").build()
+    private val tag = "io.github.newbugger.android.blocker.ui.settings.SettingsPresenter"
     private val exceptionHandler = CoroutineExceptionHandler { _, e: Throwable ->
-        logger.e("Caught an exception:", e)
+        e.printStackTrace()
         NotificationUtil.cancelNotification(context)
     }
     private val uiScope = CoroutineScope(Dispatchers.Main + exceptionHandler)
@@ -41,7 +34,7 @@ class SettingsPresenter(
         var appCount: Int
         val errorHandler = CoroutineExceptionHandler { _, e ->
             failedCount++
-            logger.e(e)
+            e.printStackTrace()
         }
         withContext(Dispatchers.IO + errorHandler) {
             val applicationList = ApplicationUtil.getApplicationList(context)
@@ -104,7 +97,7 @@ class SettingsPresenter(
     }
 
     override fun importAllIfwRules() = uiScope.launch {
-        var count = 0
+        var count: Int
         withContext(Dispatchers.IO) {
             notificationBuilder = NotificationUtil.createProcessingNotification(context, 0)
             count = Rule.importIfwRules(context)
@@ -115,7 +108,7 @@ class SettingsPresenter(
 
     override fun resetIFW() {
         val errorHandler = CoroutineExceptionHandler { _, e ->
-            logger.e(e)
+            e.printStackTrace()
             settingsView.showMessage(R.string.ifw_reset_error)
         }
         CoroutineScope(Dispatchers.Main + errorHandler).launch {
@@ -133,7 +126,7 @@ class SettingsPresenter(
 
     override fun importMatRules(filePath: String?) {
         val errorHandler = CoroutineExceptionHandler { _, e ->
-            logger.e(e)
+            e.printStackTrace()
             NotificationUtil.finishProcessingNotification(context, 0, notificationBuilder)
         }
         CoroutineScope(Dispatchers.IO + errorHandler).launch {
