@@ -14,33 +14,6 @@ import java.io.File
 object FileUtils {
     private const val tag = "io.github.newbugger.android.libkit.utils.FileUtils"
 
-    /*@JvmStatic
-    fun copy(source: String, dest: String): Boolean {
-        Log.d(tag, "Copy $source to $dest")
-        try {
-            FileInputStream(source).use { input ->
-                FileOutputStream(dest).use { output ->
-                    val buf = ByteArray(1024)
-                    var length = input.read(buf)
-                    while (length > 0) {
-                        output.write(buf, 0, length)
-                        length = input.read(buf)
-                    }
-                }
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Log.e(tag, e.message)
-            return false
-        }
-        return true
-    }*/
-
-    @JvmStatic
-    fun cat(source: String, dest: String) {
-        LibsuCommand.command("cat '$source' > '$dest'")
-    }
-
     @JvmStatic
     fun isExist(path: String): Boolean {
         return try {
@@ -58,10 +31,15 @@ object FileUtils {
     @JvmStatic
     fun listFiles(path: String): List<String> {
         val output = LibsuCommand.output(LibsuCommand.command("find '$path'"))
-        if (!output.contains("No such file or directory")) {
+        if (output.toString().contains("No such file or directory")) {
             return ArrayList()
         }
         return output.filterNot { it.isEmpty() || it == path }
+    }
+
+    @JvmStatic
+    fun count(path: File): Int {
+        return path.walkTopDown().count()
     }
 
     @JvmStatic
@@ -79,13 +57,35 @@ object FileUtils {
         if (!isExist(path)) {
             return ""
         }
-        return LibsuCommand.output(LibsuCommand.command(comm)).toString()
+        return LibsuCommand.output(LibsuCommand.command(comm)).joinToString(separator = "\n")
+    }
+
+    @JvmStatic
+    fun cat(source: String, dest: String) {
+        val comm = "cat '$source' > '$dest'"
+        LibsuCommand.command(comm)
     }
 
     /*@JvmStatic
-    fun copyWithRoot(source: String, dest: String): Boolean {
-        Log.d(tag, "Copy $source to $dest with root permission")
-        return RootTools.copyFile(source, dest, false, true)
+    fun copy(source: String, dest: String): Boolean {
+    Log.d(tag, "Copy $source to $dest")
+    try {
+        FileInputStream(source).use { input ->
+            FileOutputStream(dest).use { output ->
+                val buf = ByteArray(1024)
+                var length = input.read(buf)
+                while (length > 0) {
+                    output.write(buf, 0, length)
+                    length = input.read(buf)
+                }
+            }
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
+        Log.e(tag, e.message)
+        return false
+    }
+    return true
     }*/
 
     /*@JvmStatic
@@ -102,8 +102,15 @@ object FileUtils {
     @JvmStatic
     fun getExternalStoragePath(context: Context): String {
         return context.getExternalFilesDir(null).toString() +
-                File.separator + "blocker" +
-                File.separator
+                File.separator + "blocker"
+    }
+
+    @JvmStatic
+    fun copy(source: String, dest: String): File {
+        val comm = "cp -f $source $dest"
+        LibsuCommand.command(comm)
+        Log.d(tag, "Copy $source to $dest")
+        return File(dest)
     }
 
     @JvmStatic

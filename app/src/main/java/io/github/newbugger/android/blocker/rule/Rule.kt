@@ -171,10 +171,10 @@ object Rule {
     fun exportIfwRules(context: Context): Int {
         val ifwFolder = StorageUtils.getIfwFolder()
         val ifwBackupFolder = getBlockerIFWFolder(context)
-        if (!ifwBackupFolder.exists()) {
-            ifwBackupFolder.mkdirs()
+        if (!File(ifwBackupFolder).exists()) {
+            File(ifwBackupFolder).mkdirs()
         }
-        val files = FileUtils.listFiles(ifwFolder)
+        /*val files = FileUtils.listFiles(ifwFolder)
         files.forEach {
             val filename = it.split(File.separator).last()
             val content = FileUtils.read(it)
@@ -182,15 +182,16 @@ object Rule {
             val fileWriter = FileWriter(file)
             fileWriter.write(content)
             fileWriter.close()
-        }
-        return files.count()
+        }*/
+        val files = FileUtils.copy(ifwFolder, ifwBackupFolder)
+        return FileUtils.count(files)
     }
 
     fun importIfwRules(context: Context): Int {
-        val ifwBackupFolder = getBlockerIFWFolder(context)
         val controller = ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
-        var succeedCount = 0
-        ifwBackupFolder.listFiles { file -> file.isFile && file.name.endsWith(".xml") }
+        // var succeedCount = 0
+        val ifwBackupFolder = File(getBlockerIFWFolder(context))
+        ifwBackupFolder.listFiles { file -> file.isFile && file.name.endsWith(EXTENSION) }
                 .forEach {
                     val rule = RuleSerializer.deserialize(it) ?: return@forEach
                     val activities = rule.activity?.componentFilters
@@ -226,9 +227,10 @@ object Rule {
                     controller.batchDisable(activities) { }
                     controller.batchDisable(broadcast) { }
                     controller.batchDisable(service) { }
-                    succeedCount++
+                    // succeedCount++
                 }
-        return succeedCount
+        // return succeedCount
+        return FileUtils.count(ifwBackupFolder)
     }
 
     fun resetIfw(): Boolean {
@@ -283,18 +285,20 @@ object Rule {
         return false
     }
 
-    fun getBlockerRuleFolder(context: Context): File {
-        val path = File(FileUtils.getExternalStoragePath(context).let { it + "rule" })
-        if (!path.exists()) {
-            path.mkdirs()
+    fun getBlockerRuleFolder(context: Context): String {
+        val path = FileUtils.getExternalStoragePath(context) +
+                File.separator + "rule" + File.separator
+        if (!File(path).exists()) {
+            File(path).mkdirs()
         }
         return path
     }
 
-    private fun getBlockerIFWFolder(context: Context): File {
-        val path = File(FileUtils.getExternalStoragePath(context).let { it + "ifw" })
-        if (!path.exists()) {
-            path.mkdirs()
+    private fun getBlockerIFWFolder(context: Context): String {
+        val path = FileUtils.getExternalStoragePath(context) +
+                File.separator + "ifw" + File.separator
+        if (!File(path).exists()) {
+            File(path).mkdirs()
         }
         return path
     }
