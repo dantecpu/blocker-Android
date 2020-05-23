@@ -28,6 +28,7 @@ import org.jetbrains.anko.uiThread
 class ApplicationListFragment : Fragment(), HomeContract.View {
     override lateinit var presenter: HomeContract.Presenter
     private var isSystem: Boolean = false
+    private var iVisible: Boolean = false
     private var itemListener: AppItemListener = object : AppItemListener {
         override fun onAppClick(application: Application) {
             presenter.openApplicationDetails(application)
@@ -123,6 +124,16 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
         presenter.loadApplicationList(requireContext(), isSystem)
     }
 
+    override fun onResume() {
+        super.onResume()
+        iVisible = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        iVisible = false
+    }
+
     override fun onDestroy() {
         presenter.destroy()
         super.onDestroy()
@@ -159,7 +170,10 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        if (!isVisible) {
+        /*if (!userVisibleHint) {
+            return false
+        }*/
+        if (!iVisible) {
             return false
         }
         val position = (item.menuInfo as ContextMenuRecyclerView.RecyclerContextMenuInfo).position

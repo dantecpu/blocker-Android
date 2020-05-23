@@ -34,6 +34,7 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     private lateinit var componentAdapter: ComponentsRecyclerViewAdapter
     private lateinit var packageName: String
     private lateinit var type: EComponentType
+    private var iVisible: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +75,16 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.loadComponents(packageName, type)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        iVisible = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        iVisible = false
     }
 
     override fun onDestroy() {
@@ -134,7 +145,10 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        if (!isVisible) {
+        /*if (!userVisibleHint) {
+            return false
+        }*/
+        if (!iVisible) {
             return false
         }
         val position = (item.menuInfo as ContextMenuRecyclerView.RecyclerContextMenuInfo).position
