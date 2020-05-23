@@ -171,27 +171,27 @@ object Rule {
     fun exportIfwRules(context: Context): Int {
         val ifwFolder = StorageUtils.getIfwFolder()
         val ifwBackupFolder = getBlockerIFWFolder(context)
+        val ifwBackupFolderTmp = ifwBackupFolder + "tmp/"
         if (!File(ifwBackupFolder).exists()) {
             File(ifwBackupFolder).mkdirs()
         }
-        /*val files = FileUtils.listFiles(ifwFolder)
-        files.forEach {
+        FileUtils.copy(ifwFolder, ifwBackupFolderTmp)
+        FileUtils.listFiles(ifwBackupFolderTmp).forEach {
             val filename = it.split(File.separator).last()
             val content = FileUtils.read(it)
             val file = File(getBlockerIFWFolder(context), filename)
             val fileWriter = FileWriter(file)
             fileWriter.write(content)
             fileWriter.close()
-        }*/
-        val files = FileUtils.copy(ifwFolder, ifwBackupFolder)
-        return FileUtils.count(files)
+        }
+        return FileUtils.count(ifwBackupFolder)
     }
 
     fun importIfwRules(context: Context): Int {
         val controller = ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
         // var succeedCount = 0
-        val ifwBackupFolder = File(getBlockerIFWFolder(context))
-        ifwBackupFolder.listFiles { file -> file.isFile && file.name.endsWith(EXTENSION) }
+        val ifwBackupFolder = getBlockerIFWFolder(context)
+        File(ifwBackupFolder).listFiles { file -> file.isFile && file.name.endsWith("xml") }
                 .forEach {
                     val rule = RuleSerializer.deserialize(it) ?: return@forEach
                     val activities = rule.activity?.componentFilters

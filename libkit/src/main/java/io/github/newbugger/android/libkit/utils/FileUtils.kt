@@ -38,8 +38,10 @@ object FileUtils {
     }
 
     @JvmStatic
-    fun count(path: File): Int {
-        return path.walkTopDown().count()
+    fun count(path: String): Int {
+        return File(path).let { f ->
+            f.walkTopDown().filterNot { it == f }.count()
+        }
     }
 
     @JvmStatic
@@ -106,11 +108,10 @@ object FileUtils {
     }
 
     @JvmStatic
-    fun copy(source: String, dest: String): File {
-        val comm = "cp -rf $source $dest"
+    fun copy(source: String, dest: String) {
+        val comm = "cp -rf $source/* $dest/"
         LibsuCommand.command(comm)
         Log.d(tag, "Copy $source to $dest")
-        return File(dest)
     }
 
     @JvmStatic
