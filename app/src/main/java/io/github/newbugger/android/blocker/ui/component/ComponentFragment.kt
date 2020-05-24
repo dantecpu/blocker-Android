@@ -26,6 +26,8 @@ import io.github.newbugger.android.blocker.util.ToastUtil
 import kotlinx.android.synthetic.main.component_item.view.*
 import kotlinx.android.synthetic.main.fragment_component.*
 import kotlinx.android.synthetic.main.fragment_component.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.ComponentItemListener {
@@ -137,7 +139,7 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
         super.onCreateContextMenu(menu, v, menuInfo)
         activity?.menuInflater?.inflate(R.menu.component_list_long_click_menu, menu)
         context?.let {
-            if (PreferenceUtil.getControllerType(it) == EControllerMethod.IFW) {
+            if (PreferenceUtil.getControllerType(it) != EControllerMethod.IFW) {
                 menu.removeItem(R.id.block_by_ifw)
                 menu.removeItem(R.id.enable_by_ifw)
             }
@@ -156,6 +158,7 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
         when (item.itemId) {
             R.id.block_by_ifw -> presenter.addToIFW(component.packageName, component.name, type)
             R.id.enable_by_ifw -> presenter.removeFromIFW(component.packageName, component.name, type)
+            R.id.prescription_component -> presenter.generatePrescription(requireContext(), component.packageName, component.name, type.toString().toLowerCase(Locale.US))
             R.id.copy_component_name -> copyToClipboard(component.simpleName)
             R.id.copy_full_name -> copyToClipboard(component.name)
         }

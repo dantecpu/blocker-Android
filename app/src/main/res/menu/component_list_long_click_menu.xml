@@ -7,9 +7,12 @@
         android:id="@+id/enable_by_ifw"
         android:title="@string/enable_by_ifw" />
     <item
+        android:id="@+id/prescription_component"
+        android:title="@string/prescription_component" />
+    <item
         android:id="@+id/copy_component_name"
         android:title="@string/copy_component_name" />
     <item
         android:id="@+id/copy_full_name"
-        android:title="@string/copy_full_name" />
+        android:title="@string/copy_component_full_name" />
 </menu>

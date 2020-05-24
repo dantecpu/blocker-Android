@@ -164,6 +164,16 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         }
     }
 
+    // TODO: specify details for Prescription
+    override fun generatePrescription(context: Context, packageName: String, componentName: String, typeC: String) {
+        doAsync(exceptionHandler) {
+            Rule.exportPrescription(context, packageName, componentName, typeC, "other", null, null, null, null, null, null, null)
+            uiThread {
+                view?.refreshComponentState(componentName)
+            }
+        }
+    }
+
     override fun checkComponentEnableState(packageName: String, componentName: String): Boolean {
         return ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(packageName, componentName))
     }

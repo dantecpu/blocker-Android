@@ -1,5 +1,6 @@
 package io.github.newbugger.android.blocker.ui.component
 
+import android.content.Context
 import io.github.newbugger.android.blocker.base.BasePresenter
 import io.github.newbugger.android.blocker.base.BaseView
 import io.github.newbugger.android.blocker.core.IController
@@ -29,6 +30,7 @@ interface ComponentContract {
         fun sortComponentList(components: List<ComponentItemViewModel>, type: EComponentComparatorType): List<ComponentItemViewModel>
         fun addToIFW(packageName: String, componentName: String, type: EComponentType)
         fun removeFromIFW(packageName: String, componentName: String, type: EComponentType)
+        fun generatePrescription(context: Context, packageName: String, componentName: String, typeC: String)
         fun checkIFWState(packageName: String, componentName: String): Boolean
         fun getComponentViewModel(packageName: String, componentName: String): ComponentItemViewModel
         fun updateComponentViewModel(viewModel: ComponentItemViewModel)

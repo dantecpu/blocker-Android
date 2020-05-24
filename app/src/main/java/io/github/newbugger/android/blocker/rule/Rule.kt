@@ -21,8 +21,10 @@ import io.github.newbugger.android.ifw.entity.ComponentType
 import io.github.newbugger.android.ifw.util.RuleSerializer
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
+import io.github.newbugger.android.libkit.utils.PrescriptionUtil
 import io.github.newbugger.android.libkit.utils.StorageUtils
 import java.io.File
+import java.io.FileWriter
 import java.io.FileReader
 
 
@@ -171,9 +173,6 @@ object Rule {
     fun exportIfwRules(context: Context): Int {
         val ifwFolder = StorageUtils.getIfwFolder()
         val ifwBackupFolder = getBlockerIFWFolder(context)
-        if (!File(ifwBackupFolder).exists()) {
-            File(ifwBackupFolder).mkdirs()
-        }
         /*FileUtils.listFiles(ifwBackupFolder).forEach { f->
             val filename = f.split(File.separator).last()
             val content = FileUtils.read(f)
@@ -259,6 +258,25 @@ object Rule {
         return result
     }
 
+    fun exportPrescription(context: Context,
+                           packageName: String, className: String,
+                           typeC: String, sender: String,
+                           action: String?, cat: String?,
+                           typeF: String?, scheme: String?,
+                           auth: String?, path: String?, pathOption: String?): Int {
+        val prescriptionFolder = getBlockerPrescriptionFolder(context)
+        val filename = packageName.split(".").last() + "." + className.split(".").last() + ".txt"
+        val content = PrescriptionUtil.template(packageName, className, typeC, sender, action, cat, typeF, scheme, auth, path, pathOption)
+        FileWriter(File(prescriptionFolder, filename)).apply {
+            write(PrescriptionUtil.head())
+            write(PrescriptionUtil.header())
+            write(content)
+            write(PrescriptionUtil.footer())
+            close()
+        }
+        return 1
+    }
+
     private fun countLines(file: File): Int {
         var lines = 0
         if (!file.exists()) {
@@ -306,6 +324,15 @@ object Rule {
     private fun getBlockerIFWFolder(context: Context): String {
         val path = FileUtils.getExternalStoragePath(context) +
                 File.separator + "ifw" + File.separator
+        if (!File(path).exists()) {
+            File(path).mkdirs()
+        }
+        return path
+    }
+
+    private fun getBlockerPrescriptionFolder(context: Context): String {
+        val path = FileUtils.getExternalStoragePath(context) +
+                File.separator + "prescription" + File.separator
         if (!File(path).exists()) {
             File(path).mkdirs()
         }
