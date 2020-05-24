@@ -188,8 +188,8 @@ object Rule {
                     // remove the Greenify cut-off configs
                     it.split(File.separator).last() == "gib.xml" ||
                             it.split(File.separator).last() == "grx.xml"
-                }.forEach { f ->
-                    File(f).delete()
+                }.forEach {
+                    File(it).delete()
                 }
         return FileUtils.count(ifwBackupFolder)
     }
