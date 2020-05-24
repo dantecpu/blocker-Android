@@ -24,7 +24,7 @@ import io.github.newbugger.android.libkit.utils.FileUtils
 import io.github.newbugger.android.libkit.utils.StorageUtils
 import java.io.File
 import java.io.FileReader
-import java.io.FileWriter
+
 
 object Rule {
     const val EXTENSION = ".json"
@@ -171,19 +171,26 @@ object Rule {
     fun exportIfwRules(context: Context): Int {
         val ifwFolder = StorageUtils.getIfwFolder()
         val ifwBackupFolder = getBlockerIFWFolder(context)
-        val ifwBackupFolderTmp = ifwBackupFolder + "tmp/"
         if (!File(ifwBackupFolder).exists()) {
             File(ifwBackupFolder).mkdirs()
         }
-        FileUtils.copy(ifwFolder, ifwBackupFolderTmp)
-        FileUtils.listFiles(ifwBackupFolderTmp).forEach {
-            val filename = it.split(File.separator).last()
-            val content = FileUtils.read(it)
-            val file = File(getBlockerIFWFolder(context), filename)
-            val fileWriter = FileWriter(file)
-            fileWriter.write(content)
-            fileWriter.close()
-        }
+        /*FileUtils.listFiles(ifwBackupFolder).forEach { f->
+            val filename = f.split(File.separator).last()
+            val content = FileUtils.read(f)
+            FileWriter(File(ifwBackupFolder, filename)).apply {
+                write(content)
+                close()
+            }
+        }*/
+        FileUtils.copy(ifwFolder, ifwBackupFolder)
+        FileUtils.listFiles(ifwBackupFolder)
+                .filter {
+                    // remove the Greenify cut-off configs
+                    it.split(File.separator).last() == "gib.xml" ||
+                            it.split(File.separator).last() == "grx.xml"
+                }.forEach { f ->
+                    File(f).delete()
+                }
         return FileUtils.count(ifwBackupFolder)
     }
 
