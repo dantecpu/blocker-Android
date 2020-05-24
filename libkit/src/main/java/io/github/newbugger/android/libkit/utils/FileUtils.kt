@@ -103,8 +103,7 @@ object FileUtils {
 
     @JvmStatic
     fun getExternalStoragePath(context: Context): String {
-        return context.getExternalFilesDir(null).toString() +
-                File.separator + "blocker"
+        return context.getExternalFilesDir(null).toString()
     }
 
     @JvmStatic
