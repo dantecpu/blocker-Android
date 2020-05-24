@@ -198,44 +198,46 @@ object Rule {
         val controller = ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
         // var succeedCount = 0
         val ifwBackupFolder = getBlockerIFWFolder(context)
-        File(ifwBackupFolder).listFiles { file -> file.isFile && file.name.endsWith("xml") }
-                .forEach {
-                    val rule = RuleSerializer.deserialize(it) ?: return@forEach
-                    val activities = rule.activity?.componentFilters
-                            ?.asSequence()
-                            ?.map { filter -> filter.name.split("/") }
-                            ?.map { names ->
-                                val component = ComponentInfo()
-                                component.packageName = names[0]
-                                component.name = names[1]
-                                component
-                            }
-                            ?.toList() ?: mutableListOf()
-                    val broadcast = rule.broadcast?.componentFilters
-                            ?.asSequence()
-                            ?.map { filter -> filter.name.split("/") }
-                            ?.map { names ->
-                                val component = ComponentInfo()
-                                component.packageName = names[0]
-                                component.name = names[1]
-                                component
-                            }
-                            ?.toList() ?: mutableListOf()
-                    val service = rule.service?.componentFilters
-                            ?.asSequence()
-                            ?.map { filter -> filter.name.split("/") }
-                            ?.map { names ->
-                                val component = ComponentInfo()
-                                component.packageName = names[0]
-                                component.name = names[1]
-                                component
-                            }
-                            ?.toList() ?: mutableListOf()
-                    controller.batchDisable(activities) { }
-                    controller.batchDisable(broadcast) { }
-                    controller.batchDisable(service) { }
-                    // succeedCount++
-                }
+        FileUtils.listFiles(ifwBackupFolder).filter {
+            it.endsWith("xml")
+        }.forEach {
+            val f = File(it)
+            val rule = RuleSerializer.deserialize(f) ?: return@forEach
+            val activities = rule.activity?.componentFilters
+                    ?.asSequence()
+                    ?.map { filter -> filter.name.split("/") }
+                    ?.map { names ->
+                        val component = ComponentInfo()
+                        component.packageName = names[0]
+                        component.name = names[1]
+                        component
+                    }
+                    ?.toList() ?: mutableListOf()
+            val broadcast = rule.broadcast?.componentFilters
+                    ?.asSequence()
+                    ?.map { filter -> filter.name.split("/") }
+                    ?.map { names ->
+                        val component = ComponentInfo()
+                        component.packageName = names[0]
+                        component.name = names[1]
+                        component
+                    }
+                    ?.toList() ?: mutableListOf()
+            val service = rule.service?.componentFilters
+                    ?.asSequence()
+                    ?.map { filter -> filter.name.split("/") }
+                    ?.map { names ->
+                        val component = ComponentInfo()
+                        component.packageName = names[0]
+                        component.name = names[1]
+                        component
+                    }
+                    ?.toList() ?: mutableListOf()
+            controller.batchDisable(activities) { }
+            controller.batchDisable(broadcast) { }
+            controller.batchDisable(service) { }
+            // succeedCount++
+        }
         // return succeedCount
         return FileUtils.count(ifwBackupFolder)
     }
