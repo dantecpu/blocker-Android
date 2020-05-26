@@ -11,9 +11,9 @@ object ManagerUtils {
 
     /*fun startService(packageName: String, serviceName: String) {
         LibsuCommand.command("am startservice $packageName/$serviceName")
-    }*/
+    }
 
-    /*fun stopService(packageName: String, serviceName: String) {
+    fun stopService(packageName: String, serviceName: String) {
         LibsuCommand.command("am stopservice $packageName/$serviceName")
     }*/
 

@@ -156,8 +156,8 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
         val position = (item.menuInfo as ContextMenuRecyclerView.RecyclerContextMenuInfo).position
         val component = componentAdapter.getDataAt(position)
         when (item.itemId) {
-            R.id.block_by_ifw -> presenter.addToIFW(component.packageName, component.name, type)
-            R.id.enable_by_ifw -> presenter.removeFromIFW(component.packageName, component.name, type)
+            /*R.id.block_by_ifw -> presenter.addToIFW(component.packageName, component.name, type)
+            R.id.enable_by_ifw -> presenter.removeFromIFW(component.packageName, component.name, type)*/
             R.id.prescription_component -> presenter.generatePrescription(requireContext(), component.packageName, component.name, type.toString().toLowerCase(Locale.US))
             R.id.copy_component_name -> copyToClipboard(component.simpleName)
             R.id.copy_full_name -> copyToClipboard(component.name)
