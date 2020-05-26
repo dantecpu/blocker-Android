@@ -265,7 +265,7 @@ object Rule {
                            typeF: String?, scheme: String?,
                            auth: String?, path: String?, pathOption: String?): Int {
         val prescriptionFolder = getBlockerPrescriptionFolder(context)
-        val filename = packageName.split(".").last() + "." + className.split(".").last() + ".txt"
+        val filename = packageName.split(".").last() + "." + className.split(".").last() + ".xml"
         val content = PrescriptionUtil.template(packageName, className, typeC, sender, action, cat, typeF, scheme, auth, path, pathOption)
         FileWriter(File(prescriptionFolder, filename)).apply {
             write(PrescriptionUtil.head())

@@ -43,7 +43,7 @@ object PrescriptionUtil {
     // prefixes "xml" and "xmlns" are already bound and can not be redefined
     // or throw IllegalStateException if default namespace is already bound to non-empty string
     fun header(): String {
-        return "<prescriptions xmlns=\"http://greenify.github.io/schemas/prescription/v3\"\n>"
+        return "<prescriptions xmlns=\"http://greenify.github.io/schemas/prescription/v3\">\n"
     }
 
     fun head(): String {
@@ -51,7 +51,7 @@ object PrescriptionUtil {
         Xml.newSerializer().apply {
             setOutput(writer)
             startDocument("UTF-8",true)
-            text("\n")
+            text("\n\n")
             endDocument()
         }
         return writer.toString()
