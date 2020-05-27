@@ -138,12 +138,12 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
         activity?.menuInflater?.inflate(R.menu.component_list_long_click_menu, menu)
-        context?.let {
+        /*context?.let {
             if (PreferenceUtil.getControllerType(it) != EControllerMethod.IFW) {
                 menu.removeItem(R.id.block_by_ifw)
                 menu.removeItem(R.id.enable_by_ifw)
             }
-        }
+        }*/
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
