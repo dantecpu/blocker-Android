@@ -37,9 +37,7 @@ object ShizukuApi {
             ShizukuService.transactRemote(data, reply, 0)
             reply.readException()
         } catch (e: RemoteException) {
-            // TODO: how to put RemoteException into Throwable RuntimeException, for Oops window ?
             e.printStackTrace()
-            throw RemoteException(e.message)
         } finally {
             data.recycle()
             reply.recycle()
@@ -50,7 +48,7 @@ object ShizukuApi {
     // TODO: complete the abstract Class / interface code
     fun setApplicationWrapper(pack: String, state: Int) {
         try {
-            getPackageManager().get().setApplicationEnabledSetting(pack, getState(state), 0, ShizukuService.getUid())
+            getPackageManager().get().setApplicationEnabledSetting(pack, getState(state), 0, 0)
         } catch (tr: Throwable) {
             throw RuntimeException(tr.message, tr)
         }
