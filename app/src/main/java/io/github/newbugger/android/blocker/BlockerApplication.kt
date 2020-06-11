@@ -5,15 +5,10 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
-import android.util.Log
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.topjohnwu.superuser.BuildConfig
 import com.topjohnwu.superuser.Shell
 import io.github.newbugger.android.blocker.core.libsu.LibsuInitializer
 import me.weishu.reflection.Reflection
-import moe.shizuku.api.ShizukuClientHelper
-import moe.shizuku.api.ShizukuService
 
 
 class BlockerApplication : Application() {
@@ -24,26 +19,9 @@ class BlockerApplication : Application() {
         createNotificationChannel()
     }
 
-    // Inside ShizukuBinderReceiveProvider, things are very simple
-    // the received binder is stored to a static field in ShizukuService
-    // and call the OnBinderReceivedListener (again, a static field is used to store the listener)
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
-        Reflection.unseal(base)
-        ShizukuClientHelper.setBinderReceivedListener {
-            Log.d("blocker.Application", "attachBaseContext: onBinderReceived")
-            while (ShizukuService.getBinder() == null || !ShizukuService.pingBinder()) {
-                Log.d("blocker.Application", "ShizukuService: binder is null, keep waiting ..")
-            }
-            try {
-                val action = "io.github.newbugger.android.blocker.intent.BROADCAST"
-                LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(action))
-                Log.d("blocker.Application", "sendBroadcast: broadcast sent")
-            } catch (tr: Throwable) {
-                Log.e("blocker.Application", "catch: can't contact with remote", tr)
-                return@setBinderReceivedListener
-            }
-        }
+        Reflection.unseal(base) // the dependency of shizuku as to keep there
     }
 
     private fun createNotificationChannel() {

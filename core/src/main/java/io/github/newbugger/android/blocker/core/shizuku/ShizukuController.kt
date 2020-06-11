@@ -5,23 +5,17 @@ import android.content.Context
 import android.content.pm.ComponentInfo
 import android.content.pm.PackageManager
 import io.github.newbugger.android.blocker.core.IController
+import io.github.newbugger.android.blocker.core.shizuku.util.Preference
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 
 
 class ShizukuController(val context: Context) : IController {
 
     override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
-        // TODO: temporarily use one transact method
-        // TODO: always disable the whole package when on shizuku service
-        /*if (componentName != null) {
-            ShizukuApi.setComponentWrapper(packageName, componentName, state)
-            ShizukuApi.setComponentRemote(packageName, componentName, state)
-        }
-        else {
-            ShizukuApi.setComponentWrapper(packageName, null, state)
-            ShizukuApi.setComponentRemote(packageName, null, state)
-        }*/
-        ShizukuApi.setComponentRemote(packageName, null, state)
+        if (Preference.checkTransactType(context))
+            ShizukuApi.setApplicationWrapper(packageName, state)
+        else
+            ShizukuApi.setApplicationRemote(packageName, state)
         return true
     }
 

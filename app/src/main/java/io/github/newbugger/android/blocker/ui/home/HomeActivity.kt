@@ -23,7 +23,7 @@ import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
 import io.github.newbugger.android.blocker.ui.settings.SettingsActivity
 import io.github.newbugger.android.blocker.util.PreferenceUtil
-import io.github.newbugger.android.blocker.util.ShizukuBinder
+import io.github.newbugger.android.blocker.shizuku.ShizukuBinder
 import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.root.LibsuCommand
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
@@ -168,17 +168,8 @@ class HomeActivity : AppCompatActivity(), IActivityView {
     private fun shizukuSetup(context: Context) {
         context.let {
             if (!PreferenceUtil.checkShizukuType(it)) return
-            if (!ShizukuBinder.shizukuIsInstalled(it)) return
             if (!ShizukuBinder.shizukuRequestPermission(it)) return
-            // ShizukuBinder.shizukuTestV3()
         }
     }
-
-    // private val shizukuBinderReceiver = ShizukuReceiver()
-    /*private val shizukuBinderReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d(tag, "onReceive binder: " + ShizukuService.getBinder())
-        }
-    }*/
 
 }

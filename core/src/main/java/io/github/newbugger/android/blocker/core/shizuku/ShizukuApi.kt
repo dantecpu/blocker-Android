@@ -1,11 +1,9 @@
 package io.github.newbugger.android.blocker.core.shizuku
 
-import android.content.pm.IPackageManager
 import android.content.pm.PackageManager
 import android.os.Parcel
 import android.os.RemoteException
-import android.util.Log
-import moe.shizuku.api.ShizukuBinderWrapper
+import io.github.newbugger.android.blocker.core.shizuku.ShizukuSystemServer.getPackageManager
 import moe.shizuku.api.ShizukuService
 import moe.shizuku.api.SystemServiceHelper
 import java.io.PrintWriter
@@ -24,30 +22,23 @@ object ShizukuApi {
     */
 
     // method 2: use transactRemote directly
-    // only available for APP disabler, cuz parcel cannot write ComponentName value
-    // update: found in AIDL file
-    fun setComponentRemote(pack: String, comp: String?, state: Int) {
+    fun setApplicationRemote(pack: String, state: Int) {
         val data = SystemServiceHelper.obtainParcel("package",
                 "android.content.pm.IPackageManager",
                 "setApplicationEnabledSetting"
-        )
-        val reply = Parcel.obtain()
-        data.also {
-            /*if (comp != null)
-                ComponentName(pack, comp).writeToParcel(it, 0)
-            else
-                it.writeString(pack)*/
-            it.writeString(pack)
-            it.writeInt(getState(state))
-            it.writeInt(0)
-            it.writeInt(0)
+        ).apply {
+            writeString(pack)
+            writeInt(getState(state))
+            writeInt(0)
+            writeInt(0)
         }
+        val reply = Parcel.obtain()
         try {
             ShizukuService.transactRemote(data, reply, 0)
             reply.readException()
         } catch (e: RemoteException) {
             // TODO: how to put RemoteException into Throwable RuntimeException, for Oops window ?
-            Log.e("io.github.newbugger.android.blocker.core.shizuku", "ShizukuApi", e)
+            e.printStackTrace()
             throw RemoteException(e.message)
         } finally {
             data.recycle()
@@ -57,22 +48,12 @@ object ShizukuApi {
 
     // method 1: use ShizukuBinderWrapper
     // TODO: complete the abstract Class / interface code
-    fun setComponentWrapper(pack: String, comp: String?, state: Int) {
+    fun setApplicationWrapper(pack: String, state: Int) {
         try {
-            /*if (comp != null)
-                getPackageManager().setComponentEnabledSetting(ComponentName(pack, comp), getState(state), 0, 0)
-            else
-                getPackageManager().setApplicationEnabledSetting(pack, getState(state), 0, 0)*/
-            getPackageManager().setApplicationEnabledSetting(pack, getState(state), 0, 0)
+            getPackageManager().get().setApplicationEnabledSetting(pack, getState(state), 0, ShizukuService.getUid())
         } catch (tr: Throwable) {
             throw RuntimeException(tr.message, tr)
         }
-    }
-
-    private fun getPackageManager(): IPackageManager {
-        return IPackageManager.Stub.asInterface(
-                ShizukuBinderWrapper(SystemServiceHelper.getSystemService("package"))
-        )
     }
 
     private fun getState(state: Int): Int {

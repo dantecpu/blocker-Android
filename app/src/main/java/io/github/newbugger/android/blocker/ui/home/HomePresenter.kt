@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.preference.PreferenceManager
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.core.shizuku.ShizukuApi
+import io.github.newbugger.android.blocker.core.shizuku.util.Preference
 import io.github.newbugger.android.blocker.util.DialogUtil
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.libkit.entity.Application
@@ -83,7 +84,10 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
             if (!PreferenceUtil.checkShizukuType(context!!))
                 ManagerUtils.enableApplication(packageName)
             else
-                ShizukuApi.setComponentRemote(packageName, null, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
+                if (Preference.checkTransactType(context!!))
+                    ShizukuApi.setApplicationWrapper(packageName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
+                else
+                    ShizukuApi.setApplicationRemote(packageName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
             uiThread {
                 homeView?.updateState(packageName)
             }
@@ -95,7 +99,10 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
             if (!PreferenceUtil.checkShizukuType(context!!))
                 ManagerUtils.disableApplication(packageName)
             else
-                ShizukuApi.setComponentRemote(packageName, null, PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
+                if (Preference.checkTransactType(context!!))
+                    ShizukuApi.setApplicationWrapper(packageName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
+                else
+                    ShizukuApi.setApplicationRemote(packageName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
             uiThread {
                 homeView?.updateState(packageName)
             }

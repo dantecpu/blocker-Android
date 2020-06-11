@@ -2,9 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.newbugger.android.blocker">
 
-    <uses-permission-sdk-23 android:name="moe.shizuku.manager.permission.API_V23" />
-    <uses-permission-sdk-23 android:name="moe.shizuku.manager.permission.EXEC_COMMAND" />
-
     <application
         android:name=".BlockerApplication"
         android:allowBackup="false"
@@ -45,21 +42,12 @@
         </provider>
 
         <provider
-            android:name="moe.shizuku.api.ShizukuBinderReceiveProvider"
+            android:name=".shizuku.ShizukuProvider"
             android:authorities="${applicationId}.shizuku"
             android:multiprocess="false"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
-
-        <!-- method 1: broadcast receiver on manifest -->
-        <receiver android:name=".util.ShizukuReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="io.github.newbugger.android.blocker.intent.BROADCAST"/>
-            </intent-filter>
-        </receiver>
 
     </application>
 </manifest>

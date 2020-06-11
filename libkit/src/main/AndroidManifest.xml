@@ -1,1 +1,4 @@
-<manifest package="io.github.newbugger.android.libkit"/>
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    package="io.github.newbugger.android.libkit">
+    <uses-sdk tools:overrideLibrary="moe.shizuku.api, moe.shizuku.shared" />
+</manifest>
