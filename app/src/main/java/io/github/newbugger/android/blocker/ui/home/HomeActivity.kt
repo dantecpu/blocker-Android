@@ -2,6 +2,8 @@ package io.github.newbugger.android.blocker.ui.home
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
@@ -52,6 +54,7 @@ class HomeActivity : AppCompatActivity(), IActivityView {
     override fun onStart() {
         super.onStart()
         shizukuSetup(this)
+        createNotificationChannel()
     }
 
     override fun onStop() {
@@ -170,6 +173,14 @@ class HomeActivity : AppCompatActivity(), IActivityView {
             if (!PreferenceUtil.checkShizukuType(it)) return
             if (!ShizukuBinder.shizukuRequestPermission(it)) return
         }
+    }
+
+    private fun createNotificationChannel() {
+        val channelId = "processing_progress_indicator"
+        val channelName = getString(R.string.processing_progress_indicator)
+        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
 }
