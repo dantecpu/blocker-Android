@@ -12,8 +12,8 @@ android {
         applicationId "io.github.newbugger.android.blocker"
         minSdkVersion 28
         targetSdkVersion 29
-        versionCode 7
-        versionName "0.0.7"
+        versionCode 8
+        versionName "0.0.8"
         multiDexEnabled true
     }
 
