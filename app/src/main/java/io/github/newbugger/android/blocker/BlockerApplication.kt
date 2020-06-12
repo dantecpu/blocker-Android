@@ -15,13 +15,13 @@ class BlockerApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        context = this
         createNotificationChannel()
     }
 
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
+    override fun attachBaseContext(base: Context) {
+        context = base
         Reflection.unseal(base) // the dependency of shizuku as to keep there
+        super.attachBaseContext(base)
     }
 
     private fun createNotificationChannel() {
