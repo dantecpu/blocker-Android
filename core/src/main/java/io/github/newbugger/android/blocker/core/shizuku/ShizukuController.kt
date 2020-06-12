@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.ComponentInfo
 import android.content.pm.PackageManager
 import io.github.newbugger.android.blocker.core.IController
+import io.github.newbugger.android.blocker.core.shizuku.api.ShizukuApi
 import io.github.newbugger.android.blocker.core.shizuku.util.Preference
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 

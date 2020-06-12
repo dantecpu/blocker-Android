@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.preference.PreferenceManager
 import io.github.newbugger.android.blocker.R
-import io.github.newbugger.android.blocker.core.shizuku.ShizukuApi
+import io.github.newbugger.android.blocker.core.shizuku.api.ShizukuApi
 import io.github.newbugger.android.blocker.core.shizuku.util.Preference
 import io.github.newbugger.android.blocker.util.DialogUtil
 import io.github.newbugger.android.blocker.util.PreferenceUtil

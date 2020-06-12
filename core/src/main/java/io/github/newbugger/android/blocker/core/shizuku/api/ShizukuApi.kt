@@ -1,13 +1,11 @@
-package io.github.newbugger.android.blocker.core.shizuku
+package io.github.newbugger.android.blocker.core.shizuku.api
 
 import android.content.pm.PackageManager
 import android.os.Parcel
 import android.os.RemoteException
-import io.github.newbugger.android.blocker.core.shizuku.ShizukuSystemServer.getPackageManager
+import io.github.newbugger.android.blocker.core.shizuku.api.ShizukuSystemServer.getPackageManager
+import io.github.newbugger.android.blocker.core.shizuku.api.ShizukuSystemServer.getParcelData
 import moe.shizuku.api.ShizukuService
-import moe.shizuku.api.SystemServiceHelper
-import java.io.PrintWriter
-import java.io.StringWriter
 
 
 object ShizukuApi {
@@ -23,10 +21,7 @@ object ShizukuApi {
 
     // method 2: use transactRemote directly
     fun setApplicationRemote(pack: String, state: Int) {
-        val data = SystemServiceHelper.obtainParcel("package",
-                "android.content.pm.IPackageManager",
-                "setApplicationEnabledSetting"
-        ).apply {
+        val data = getParcelData().apply {
             writeString(pack)
             writeInt(getState(state))
             writeInt(0)
@@ -48,8 +43,11 @@ object ShizukuApi {
     // TODO: complete the abstract Class / interface code
     fun setApplicationWrapper(pack: String, state: Int) {
         try {
-            getPackageManager().get().setApplicationEnabledSetting(pack, getState(state), 0, 0)
+            getPackageManager().setApplicationEnabledSetting(
+                    pack, getState(state), 0, 0
+            )
         } catch (tr: Throwable) {
+            tr.printStackTrace()
             throw RuntimeException(tr.message, tr)
         }
     }
@@ -63,12 +61,6 @@ object ShizukuApi {
             else ->
                 state
         }
-    }
-
-    private fun getStackTrace(err: RemoteException): String {
-        return StringWriter().let {
-            err.printStackTrace(PrintWriter(it))
-        }.toString()
     }
 
 }
