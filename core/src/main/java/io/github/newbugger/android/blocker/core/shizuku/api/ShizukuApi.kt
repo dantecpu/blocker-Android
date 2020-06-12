@@ -31,9 +31,8 @@ object ShizukuApi {
         try {
             ShizukuService.transactRemote(data, reply, 0)
             reply.readException()
-        } catch (re: RemoteException) {
-            re.printStackTrace()
-            throw RuntimeException(re.message, re)
+        } catch (e: RemoteException) {
+            e.printStackTrace()
         } finally {
             data.recycle()
             reply.recycle()
@@ -47,9 +46,8 @@ object ShizukuApi {
             getPackageManager().setApplicationEnabledSetting(
                     pack, getState(state), 0, 0
             )
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
-            throw RuntimeException(e.message, e)
         }
     }
 

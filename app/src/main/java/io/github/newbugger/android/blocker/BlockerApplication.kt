@@ -19,9 +19,9 @@ class BlockerApplication : Application() {
     }
 
     override fun attachBaseContext(base: Context) {
-        context = base
-        Reflection.unseal(base) // the dependency of shizuku as to keep there
         super.attachBaseContext(base)
+        context = this
+        Reflection.unseal(this) // the dependency of shizuku as to keep there
     }
 
     private fun createNotificationChannel() {
