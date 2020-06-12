@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
-    ndkVersion '21.0.6113669'  // https://github.com/gradle/gradle/issues/12440
+    ndkVersion '21.3.6528147'  // https://github.com/gradle/gradle/issues/12440
 
     defaultConfig {
         applicationId "io.github.newbugger.android.blocker"
