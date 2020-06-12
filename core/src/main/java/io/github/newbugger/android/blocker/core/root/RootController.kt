@@ -7,7 +7,7 @@ import android.content.pm.PackageManager
 import android.util.Log
 import io.github.newbugger.android.blocker.core.IController
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
-import io.github.newbugger.android.libkit.root.LibsuCommand
+import io.github.newbugger.android.libkit.libsu.LibsuCommand
 
 
 /**

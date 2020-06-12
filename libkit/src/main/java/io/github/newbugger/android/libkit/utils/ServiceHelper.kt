@@ -1,6 +1,6 @@
 package io.github.newbugger.android.libkit.utils
 
-import io.github.newbugger.android.libkit.root.LibsuCommand
+import io.github.newbugger.android.libkit.libsu.LibsuCommand
 
 
 class ServiceHelper(private val packageName: String) {

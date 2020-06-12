@@ -7,7 +7,7 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
-import io.github.newbugger.android.libkit.root.LibsuCommand
+import io.github.newbugger.android.libkit.libsu.LibsuCommand
 import java.io.File
 
 

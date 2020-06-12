@@ -25,7 +25,7 @@ import io.github.newbugger.android.blocker.ui.settings.SettingsActivity
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.shizuku.ShizukuBinder
 import io.github.newbugger.android.blocker.util.setupActionBar
-import io.github.newbugger.android.libkit.root.LibsuCommand
+import io.github.newbugger.android.libkit.libsu.LibsuCommand
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_home.*
 

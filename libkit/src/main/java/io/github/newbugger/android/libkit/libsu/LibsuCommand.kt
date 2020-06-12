@@ -1,7 +1,8 @@
-package io.github.newbugger.android.libkit.root
+package io.github.newbugger.android.libkit.libsu
 
 import android.util.Log
 import com.topjohnwu.superuser.Shell
+import io.github.newbugger.android.libkit.exception.RootUnavailableException
 import java.io.IOException
 
 

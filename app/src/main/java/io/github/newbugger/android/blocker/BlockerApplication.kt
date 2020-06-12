@@ -7,7 +7,7 @@ import android.app.NotificationManager
 import android.content.Context
 import com.topjohnwu.superuser.BuildConfig
 import com.topjohnwu.superuser.Shell
-import io.github.newbugger.android.blocker.core.libsu.LibsuInitializer
+import io.github.newbugger.android.blocker.libsu.LibsuInitializer
 import me.weishu.reflection.Reflection
 
 
