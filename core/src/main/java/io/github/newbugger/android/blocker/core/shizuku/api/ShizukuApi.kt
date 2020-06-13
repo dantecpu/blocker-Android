@@ -46,7 +46,7 @@ object ShizukuApi {
             getPackageManager().setApplicationEnabledSetting(
                     pack, getState(state), 0, 0
             )
-        } catch (e: Throwable) {
+        } catch (e: RemoteException) {
             e.printStackTrace()
         }
     }

@@ -10,4 +10,5 @@ class ShizukuProvider : moe.shizuku.api.ShizukuProvider() {
                 "ShizukuProvider: onShizukuProvider")
         return super.onCreate()
     }
+
 }
