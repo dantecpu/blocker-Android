@@ -237,19 +237,17 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     }
 
     override fun showDisableAllAlert() {
-        context?.let {
-            AlertDialog.Builder(it)
-                    .setTitle(R.string.warning)
-                    .setMessage(R.string.warning_disable_all_component)
-                    .setCancelable(true)
-                    .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-                    .setPositiveButton(R.string.ok) { _, _ ->
-                        Toast.makeText(it, R.string.disabling_hint, Toast.LENGTH_SHORT).show()
-                        presenter.disableAllComponents(packageName, type)
-                    }
-                    .create()
-                    .show()
-        }
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.warning)
+                .setMessage(R.string.warning_disable_all_component)
+                .setCancelable(true)
+                .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+                .setPositiveButton(R.string.ok) { _, _ ->
+                    Toast.makeText(requireContext(), R.string.disabling_hint, Toast.LENGTH_SHORT).show()
+                    presenter.disableAllComponents(packageName, type)
+                }
+                .create()
+                .show()
     }
 
     override fun showActionDone() {

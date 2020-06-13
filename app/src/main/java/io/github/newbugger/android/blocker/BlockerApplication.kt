@@ -28,7 +28,6 @@ class BlockerApplication : Application() {
     companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
-        const val LOG_FILENAME = "blocker_log.log"
     }
 
 }
