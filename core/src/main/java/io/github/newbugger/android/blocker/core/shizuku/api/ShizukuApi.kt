@@ -43,12 +43,12 @@ object ShizukuApi {
     // TODO: complete the abstract Class / interface code
     fun setApplicationWrapper(pack: String, state: Int) {
         try {
-            //Bug: java.lang.NoSuchMethodError: No interface method setApplicationEnabledSetting
             getPackageManager().setApplicationEnabledSetting(
-                    pack, getState(state), 0, 0
+                    pack, getState(state), 0, 0, "android.content.pm.PackageManager"
             )
         } catch (e: Throwable) {
             e.printStackTrace()
+            throw RuntimeException(e.message, e)
         }
     }
 
