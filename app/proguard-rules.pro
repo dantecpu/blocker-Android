@@ -14,18 +14,18 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+#-keepattributes SourceFile, LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
--keep public class * extends android.app.MapActivity
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
--keep public class com.google.gson.**
+-keep public class com.google.gson.*
 -keep public class android.graphics.drawable.VectorDrawable
 -keep public class * extends android.view.View {
     public <init>(android.content.Context);
@@ -33,6 +33,7 @@
     public <init>(android.content.Context, android.util.AttributeSet, int);
     public void set*(...);
 }
+
 -keepclasseswithmembers class * {
     public <init>(android.content.Context, android.util.AttributeSet);
 }
@@ -46,9 +47,10 @@
    public void *(android.view.MenuItem);
 }
 
--keepclassmembers class * implements android.os.Parcelable {
-    static android.os.Parcelable$Creator CREATOR;
-}
+#-keepclassmembers class * implements android.os.Parcelable {
+#    static android.os.Parcelable$Creator CREATOR;
+#}
+-keep class * implements android.os.Parcelable
 
 -keepclassmembers class **.R$* {
     public static <fields>;
@@ -56,10 +58,10 @@
 
 -dontwarn javax.xml.stream.events.**
 
--keep public class org.simpleframework.** { *; }
--keep class org.simpleframework.xml.** { *; }
--keep class org.simpleframework.xml.core.** { *; }
--keep class org.simpleframework.xml.util.** { *; }
+-keep public class org.simpleframework.* { *; }
+-keep class org.simpleframework.xml.* { *; }
+-keep class org.simpleframework.xml.core.* { *; }
+-keep class org.simpleframework.xml.util.* { *; }
 
 -keepattributes ElementList, Root, Annotation
 
@@ -80,19 +82,18 @@
 #-keep class com.google.gson.stream.** { *; }
 
 # Application classes that will be serialized/deserialized over Gson
--keep class com.google.gson.examples.android.model.** { *; }
+-keep class com.google.gson.examples.android.model.* { *; }
 
 # Prevent proguard from stripping interface information from TypeAdapterFactory,
 # JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
 -keep class * implements com.google.gson.TypeAdapterFactory
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
-
 ##---------------End: proguard configuration for Gson  ----------
--keep class io.github.newbugger.android.ifw.entity.** { *; }
--keep class io.github.newbugger.android.libkit.entity.** { *; }
--keep class io.github.newbugger.android.blocker.rule.entity.** { *; }
--keep class io.github.newbugger.android.blocker.strategy.entity.** { *; }
--keepclassmembers enum * { *; }
--keep class android.os.** { *; }
 
+-keep class io.github.newbugger.android.ifw.entity.* { *; }
+-keep class io.github.newbugger.android.libkit.entity.* { *; }
+-keep class io.github.newbugger.android.blocker.rule.entity.* { *; }
+-keep class io.github.newbugger.android.blocker.strategy.entity.* { *; }
+-keepclassmembers enum * { *; }
+-keep class android.os.* { *; }
