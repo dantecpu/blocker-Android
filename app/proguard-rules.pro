@@ -20,12 +20,15 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# https://stackoverflow.com/a/62080903
+#noinspection ShrinkerUnresolvedReference
+
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
--keep public class com.google.gson.*
+-keep public class com.google.gson.**
 -keep public class android.graphics.drawable.VectorDrawable
 -keep public class * extends android.view.View {
     public <init>(android.content.Context);
@@ -47,10 +50,10 @@
    public void *(android.view.MenuItem);
 }
 
-#-keepclassmembers class * implements android.os.Parcelable {
-#    static android.os.Parcelable$Creator CREATOR;
-#}
--keep class * implements android.os.Parcelable
+-keepclassmembers class * implements android.os.Parcelable {
+    #noinspection ShrinkerUnresolvedReference
+    static android.os.Parcelable$Creator CREATOR;
+}
 
 -keepclassmembers class **.R$* {
     public static <fields>;
@@ -58,10 +61,10 @@
 
 -dontwarn javax.xml.stream.events.**
 
--keep public class org.simpleframework.* { *; }
--keep class org.simpleframework.xml.* { *; }
--keep class org.simpleframework.xml.core.* { *; }
--keep class org.simpleframework.xml.util.* { *; }
+-keep public class org.simpleframework.** { *; }
+-keep class org.simpleframework.xml.** { *; }
+-keep class org.simpleframework.xml.core.** { *; }
+-keep class org.simpleframework.xml.util.** { *; }
 
 -keepattributes ElementList, Root, Annotation
 
@@ -91,9 +94,13 @@
 -keep class * implements com.google.gson.JsonDeserializer
 ##---------------End: proguard configuration for Gson  ----------
 
--keep class io.github.newbugger.android.ifw.entity.* { *; }
--keep class io.github.newbugger.android.libkit.entity.* { *; }
--keep class io.github.newbugger.android.blocker.rule.entity.* { *; }
--keep class io.github.newbugger.android.blocker.strategy.entity.* { *; }
+-keep class io.github.newbugger.android.ifw.entity.** { *; }
+-keep class io.github.newbugger.android.libkit.entity.** { *; }
+-keep class io.github.newbugger.android.blocker.rule.entity.** { *; }
+-keep class io.github.newbugger.android.blocker.strategy.entity.** { *; }
 -keepclassmembers enum * { *; }
--keep class android.os.* { *; }
+-keep class android.os.** { *; }
+
+#-keepclasseswithmembers class android.content.pm.PackageManager { *; }
+#-keepclasseswithmembers class android.content.pm.IPackageManager { *; }
+-keepclasseswithmembers class android.content.pm.** { *; }
