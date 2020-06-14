@@ -17,10 +17,6 @@ import java.util.*
 
 object ApplicationUtil {
 
-    private const val BLOCKER_PACKAGE_NAME = "io.github.newbugger.android.blocker"
-    private const val BLOCKED_CONF_NAME = "Blocked"
-    private const val BLOCKED_APP_LIST_KEY = "key_blocked_app_list"
-
     /**
      * Get a list of installed applications on device
      *
@@ -32,7 +28,7 @@ object ApplicationUtil {
         val blockedApps = getBlockedApplication(context)
         return pm.getInstalledPackages(0)
                 .asSequence()
-                .filterNot { it.packageName == BLOCKER_PACKAGE_NAME }
+                .filterNot { it.packageName == ConstantUtil.BLOCKER_PACKAGE_NAME }
                 .map {
                     Application(pm, it).apply {
                         isBlocked = blockedApps.contains(it.packageName)
@@ -53,7 +49,7 @@ object ApplicationUtil {
         return pm.getInstalledPackages(0)
                 .asSequence()
                 .filter { it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0 }
-                .filterNot { it.packageName == BLOCKER_PACKAGE_NAME }
+                .filterNot { it.packageName == ConstantUtil.BLOCKER_PACKAGE_NAME }
                 .map {
                     Application(pm, it).apply {
                         isBlocked = blockedApps.contains(it.packageName)
@@ -291,14 +287,14 @@ object ApplicationUtil {
     }
 
     private fun getBlockedApplication(context: Context): MutableList<String> {
-        val sharedPreferences = context.getSharedPreferences(BLOCKED_CONF_NAME, MODE_PRIVATE)
-        val json = sharedPreferences.getString(BLOCKED_APP_LIST_KEY, "[]")
+        val sharedPreferences = context.getSharedPreferences(ConstantUtil.BLOCKED_CONF_NAME, MODE_PRIVATE)
+        val json = sharedPreferences.getString(ConstantUtil.BLOCKED_APP_LIST_KEY, "[]")
         return Gson().fromJson(json, object : TypeToken<MutableList<String>>() {}.type)
     }
 
     private fun saveBlockedApplication(context: Context, applications: List<String>) {
-        val editor = context.getSharedPreferences(BLOCKED_CONF_NAME, MODE_PRIVATE).edit()
-        editor.putString(BLOCKED_APP_LIST_KEY, Gson().toJson(applications))
+        val editor = context.getSharedPreferences(ConstantUtil.BLOCKED_CONF_NAME, MODE_PRIVATE).edit()
+        editor.putString(ConstantUtil.BLOCKED_APP_LIST_KEY, Gson().toJson(applications))
         editor.apply()
     }
 

@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.baseview.ContextMenuRecyclerView
-import io.github.newbugger.android.blocker.ui.Constants
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
+import io.github.newbugger.android.libkit.utils.ConstantUtil
 import kotlinx.android.synthetic.main.component_item.view.*
 import kotlinx.android.synthetic.main.fragment_component.*
 import kotlinx.android.synthetic.main.fragment_component.view.*
@@ -39,8 +39,8 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        type = arguments?.getSerializable(Constants.CATEGORY) as EComponentType
-        packageName = arguments?.getString(Constants.PACKAGE_NAME) ?: ""
+        type = arguments?.getSerializable(ConstantUtil.CATEGORY) as EComponentType
+        packageName = arguments?.getString(ConstantUtil.PACKAGE_NAME) ?: ""
         presenter = ComponentPresenter(requireContext(), this, packageName)
     }
 
@@ -285,8 +285,8 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
         fun newInstance(packageName: String, type: EComponentType): Fragment {
             val fragment = ComponentFragment()
             val bundle = Bundle()
-            bundle.putSerializable(Constants.CATEGORY, type)
-            bundle.putString(Constants.PACKAGE_NAME, packageName)
+            bundle.putSerializable(ConstantUtil.CATEGORY, type)
+            bundle.putString(ConstantUtil.PACKAGE_NAME, packageName)
             fragment.arguments = bundle
             return fragment
         }

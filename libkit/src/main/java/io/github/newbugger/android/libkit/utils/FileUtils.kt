@@ -12,7 +12,7 @@ import java.io.File
 
 
 object FileUtils {
-    private const val tag = "io.github.newbugger.android.libkit.utils.FileUtils"
+    private val tag = javaClass.name
 
     @JvmStatic
     fun isExist(path: String): Boolean {

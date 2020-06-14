@@ -28,6 +28,7 @@ import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.shizuku.ShizukuBinder
 import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
+import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -132,10 +133,9 @@ class HomeActivity : AppCompatActivity(), IActivityView {
     private fun changeColor(color: Int) {
         toolbar.setBackgroundColor(color)
         app_kind_tabs.setBackgroundColor(color)
-        StatusBarUtil.setColorForDrawerLayout(this, drawerLayout, color, io.github.newbugger.android.blocker.constant.Constant.STATUS_BAR_ALPHA)
+        StatusBarUtil.setColorForDrawerLayout(this, drawerLayout, color, ConstantUtil.STATUS_BAR_ALPHA)
         findViewById<View>(R.id.statusbarutil_translucent_view).setBackgroundColor(color)
     }
-
 
     private fun changeBackgroundColor(tabLayout: TabLayout, tab: TabLayout.Tab) {
         val colorFrom: Int = if (tabLayout.background != null) {

@@ -2,7 +2,6 @@ package io.github.newbugger.android.ifw;
 
 import android.content.Context;
 import android.util.Log;
-
 import io.github.newbugger.android.ifw.entity.Activity;
 import io.github.newbugger.android.ifw.entity.Broadcast;
 import io.github.newbugger.android.ifw.entity.Component;
@@ -10,6 +9,7 @@ import io.github.newbugger.android.ifw.entity.ComponentFilter;
 import io.github.newbugger.android.ifw.entity.ComponentType;
 import io.github.newbugger.android.ifw.entity.Rules;
 import io.github.newbugger.android.ifw.entity.Service;
+import io.github.newbugger.android.libkit.utils.ConstantUtil;
 import io.github.newbugger.android.libkit.utils.FileUtils;
 import io.github.newbugger.android.libkit.utils.StorageUtils;
 import org.simpleframework.xml.Serializer;
@@ -19,13 +19,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-
 import androidx.annotation.NonNull;
+
 
 public class IntentFirewallImpl implements IntentFirewall {
 
-    private static final String EXTENSION = ".xml";
     private static final String FILTER_TEMPLATE = "%s/%s";
     private static IntentFirewallImpl instance;
     private static final String tag = "io.github.newbugger.android.ifw.IntentFirewallImpl";
@@ -38,7 +36,7 @@ public class IntentFirewallImpl implements IntentFirewall {
 
     private IntentFirewallImpl(Context context, String packageName) {
         this.packageName = packageName;
-        this.filename = packageName + EXTENSION;
+        this.filename = packageName + ConstantUtil.EXTENSION_XML;
         cacheDir = context.getCacheDir().toString() + File.separator;
         tmpPath = cacheDir + filename;
         destPath = StorageUtils.getIfwFolder() + filename;

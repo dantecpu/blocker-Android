@@ -17,6 +17,7 @@ import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
 import io.github.newbugger.android.libkit.entity.getSimpleName
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
+import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.ServiceHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -29,7 +30,6 @@ import java.io.File
 class ComponentPresenter(val context: Context, var view: ComponentContract.View?, val packageName: String) : ComponentContract.Presenter, IController {
     override var currentComparator: EComponentComparatorType = EComponentComparatorType.NAME_ASCENDING  // changed order
     private val pm: PackageManager
-    private val tag = "io.github.newbugger.android.blocker.ui.component.ComponentPresenter"
     private val serviceHelper by lazy { ServiceHelper(packageName) }
     private val ifwController by lazy { ComponentControllerProxy.getInstance(EControllerMethod.IFW, context) }
     private val controller: IController by lazy {
@@ -282,7 +282,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         view?.showToastMessage(context.getString(R.string.processing), Toast.LENGTH_SHORT)
         doAsync(exceptionHandler) {
             val blockerFolder = Rule.getBlockerRuleFolder(context)
-            val destFile = File(blockerFolder, packageName + Rule.EXTENSION)
+            val destFile = File(blockerFolder, packageName + ConstantUtil.EXTENSION_JSON)
             val result =
                     if (!destFile.exists()) {
                         RulesResult(false, 0, 0)

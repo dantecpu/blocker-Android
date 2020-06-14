@@ -12,7 +12,7 @@ import moe.shizuku.api.ShizukuApiConstants
 
 object ShizukuBinder {
 
-    private const val TAG = "io.github.newbugger.android.blocker.shizuku.ShizukuBinder"
+    private val TAG = javaClass.name
 
     private const val REQUEST_CODE_PERMISSION_V3 = 1
 

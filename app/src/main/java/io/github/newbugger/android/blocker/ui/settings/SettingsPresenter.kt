@@ -8,6 +8,7 @@ import io.github.newbugger.android.blocker.rule.Rule
 import io.github.newbugger.android.blocker.rule.entity.BlockerRule
 import io.github.newbugger.android.blocker.util.NotificationUtil
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
+import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
 import kotlinx.coroutines.*
 import java.io.File
@@ -21,7 +22,6 @@ class SettingsPresenter(
 ) : SettingsContract.SettingsPresenter {
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
-    private val tag = "io.github.newbugger.android.blocker.ui.settings.SettingsPresenter"
     private val exceptionHandler = CoroutineExceptionHandler { _, e: Throwable ->
         e.printStackTrace()
         NotificationUtil.cancelNotification(context)
@@ -63,11 +63,11 @@ class SettingsPresenter(
         withContext(Dispatchers.IO) {
             rulesCount = FileUtils.getFileCounts(
                 Rule.getBlockerRuleFolder(context),
-                Rule.EXTENSION
+                ConstantUtil.EXTENSION_JSON
             )
             notificationBuilder = NotificationUtil.createProcessingNotification(context, rulesCount)
             FileUtils.listFiles(Rule.getBlockerRuleFolder(context)).filter {
-                it.endsWith(Rule.EXTENSION)
+                it.endsWith(ConstantUtil.EXTENSION_JSON)
             }.forEach {
                 val rule = Gson().fromJson(FileReader(it), BlockerRule::class.java)
                 if (!ApplicationUtil.isAppInstalled(context.packageManager, rule.packageName)) {
@@ -86,7 +86,6 @@ class SettingsPresenter(
         }
         NotificationUtil.finishProcessingNotification(context, restoredCount, notificationBuilder)
     }
-
 
     override fun exportAllIfwRules() = uiScope.launch {
         withContext(Dispatchers.IO) {

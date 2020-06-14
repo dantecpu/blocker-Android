@@ -20,7 +20,7 @@ import org.jetbrains.anko.uiThread
 
 class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Presenter {
     private var context: Context? = null
-    private val tag = "io.github.newbugger.android.blocker.ui.home.HomePresenter"
+    private val tag = javaClass.name
     private val exceptionHandler = { e: Throwable ->
         GlobalScope.launch(Dispatchers.Main) {
             DialogUtil().showWarningDialogWithMessage(context, e)

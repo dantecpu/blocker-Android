@@ -6,7 +6,7 @@ import android.util.Log
 class ShizukuProvider : moe.shizuku.api.ShizukuProvider() {
 
     override fun onCreate(): Boolean {
-        Log.d("io.github.newbugger.android.blocker.shizuku",
+        Log.d(javaClass.name,
                 "ShizukuProvider: onShizukuProvider")
         return super.onCreate()
     }

@@ -7,7 +7,7 @@ import java.io.File
 
 object RuleSerializer {
     private val serializer by lazy { Persister() }
-    private const val tag = "io.github.newbugger.android.ifw.util.RuleSerializer"
+    private val tag = javaClass.name
     fun deserialize(file: File): Rules? {
         if (!file.exists()) {
             return null

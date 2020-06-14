@@ -14,11 +14,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.baseview.ContextMenuRecyclerView
-import io.github.newbugger.android.blocker.ui.Constants
 import io.github.newbugger.android.blocker.ui.component.ComponentActivity
 import io.github.newbugger.android.blocker.util.ToastUtil
 import io.github.newbugger.android.libkit.entity.Application
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
+import io.github.newbugger.android.libkit.utils.ConstantUtil
 import kotlinx.android.synthetic.main.app_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_app_list.*
 import org.jetbrains.anko.doAsync
@@ -83,7 +83,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
 
     override fun showApplicationDetailsUi(application: Application) {
         val intent = Intent(context, ComponentActivity::class.java)
-        intent.putExtra(Constants.APPLICATION, application)
+        intent.putExtra(ConstantUtil.APPLICATION, application)
         context?.startActivity(intent)
     }
 
@@ -91,7 +91,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
         super.onCreate(savedInstanceState)
         val argument = arguments
         argument?.run {
-            isSystem = this.getBoolean(IS_SYSTEM)
+            isSystem = this.getBoolean(ConstantUtil.IS_SYSTEM)
         }
         presenter = HomePresenter(this)
         presenter.start(requireContext())
@@ -246,11 +246,10 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
     }
 
     companion object {
-        const val IS_SYSTEM: String = "IS_SYSTEM"
         fun newInstance(isSystem: Boolean): Fragment {
             val fragment = ApplicationListFragment()
             val bundle = Bundle()
-            bundle.putBoolean(IS_SYSTEM, isSystem)
+            bundle.putBoolean(ConstantUtil.IS_SYSTEM, isSystem)
             fragment.arguments = bundle
             return fragment
         }

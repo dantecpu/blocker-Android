@@ -8,6 +8,7 @@ import android.util.Log
 import io.github.newbugger.android.blocker.core.IController
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
+import io.github.newbugger.android.libkit.utils.ConstantUtil
 
 
 /**
@@ -16,12 +17,12 @@ import io.github.newbugger.android.libkit.libsu.LibsuCommand
  */
 
 class RootController(val context: Context) : IController {
-    private val tag = "io.github.newbugger.android.blocker.core.root.RootController"
+    private val tag = javaClass.name
 
     override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
         val comm: String = when (state) {
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> removeEscapeCharacter(String.format(ENABLE_COMPONENT_TEMPLATE, packageName, componentName))
-            PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> removeEscapeCharacter(String.format(DISABLE_COMPONENT_TEMPLATE, packageName, componentName))
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> removeEscapeCharacter(String.format(ConstantUtil.COMMAND_ENABLE_COMPONENT, packageName, componentName))
+            PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> removeEscapeCharacter(String.format(ConstantUtil.COMMAND_DISABLE_COMPONENT, packageName, componentName))
             else -> return false
         }
         Log.d(tag, "command:$comm, componentState is $state")
@@ -68,11 +69,6 @@ class RootController(val context: Context) : IController {
 
     override fun checkComponentEnableState(packageName: String, componentName: String): Boolean {
         return ApplicationUtil.checkComponentIsEnabled(context.packageManager, ComponentName(packageName, componentName))
-    }
-
-    companion object {
-        private const val DISABLE_COMPONENT_TEMPLATE = "pm disable %s/%s"
-        private const val ENABLE_COMPONENT_TEMPLATE = "pm enable %s/%s"
     }
 
 }

@@ -6,26 +6,25 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.util.ToastUtil
+import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
 
 
-class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.SettingsView,
-    Preference.OnPreferenceClickListener {
+class PreferenceFragment: PreferenceFragmentCompat(),
+        SettingsContract.SettingsView,
+        Preference.OnPreferenceClickListener {
 
-    private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
-    private lateinit var preferences: SharedPreferences
     private lateinit var presenter: SettingsPresenter
 
+    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var exportRulePreference: Preference
     private lateinit var importRulePreference: Preference
     private lateinit var exportIfwRulePreference: Preference
@@ -34,49 +33,16 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
     private lateinit var importMatRulesPreference: Preference
     private lateinit var aboutPreference: Preference
 
-    private val matRulePathRequestCode = 100
-
-    private val tagg = "io.github.newbugger.android.blocker.ui.settings.PreferenceFragment"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        preferences = PreferenceManager.getDefaultSharedPreferences(activity)
-        findPreference()
-        initListener()
-        initPresenter()
-    }
-
-    override fun onCreatePreferences(bundle: Bundle?, s: String?) {
-        addPreferencesFromResource(R.xml.preferences)
-    }
-
-    private fun findPreference() {
-        exportRulePreference = findPreference(getString(R.string.key_pref_export_rules))!!
-        importRulePreference = findPreference(getString(R.string.key_pref_import_rules))!!
-        importIfwRulePreference = findPreference(getString(R.string.key_pref_import_ifw_rules))!!
-        exportIfwRulePreference = findPreference(getString(R.string.key_pref_export_ifw_rules))!!
-        resetIfwPreference = findPreference(getString(R.string.key_pref_reset_ifw_rules))!!
-        importMatRulesPreference = findPreference(getString(R.string.key_pref_import_mat_rules))!!
-        aboutPreference = findPreference(getString(R.string.key_pref_about))!!
-    }
-
-    private fun initPresenter() {
         presenter = SettingsPresenter(requireContext(), this)
+        sharedPreferences = preferenceManager.sharedPreferences
+        findPreference()
     }
 
-    private fun initListener() {
-        listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-            // TODO add later
-        }
-        preferences.registerOnSharedPreferenceChangeListener(listener)
-        exportRulePreference.onPreferenceClickListener = this
-        importRulePreference.onPreferenceClickListener = this
-        exportIfwRulePreference.onPreferenceClickListener = this
-        importIfwRulePreference.onPreferenceClickListener = this
-        importMatRulesPreference.onPreferenceClickListener = this
-        resetIfwPreference.onPreferenceClickListener = this
-        aboutPreference.onPreferenceClickListener = this
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.preferences, rootKey)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -131,7 +97,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
         if (preference == null) {
             return false
         }
-        Log.d(tagg, "onPreferenceClick: ${preference.key}")
         when (preference) {
             exportRulePreference -> showDialog(
                 getString(R.string.warning),
@@ -175,7 +140,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                matRulePathRequestCode -> {
+                ConstantUtil.matRulePathRequestCode -> {
                     val filePath = FileUtils.getUriPath(requireContext(), data?.data)
                     showDialog(
                             getString(R.string.warning),
@@ -190,13 +155,30 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
         }
     }
 
+    private fun findPreference() {
+        exportRulePreference = findPreference(getString(R.string.key_pref_export_rules))!!
+        importRulePreference = findPreference(getString(R.string.key_pref_import_rules))!!
+        importIfwRulePreference = findPreference(getString(R.string.key_pref_import_ifw_rules))!!
+        exportIfwRulePreference = findPreference(getString(R.string.key_pref_export_ifw_rules))!!
+        resetIfwPreference = findPreference(getString(R.string.key_pref_reset_ifw_rules))!!
+        importMatRulesPreference = findPreference(getString(R.string.key_pref_import_mat_rules))!!
+        aboutPreference = findPreference(getString(R.string.key_pref_about))!!
+        exportRulePreference.onPreferenceClickListener = this
+        importRulePreference.onPreferenceClickListener = this
+        exportIfwRulePreference.onPreferenceClickListener = this
+        importIfwRulePreference.onPreferenceClickListener = this
+        importMatRulesPreference.onPreferenceClickListener = this
+        resetIfwPreference.onPreferenceClickListener = this
+        aboutPreference.onPreferenceClickListener = this
+    }
+
     private fun selectMatFile() {
         val pm = context?.packageManager ?: return
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         intent.type = "*/*"
         if (intent.resolveActivity(pm) != null) {
-            startActivityForResult(intent, matRulePathRequestCode)
+            startActivityForResult(intent, ConstantUtil.matRulePathRequestCode)
         } else {
             ToastUtil.showToast(getString(R.string.file_manager_required))
         }
@@ -206,7 +188,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
         CustomTabsIntent.Builder()
             .setShowTitle(true)
             .build()
-            .launchUrl(requireContext(), Uri.parse(ABOUT_URL))
+            .launchUrl(requireContext(), Uri.parse(ConstantUtil.aboutURL))
     }
 
     private fun showConfirmationDialog(
@@ -224,43 +206,4 @@ class PreferenceFragment : PreferenceFragmentCompat(), SettingsContract.Settings
             .show()
     }
 
-    /*private fun showRequirePermissionDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.warning)
-            .setMessage(R.string.require_permission_message)
-            .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
-            .create()
-            .show()
-    }*/
-
-    companion object {
-        private const val ABOUT_URL = "https://github.com/lihenggui/blocker"
-
-        /*private val sBindPreferenceSummaryToValueListener =
-            Preference.OnPreferenceChangeListener { preference, value ->
-                val stringValue = value.toString()
-                if (preference is ListPreference) {
-                    val index = preference.findIndexOfValue(stringValue)
-                    preference.setSummary(
-                        if (index >= 0)
-                            preference.entries[index]
-                        else
-                            null
-                    )
-                } else {
-                    preference.summary = stringValue
-                }
-                true
-            }*/
-
-        /*private fun bindPreferenceSummaryToValue(preference: Preference?) {
-            preference?.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(
-                preference,
-                PreferenceManager
-                    .getDefaultSharedPreferences(preference?.context)
-                    .getString(preference?.key, "")
-            )
-        }*/
-    }
 }

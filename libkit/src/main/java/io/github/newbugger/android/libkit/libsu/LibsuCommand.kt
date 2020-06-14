@@ -17,7 +17,7 @@ object LibsuCommand {
         try {
             check()
             return Shell.su(comm).exec().also {
-                Log.d("io.github.newbugger.android.libkit.root.LibsuCommand",
+                Log.d(javaClass.name,
                         it.out.joinToString(separator = ", "))
             }
         } catch (e: Exception) {

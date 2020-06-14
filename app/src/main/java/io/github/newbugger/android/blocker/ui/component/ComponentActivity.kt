@@ -13,9 +13,9 @@ import com.google.android.material.tabs.TabLayout
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
-import io.github.newbugger.android.blocker.ui.Constants
 import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.entity.Application
+import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_component.*
 import kotlinx.android.synthetic.main.application_brief_info_layout.*
@@ -27,7 +27,6 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
 
     private lateinit var application: Application
     private lateinit var adapter: FragmentAdapter
-    private val tag = "io.github.newbugger.android.blocker.ui.component.ComponentActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +82,7 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         if (intent == null) {
             finish()
         }
-        application = intent.getParcelableExtra(Constants.APPLICATION)!!
+        application = intent.getParcelableExtra(ConstantUtil.APPLICATION)!!
     }
 
     private fun setupTab() {
@@ -108,8 +107,8 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
     private fun showApplicationBriefInfo(application: Application) {
         app_info_app_name.text = getString(R.string.application_label, application.label)
         app_info_app_package_name.text = getString(R.string.package_name, application.packageName)
-        app_info_target_sdk_version.text = getString(R.string.target_sdk_version, CODENAME.get(application.targetSdkVersion, UNKNOWN))
-        app_info_min_sdk_version.text = getString(R.string.min_sdk_version, CODENAME.get(application.minSdkVersion, UNKNOWN))
+        app_info_target_sdk_version.text = getString(R.string.target_sdk_version, CODENAME.get(application.targetSdkVersion, ConstantUtil.sdkUNKNOWN))
+        app_info_min_sdk_version.text = getString(R.string.min_sdk_version, CODENAME.get(application.minSdkVersion, ConstantUtil.sdkUNKNOWN))
         doAsync {
             val icon = application.getApplicationIcon(packageManager)
             uiThread {
@@ -122,7 +121,7 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         component_toolbar.setBackgroundColor(color)
         component_tabs.setBackgroundColor(color)
         component_collapsing_toolbar.setBackgroundColor(color)
-        StatusBarUtil.setColor(this, color, io.github.newbugger.android.blocker.constant.Constant.STATUS_BAR_ALPHA)
+        StatusBarUtil.setColor(this, color, ConstantUtil.STATUS_BAR_ALPHA)
     }
 
     private fun changeBackgroundColor(tab: TabLayout.Tab) {
@@ -143,7 +142,6 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
 
     companion object {
         private val CODENAME: SparseArray<String> = SparseArray(32)
-        private const val UNKNOWN = "Unknown"
 
         init {
             CODENAME.put(1, "Android 1.0")

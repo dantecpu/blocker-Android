@@ -18,18 +18,13 @@ import io.github.newbugger.android.ifw.IntentFirewall
 import io.github.newbugger.android.ifw.IntentFirewallImpl
 import io.github.newbugger.android.ifw.entity.ComponentType
 import io.github.newbugger.android.ifw.util.RuleSerializer
-import io.github.newbugger.android.libkit.utils.ApplicationUtil
-import io.github.newbugger.android.libkit.utils.FileUtils
-import io.github.newbugger.android.libkit.utils.PrescriptionUtil
-import io.github.newbugger.android.libkit.utils.StorageUtils
+import io.github.newbugger.android.libkit.utils.*
 import java.io.File
 import java.io.FileWriter
 import java.io.FileReader
 
 
 object Rule {
-    const val EXTENSION = ".json"
-    // private const val tag = "io.github.newbugger.android.blocker.rule.Rule"
 
     // TODO remove template code
     fun export(context: Context, packageName: String): RulesResult {
@@ -76,7 +71,7 @@ object Rule {
             }
         }
         return if (rule.components.isNotEmpty()) {
-            val ruleFile = File(getBlockerRuleFolder(context), packageName + EXTENSION)
+            val ruleFile = File(getBlockerRuleFolder(context), packageName + ConstantUtil.EXTENSION_JSON)
             saveRuleToStorage(rule, ruleFile)
             RulesResult(true, disabledComponentsCount, 0)
         } else {
@@ -264,7 +259,7 @@ object Rule {
                            typeF: String?, scheme: String?,
                            auth: String?, path: String?, pathOption: String?): Int {
         val prescriptionFolder = getBlockerPrescriptionFolder(context)
-        val filename = packageName.split(".").last() + "." + className.split(".").last() + ".xml"
+        val filename = packageName.split(".").last() + "." + className.split(".").last() + ConstantUtil.EXTENSION_XML
         val content = PrescriptionUtil.template(packageName, className, typeC, sender, action, cat, typeF, scheme, auth, path, pathOption)
         FileWriter(File(prescriptionFolder, filename)).apply {
             write(PrescriptionUtil.head())
