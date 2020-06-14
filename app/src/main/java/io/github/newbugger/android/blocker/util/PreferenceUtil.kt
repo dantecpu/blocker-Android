@@ -5,7 +5,9 @@ import androidx.preference.PreferenceManager
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.core.root.EControllerMethod
 
+
 object PreferenceUtil {
+
     fun getControllerType(context: Context): EControllerMethod {
         // Magic value, but still use it.
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
