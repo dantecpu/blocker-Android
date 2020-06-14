@@ -293,7 +293,7 @@ object ApplicationUtil {
     private fun getBlockedApplication(context: Context): MutableList<String> {
         val sharedPreferences = context.getSharedPreferences(BLOCKED_CONF_NAME, MODE_PRIVATE)
         val json = sharedPreferences.getString(BLOCKED_APP_LIST_KEY, "[]")
-        return Gson().fromJson<MutableList<String>>(json, object : TypeToken<MutableList<String>>() {}.type)
+        return Gson().fromJson(json, object : TypeToken<MutableList<String>>() {}.type)
     }
 
     private fun saveBlockedApplication(context: Context, applications: List<String>) {

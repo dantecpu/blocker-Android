@@ -101,6 +101,7 @@ public class Application implements Parcelable {
         this.packageName = packageName;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isEnabled() {
         return enabled;
     }
@@ -125,6 +126,7 @@ public class Application implements Parcelable {
         return lastUpdateTime;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isBlocked() {
         return blocked;
     }

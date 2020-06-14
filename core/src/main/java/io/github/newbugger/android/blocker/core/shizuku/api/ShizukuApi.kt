@@ -48,7 +48,6 @@ object ShizukuApi {
             )
         } catch (e: Throwable) {
             e.printStackTrace()
-            throw RuntimeException(e.message, e)
         }
     }
 

@@ -54,8 +54,4 @@ class ShizukuController(val context: Context) : IController {
         return ApplicationUtil.checkComponentIsEnabled(context.packageManager, ComponentName(packageName, componentName))
     }
 
-    override fun checkPackageEnableState(packageName: String): Boolean {
-        return ApplicationUtil.checkPackageIsEnabled(context.packageManager, packageName)
-    }
-
 }

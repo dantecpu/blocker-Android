@@ -78,32 +78,28 @@ public class IntentFirewallImpl implements IntentFirewall {
         FileUtils.chmod(destPath, 644, false);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @Override
     public boolean add(String packageName, String componentName, ComponentType type) {
-        boolean result = false;
         switch (type) {
             case ACTIVITY:
                 if (rules.getActivity() == null) {
                     rules.setActivity(new Activity());
                 }
-                result = addComponentFilter(packageName, componentName, rules.getActivity());
-                break;
+                return addComponentFilter(packageName, componentName, rules.getActivity());
             case BROADCAST:
                 if (rules.getBroadcast() == null) {
                     rules.setBroadcast(new Broadcast());
                 }
-                result = addComponentFilter(packageName, componentName, rules.getBroadcast());
-                break;
+                return addComponentFilter(packageName, componentName, rules.getBroadcast());
             case SERVICE:
                 if (rules.getService() == null) {
                     rules.setService(new Service());
                 }
-                result = addComponentFilter(packageName, componentName, rules.getService());
-                break;
+                return addComponentFilter(packageName, componentName, rules.getService());
             default:
-                break;
+                return false;
         }
-        return result;
     }
 
     private boolean addComponentFilter(String packageName, String componentName, Component component) {
@@ -144,27 +140,24 @@ public class IntentFirewallImpl implements IntentFirewall {
         return true;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @Override
     public boolean remove(String packageName, String componentName, ComponentType type) {
-        boolean result = false;
         switch (type) {
             case ACTIVITY:
-                result = removeComponentFilter(packageName, componentName, rules.getActivity());
-                break;
+                return removeComponentFilter(packageName, componentName, rules.getActivity());
             case BROADCAST:
-                result = removeComponentFilter(packageName, componentName, rules.getBroadcast());
-                break;
+                return removeComponentFilter(packageName, componentName, rules.getBroadcast());
             case SERVICE:
-                result = removeComponentFilter(packageName, componentName, rules.getService());
-                break;
+                return removeComponentFilter(packageName, componentName, rules.getService());
             default:
-                break;
+                return false;
         }
-        return result;
     }
 
-    // show IFW state when on ifw controller
-    // show pm state when on other controller
+    // show IFW state when on ifw controller (root permission required)
+    // show pm state when on other controller (public method)
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @Override
     public boolean getComponentEnableState(String packageName, String componentName) {
         List<ComponentFilter> filters = new ArrayList<>();
@@ -177,12 +170,7 @@ public class IntentFirewallImpl implements IntentFirewall {
         if (rules.getService() != null) {
             filters.addAll(rules.getService().getComponentFilters());
         }
-        return getFilterEnableState(packageName, componentName, filters);
-    }
-
-    @Override
-    public boolean getPackageEnableState(String packageName) {
-        return true;  // fake body
+        return !getFilterEnableState(packageName, componentName, filters);
     }
 
     @Override

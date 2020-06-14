@@ -179,10 +179,6 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         return ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(packageName, componentName))
     }
 
-    override fun checkPackageEnableState(packageName: String): Boolean {
-        return ApplicationUtil.checkPackageIsEnabled(pm, packageName)
-    }
-
     override fun batchEnable(componentList: List<ComponentInfo>, action: (info: ComponentInfo) -> Unit): Int {
         TODO("Won't implemented")
     }

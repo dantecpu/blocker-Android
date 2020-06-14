@@ -320,12 +320,14 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
                     itemView.app_name.text = application.label
                     itemView.isLongClickable = true
                     itemView.setOnClickListener { listener.onAppClick(application) }
-                    if (!application.isEnabled) {
-                        itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.md_grey_300))
-                    } else if (application.isBlocked) {
-                        itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.md_red_50))
-                    } else {
+                    if (application.isEnabled) {
                         itemView.setBackgroundColor(Color.WHITE)
+                    } else {
+                        itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.md_grey_300))
+                    }
+                    if (application.isBlocked) {
+                        // TODO: remove blockApplication part
+                        itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.md_red_50))
                     }
                     doAsync {
                         val icon = application.getApplicationIcon(pm)

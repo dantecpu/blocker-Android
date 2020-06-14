@@ -31,5 +31,4 @@ interface IController {
 
     fun checkComponentEnableState(packageName: String, componentName: String): Boolean
 
-    fun checkPackageEnableState(packageName: String): Boolean
 }

@@ -35,10 +35,6 @@ class ComponentControllerProxy private constructor(method: EControllerMethod, co
         return controller.checkComponentEnableState(packageName, componentName)
     }
 
-    override fun checkPackageEnableState(packageName: String): Boolean {
-        return controller.checkPackageEnableState(packageName)
-    }
-
     override fun batchEnable(componentList: List<ComponentInfo>, action: (info: ComponentInfo) -> Unit): Int {
         return controller.batchEnable(componentList) { action(it) }
     }

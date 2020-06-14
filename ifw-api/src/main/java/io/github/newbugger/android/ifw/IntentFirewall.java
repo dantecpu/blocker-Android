@@ -11,8 +11,6 @@ public interface IntentFirewall {
 
     boolean getComponentEnableState(String packageName, String componentName);
 
-    boolean getPackageEnableState(String packageName);
-
     void clear();
 
     void clear(String name);

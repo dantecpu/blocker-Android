@@ -91,12 +91,6 @@ class IfwController(val context: Context) : IController {
         return controller.getComponentEnableState(packageName, componentName)
     }
 
-    override fun checkPackageEnableState(packageName: String): Boolean {
-        // fake body
-        init(packageName)
-        return controller.getPackageEnableState(packageName)
-    }
-
     private fun init(packageName: String) {
         initController(packageName)
         initPackageInfo(packageName)

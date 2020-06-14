@@ -3,7 +3,6 @@ package io.github.newbugger.android.blocker.rule
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ComponentInfo
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
@@ -30,18 +29,18 @@ import java.io.FileReader
 
 object Rule {
     const val EXTENSION = ".json"
-    private const val tag = "io.github.newbugger.android.blocker.rule.Rule"
+    // private const val tag = "io.github.newbugger.android.blocker.rule.Rule"
 
     // TODO remove template code
     fun export(context: Context, packageName: String): RulesResult {
-        Log.d(tag, "Backup rules for $packageName")
+        // Log.d(tag, "Backup rules for $packageName")
         val pm = context.packageManager
         val applicationInfo = ApplicationUtil.getApplicationComponents(pm, packageName)
         val rule = BlockerRule(packageName = applicationInfo.packageName, versionName = applicationInfo.versionName, versionCode = 1)
         var disabledComponentsCount = 0
         val ifwController = IntentFirewallImpl.getInstance(context, packageName)
         applicationInfo.receivers?.forEach {
-            if (!ifwController.getComponentEnableState(it.packageName, it.name)) {
+            if (ifwController.getComponentEnableState(it.packageName, it.name)) {
                 rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.RECEIVER, EControllerMethod.IFW))
                 disabledComponentsCount++
             }
@@ -51,7 +50,7 @@ object Rule {
             }
         }
         applicationInfo.services?.forEach {
-            if (!ifwController.getComponentEnableState(it.packageName, it.name)) {
+            if (ifwController.getComponentEnableState(it.packageName, it.name)) {
                 rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.SERVICE, EControllerMethod.IFW))
                 disabledComponentsCount++
             }
@@ -61,7 +60,7 @@ object Rule {
             }
         }
         applicationInfo.activities?.forEach {
-            if (!ifwController.getComponentEnableState(it.packageName, it.name)) {
+            if (ifwController.getComponentEnableState(it.packageName, it.name)) {
                 rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.ACTIVITY, EControllerMethod.IFW))
                 disabledComponentsCount++
             }
@@ -158,7 +157,7 @@ object Rule {
                 if (result) {
                     succeedCount++
                 } else {
-                    Log.d(tag, "Failed to change component state for : $it")
+                    // Log.d(tag, "Failed to change component state for : $it")
                     failedCount++
                 }
                 action(context, name, (succeedCount + failedCount), total)
