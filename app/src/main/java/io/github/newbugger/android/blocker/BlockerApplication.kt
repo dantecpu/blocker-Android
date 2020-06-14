@@ -16,6 +16,7 @@ class BlockerApplication : Application() {
         Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR)
         Shell.Config.verboseLogging(BuildConfig.DEBUG)
         Shell.Config.setTimeout(10)
+        Shell.Config.setFlags(Shell.FLAG_USE_MAGISK_BUSYBOX)
         Shell.Config.addInitializers(LibsuInitializer::class.java)
     }
 
