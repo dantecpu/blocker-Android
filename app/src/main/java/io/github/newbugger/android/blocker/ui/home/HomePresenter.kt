@@ -85,9 +85,9 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
                 ManagerUtils.enableApplication(packageName)
             else
                 if (Preference.checkTransactType(context!!))
-                    ShizukuApi.setApplicationWrapper(packageName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
+                    ShizukuApi.setApplicationWrapper(packageName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
                 else
-                    ShizukuApi.setApplicationRemote(packageName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)
+                    ShizukuApi.setApplicationRemote(packageName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
             uiThread {
                 homeView?.updateState(packageName)
             }
@@ -100,9 +100,9 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
                 ManagerUtils.disableApplication(packageName)
             else
                 if (Preference.checkTransactType(context!!))
-                    ShizukuApi.setApplicationWrapper(packageName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
+                    ShizukuApi.setApplicationWrapper(packageName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
                 else
-                    ShizukuApi.setApplicationRemote(packageName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER)
+                    ShizukuApi.setApplicationRemote(packageName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
             uiThread {
                 homeView?.updateState(packageName)
             }

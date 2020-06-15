@@ -226,13 +226,11 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
 
     // here to click button and switch component
     // the behavior is only defined by button is on or off
-    // only use this when not on shizuku mode
     override fun onSwitchClick(name: String, isChecked: Boolean) {
-        if (!PreferenceUtil.checkShizukuType(requireContext()))
-            if (isChecked)
-                presenter.enable(packageName, name)
-            else
-                presenter.disable(packageName, name)
+        if (isChecked)
+            presenter.enable(packageName, name)
+        else
+            presenter.disable(packageName, name)
     }
 
     override fun showDisableAllAlert() {

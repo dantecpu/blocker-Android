@@ -1,5 +1,7 @@
 package io.github.newbugger.android.blocker.core.shizuku.api
 
+import android.content.ComponentName
+import android.content.ComponentName.writeToParcel
 import android.content.pm.PackageManager
 import android.os.Parcel
 import android.os.RemoteException
@@ -18,6 +20,36 @@ object ShizukuApi {
      unless it is a test package.
      Shell cannot change component state.
     */
+
+    /**
+     https://github.com/lihenggui/blocker#shizuku-mode-no-root-permission-required
+
+     Starting from Android O, if we install a Test-Only application,
+     users could use pm command to control the command status.
+     We could modify the install package to set it into Test-Only mode.
+
+     me: a super dirty method, not recommended but supported for it here.
+     */
+
+    // though, really really not recommended usage
+    fun setComponentRemote(comp: ComponentName, state: Int) {
+        val data = getParcelData().also {
+            writeToParcel(comp, it)
+            it.writeInt(getState(state))
+            it.writeInt(0)
+            it.writeInt(0)
+        }
+        val reply = Parcel.obtain()
+        try {
+            ShizukuService.transactRemote(data, reply, 0)
+            reply.readException()
+        } catch (e: RemoteException) {
+            e.printStackTrace()
+        } finally {
+            data.recycle()
+            reply.recycle()
+        }
+    }
 
     // method 2: use transactRemote directly
     fun setApplicationRemote(pack: String, state: Int) {
@@ -39,8 +71,18 @@ object ShizukuApi {
         }
     }
 
+    // though, really really not recommended usage
+    fun setComponentWrapper(comp: ComponentName, state: Int) {
+        try {
+            getPackageManager().setComponentEnabledSetting(
+                    comp, getState(state), 0, 0
+            )
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
     // method 1: use ShizukuBinderWrapper
-    // TODO: complete the abstract Class / interface code
     fun setApplicationWrapper(pack: String, state: Int) {
         try {
             getPackageManager().setApplicationEnabledSetting(

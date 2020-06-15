@@ -14,9 +14,9 @@ class ShizukuController(val context: Context) : IController {
 
     override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
         if (Preference.checkTransactType(context))
-            ShizukuApi.setApplicationWrapper(packageName, state)
+            ShizukuApi.setComponentWrapper(ComponentName(packageName, componentName), state)
         else
-            ShizukuApi.setApplicationRemote(packageName, state)
+            ShizukuApi.setComponentRemote(ComponentName(packageName, componentName), state)
         return true
     }
 
