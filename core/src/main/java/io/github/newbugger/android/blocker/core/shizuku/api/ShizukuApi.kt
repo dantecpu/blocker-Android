@@ -4,10 +4,10 @@ import android.content.ComponentName
 import android.content.ComponentName.writeToParcel
 import android.content.pm.PackageManager
 import android.os.Parcel
-import android.os.RemoteException
 import io.github.newbugger.android.blocker.core.shizuku.api.ShizukuSystemServer.getPackageManager
 import io.github.newbugger.android.blocker.core.shizuku.api.ShizukuSystemServer.getParcelData
 import moe.shizuku.api.ShizukuService
+import java.lang.RuntimeException
 
 
 object ShizukuApi {
@@ -43,8 +43,9 @@ object ShizukuApi {
         try {
             ShizukuService.transactRemote(data, reply, 0)
             reply.readException()
-        } catch (e: RemoteException) {
+        } catch (e: Throwable) {
             e.printStackTrace()
+            throw RuntimeException(e.message, e)
         } finally {
             data.recycle()
             reply.recycle()
@@ -63,8 +64,9 @@ object ShizukuApi {
         try {
             ShizukuService.transactRemote(data, reply, 0)
             reply.readException()
-        } catch (e: RemoteException) {
+        } catch (e: Throwable) {
             e.printStackTrace()
+            throw RuntimeException(e.message, e)
         } finally {
             data.recycle()
             reply.recycle()
@@ -79,6 +81,7 @@ object ShizukuApi {
             )
         } catch (e: Throwable) {
             e.printStackTrace()
+            throw RuntimeException(e.message, e)
         }
     }
 
@@ -90,6 +93,7 @@ object ShizukuApi {
             )
         } catch (e: Throwable) {
             e.printStackTrace()
+            throw RuntimeException(e.message, e)
         }
     }
 
