@@ -30,9 +30,9 @@ class ServiceHelper(private val packageName: String) {
         serviceList.clear()
         serviceInfo = try {
             LibsuCommand.output(LibsuCommand.command("dumpsys activity services -p $packageName")).joinToString(separator = ", ")
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
-            ""
+            "null"
         }
         parseServiceInfo()
     }

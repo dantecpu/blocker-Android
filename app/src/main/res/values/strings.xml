@@ -9,9 +9,10 @@
     <string name="service">Service</string>
     <string name="no_app_message">OOps, I cannot find any application.</string>
     <string name="no_component_message">OOps, I cannot find any component here.</string>
-    <string name="application_label">Name: %1$s</string>
-    <string name="min_sdk_version">Minimum SDK Version: %1$s</string>
-    <string name="package_name">Package name: %1$s</string>
+    <string name="application_label">simpleName: %1$s</string>
+    <string name="min_sdk_version">minSDK: %1$s</string>
+    <string name="target_sdk_version">targetSDK: %1$s</string>
+    <string name="package_name">Package: %1$s</string>
     <string name="menu_filter">Filter</string>
     <string name="refresh">Refresh</string>
     <string name="app_list_title">Application list</string>
@@ -32,7 +33,6 @@
     <string name="enable_by_ifw">Enable by IFW</string>
     <string name="prescription_component">Generate Prescription</string>
     <string name="cancel">Cancel</string>
-    <string name="target_sdk_version">Target SDK Version: %1$s</string>
     <string name="block_all">Block All</string>
     <string name="enable_all">Enable All</string>
     <string name="warning">Warning</string>

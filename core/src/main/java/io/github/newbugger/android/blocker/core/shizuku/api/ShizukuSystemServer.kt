@@ -9,12 +9,12 @@ import moe.shizuku.api.SystemServiceHelper
 
 object ShizukuSystemServer {
 
-    fun getParcelData(): Parcel {
+    fun getParcelData(type: String): Parcel {
         // Parcel used for each once, as cannot be cached
         return SystemServiceHelper.obtainParcel(
                 "package",
                 "android.content.pm.IPackageManager",
-                "setApplicationEnabledSetting"
+                type
         )
     }
 

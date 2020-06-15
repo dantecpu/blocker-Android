@@ -4,10 +4,10 @@ import android.content.ComponentName
 import android.content.ComponentName.writeToParcel
 import android.content.pm.PackageManager
 import android.os.Parcel
+import android.os.RemoteException
 import io.github.newbugger.android.blocker.core.shizuku.api.ShizukuSystemServer.getPackageManager
 import io.github.newbugger.android.blocker.core.shizuku.api.ShizukuSystemServer.getParcelData
 import moe.shizuku.api.ShizukuService
-import java.lang.RuntimeException
 
 
 object ShizukuApi {
@@ -33,7 +33,8 @@ object ShizukuApi {
 
     // though, really really not recommended usage
     fun setComponentRemote(comp: ComponentName, state: Int) {
-        val data = getParcelData().also {
+        val data = getParcelData("setComponentEnabledSetting").also {
+            // unreliable: Must be read with readFromParcel(android.os.Parcel)
             writeToParcel(comp, it)
             it.writeInt(getState(state))
             it.writeInt(0)
@@ -43,9 +44,8 @@ object ShizukuApi {
         try {
             ShizukuService.transactRemote(data, reply, 0)
             reply.readException()
-        } catch (e: Throwable) {
+        } catch (e: RemoteException) {
             e.printStackTrace()
-            throw RuntimeException(e.message, e)
         } finally {
             data.recycle()
             reply.recycle()
@@ -54,19 +54,19 @@ object ShizukuApi {
 
     // method 2: use transactRemote directly
     fun setApplicationRemote(pack: String, state: Int) {
-        val data = getParcelData().apply {
+        val data = getParcelData("setApplicationEnabledSetting").apply {
             writeString(pack)
             writeInt(getState(state))
             writeInt(0)
             writeInt(0)
+            writeString("android.content.pm.PackageManager")
         }
         val reply = Parcel.obtain()
         try {
             ShizukuService.transactRemote(data, reply, 0)
             reply.readException()
-        } catch (e: Throwable) {
+        } catch (e: RemoteException) {
             e.printStackTrace()
-            throw RuntimeException(e.message, e)
         } finally {
             data.recycle()
             reply.recycle()

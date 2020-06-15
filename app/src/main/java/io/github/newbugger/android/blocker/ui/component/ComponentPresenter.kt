@@ -63,6 +63,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         doAsync(exceptionHandler) {
             if (type == EComponentType.SERVICE &&
                     !PreferenceUtil.checkShizukuType(context)) {
+                // TODO: get dumpsys serviceList using shizuku service
                 /*if (PreferenceUtil.checkShizukuType(context))
                     serviceHelper.refreshShizuku()
                 else
@@ -97,14 +98,16 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
             t.printStackTrace()
         }
         doAsync(handler) {
-            val controllerType = PreferenceUtil.getControllerType(context)
-            if (controllerType == EControllerMethod.PM) {
-                if (!checkIFWState(packageName, componentName)) {
-                    ComponentControllerProxy.getInstance(EControllerMethod.IFW, context).enable(packageName, componentName)
+            PreferenceUtil.getControllerType(context).let {
+                if (it == EControllerMethod.IFW) {
+                    if (!checkIFWState(packageName, componentName)) {
+                        ComponentControllerProxy.getInstance(EControllerMethod.IFW, context).enable(packageName, componentName)
+                    }
                 }
-            } else if (controllerType == EControllerMethod.IFW) {
-                if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager, ComponentName(packageName, componentName))) {
-                    ComponentControllerProxy.getInstance(EControllerMethod.PM, context).enable(packageName, componentName)
+                if (it == EControllerMethod.PM) {
+                    if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager, ComponentName(packageName, componentName))) {
+                        ComponentControllerProxy.getInstance(EControllerMethod.PM, context).enable(packageName, componentName)
+                    }
                 }
             }
             controller.enable(packageName, componentName)
@@ -201,12 +204,11 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     override fun updateComponentViewModel(viewModel: ComponentItemViewModel) {
         viewModel.state = ApplicationUtil.checkComponentIsEnabled(pm,
                 ComponentName(viewModel.packageName, viewModel.name))
-        // TODO: get checkComponentEnableState using shizuku service
-        if (!PreferenceUtil.checkShizukuType(context)) {
+        if (PreferenceUtil.getControllerType(context) == EControllerMethod.IFW) {
             viewModel.ifwState = ifwController.checkComponentEnableState(viewModel.packageName, viewModel.name)
-            if (type == EComponentType.SERVICE) {
-                viewModel.isRunning = isServiceRunning(viewModel.name)
-            }
+        }
+        if (type == EComponentType.SERVICE) {
+            viewModel.isRunning = isServiceRunning(viewModel.name)
         }
     }
 

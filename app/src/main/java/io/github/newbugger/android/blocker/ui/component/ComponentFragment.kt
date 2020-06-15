@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.baseview.ContextMenuRecyclerView
-import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import kotlinx.android.synthetic.main.component_item.view.*

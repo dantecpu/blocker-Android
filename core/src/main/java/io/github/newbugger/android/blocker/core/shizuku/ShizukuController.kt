@@ -13,10 +13,11 @@ import io.github.newbugger.android.libkit.utils.ApplicationUtil
 class ShizukuController(val context: Context) : IController {
 
     override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
-        if (Preference.checkTransactType(context))
+        /*if (Preference.checkTransactType(context))
             ShizukuApi.setComponentWrapper(ComponentName(packageName, componentName), state)
         else
-            ShizukuApi.setComponentRemote(ComponentName(packageName, componentName), state)
+            ShizukuApi.setComponentRemote(ComponentName(packageName, componentName), state)*/
+        ShizukuApi.setComponentWrapper(ComponentName(packageName, componentName), state)
         return true
     }
 
