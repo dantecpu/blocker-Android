@@ -35,7 +35,7 @@ object Rule {
         var disabledComponentsCount = 0
         val ifwController = IntentFirewallImpl.getInstance(context, packageName)
         applicationInfo.receivers?.forEach {
-            if (ifwController.getComponentEnableState(it.packageName, it.name)) {
+            if (!ifwController.getComponentEnableState(it.packageName, it.name)) {
                 rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.RECEIVER, EControllerMethod.IFW))
                 disabledComponentsCount++
             }
@@ -45,7 +45,7 @@ object Rule {
             }
         }
         applicationInfo.services?.forEach {
-            if (ifwController.getComponentEnableState(it.packageName, it.name)) {
+            if (!ifwController.getComponentEnableState(it.packageName, it.name)) {
                 rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.SERVICE, EControllerMethod.IFW))
                 disabledComponentsCount++
             }
@@ -55,7 +55,7 @@ object Rule {
             }
         }
         applicationInfo.activities?.forEach {
-            if (ifwController.getComponentEnableState(it.packageName, it.name)) {
+            if (!ifwController.getComponentEnableState(it.packageName, it.name)) {
                 rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.ACTIVITY, EControllerMethod.IFW))
                 disabledComponentsCount++
             }

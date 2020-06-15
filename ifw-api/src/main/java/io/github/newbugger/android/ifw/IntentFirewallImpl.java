@@ -168,7 +168,7 @@ public class IntentFirewallImpl implements IntentFirewall {
         if (rules.getService() != null) {
             filters.addAll(rules.getService().getComponentFilters());
         }
-        return !getFilterEnableState(packageName, componentName, filters);
+        return getFilterEnableState(packageName, componentName, filters);
     }
 
     @Override
