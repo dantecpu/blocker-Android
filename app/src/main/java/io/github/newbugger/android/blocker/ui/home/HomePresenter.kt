@@ -3,7 +3,6 @@ package io.github.newbugger.android.blocker.ui.home
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.preference.PreferenceManager
-import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.core.shizuku.api.ShizukuApi
 import io.github.newbugger.android.blocker.core.shizuku.util.Preference
 import io.github.newbugger.android.blocker.util.DialogUtil
@@ -20,7 +19,6 @@ import org.jetbrains.anko.uiThread
 
 class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Presenter {
     private var context: Context? = null
-    private val tag = javaClass.name
     private val exceptionHandler = { e: Throwable ->
         GlobalScope.launch(Dispatchers.Main) {
             DialogUtil().showWarningDialogWithMessage(context, e)
@@ -41,9 +39,10 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     override fun loadApplicationList(context: Context, isSystemApplication: Boolean) {
         homeView?.setLoadingIndicator(true)
         doAsync(exceptionHandler) {
-            val applications: MutableList<Application> = when (isSystemApplication) {
-                false -> ApplicationUtil.getThirdPartyApplicationList(context)
-                true -> ApplicationUtil.getSystemApplicationList(context)
+            val applications: MutableList<Application> = if (isSystemApplication) {
+                ApplicationUtil.getSystemApplicationList(context)
+            } else {
+                ApplicationUtil.getThirdPartyApplicationList(context)
             }
             val sortedList = sortApplicationList(applications)
             uiThread {
@@ -131,18 +130,13 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     override var currentComparator = ApplicationComparatorType.DESCENDING_BY_LABEL
         set(comparator) {
             field = comparator
-            context?.let {
-                val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
-                editor.putInt(it.getString(R.string.key_pref_comparator_type), comparator.value)
-                editor.apply()
-            }
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putInt("key_pref_comparator_type", comparator.value)
+                    .apply()
         }
         get() {
-            context?.let {
-                val pref = PreferenceManager.getDefaultSharedPreferences(context)
-                val comparatorType = pref.getInt(it.getString(R.string.key_pref_comparator_type), 0)
-                return ApplicationComparatorType.from(comparatorType)
-            }
-            return ApplicationComparatorType.DESCENDING_BY_LABEL
+            val comparatorType = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("key_pref_comparator_type", 0)
+            return ApplicationComparatorType.from(comparatorType)
         }
 }

@@ -33,7 +33,6 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
         override fun onAppClick(application: Application) {
             presenter.openApplicationDetails(application)
         }
-
         override fun onAppLongClick(application: Application) {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
@@ -63,7 +62,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
     }
 
     override fun showFilteringPopUpMenu() {
-        PopupMenu(activity, activity?.findViewById(R.id.menu_filter)).apply {
+        PopupMenu(requireActivity(), requireActivity().findViewById(R.id.menu_filter)).apply {
             menuInflater.inflate(R.menu.filter_application, menu)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
@@ -78,19 +77,21 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
             }
             show()
         }
-
     }
 
     override fun showApplicationDetailsUi(application: Application) {
-        val intent = Intent(context, ComponentActivity::class.java)
-        intent.putExtra(ConstantUtil.APPLICATION, application)
-        context?.startActivity(intent)
+        requireContext().let {
+            Intent(it, ComponentActivity::class.java).apply {
+                putExtra(ConstantUtil.APPLICATION, application)
+            }.let { intent ->
+                it.startActivity(intent)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val argument = arguments
-        argument?.run {
+        arguments?.run {
             isSystem = this.getBoolean(ConstantUtil.IS_SYSTEM)
         }
         presenter = HomePresenter(this)
@@ -106,8 +107,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         appListFragmentRecyclerView?.apply {
-            val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
-            this.layoutManager = layoutManager
+            val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context).also { this.layoutManager = it }
             adapter = listAdapter
             itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
             addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, layoutManager.orientation))
@@ -148,7 +148,6 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
                 searchForApplication(newText)
                 return true
             }
-
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchForApplication(query)
                 return true
@@ -161,18 +160,14 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
             setItemsVisibility(menu, searchItem, true)
             false
         }
-
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
-        activity?.menuInflater?.inflate(R.menu.app_list_long_click_menu, menu)
+        requireActivity().menuInflater.inflate(R.menu.app_list_long_click_menu, menu)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        /*if (!userVisibleHint) {
-            return false
-        }*/
         if (!iVisible) {
             return false
         }
@@ -190,7 +185,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
     }
 
     override fun showAlert(alertMessage: Int, confirmAction: () -> Unit) {
-        context?.let {
+        requireContext().let {
             AlertDialog.Builder(it)
                     .setTitle(R.string.alert)
                     .setMessage(alertMessage)
@@ -202,7 +197,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
     }
 
     override fun showError(errorMessage: Int) {
-        context?.let {
+        requireContext().let {
             AlertDialog.Builder(it)
                     .setTitle(R.string.oops)
                     .setMessage(errorMessage)
@@ -216,7 +211,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
     }
 
     override fun showForceStopped() {
-        Toast.makeText(context, R.string.force_stopped, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), R.string.force_stopped, Toast.LENGTH_SHORT).show()
     }
 
     override fun updateState(packageName: String) {
@@ -253,7 +248,6 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
             fragment.arguments = bundle
             return fragment
         }
-
     }
 
     inner class AppListRecyclerViewAdapter(private val listener: AppItemListener, private var applications: MutableList<Application> = mutableListOf()) : androidx.recyclerview.widget.RecyclerView.Adapter<AppListRecyclerViewAdapter.ViewHolder>() {
@@ -290,7 +284,6 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
             if (position == -1) return
             applications[position] = application
             notifyItemChanged(position)
-
         }
 
         private fun getPositionByPackageName(packageName: String): Int {
@@ -317,7 +310,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
             fun bindApplication(application: Application) {
                 view?.apply {
                     itemView.app_name.text = application.label
-                    itemView.isLongClickable = true
+                    itemView.isLongClickable = false
                     itemView.setOnClickListener { listener.onAppClick(application) }
                     if (application.isEnabled) {
                         itemView.setBackgroundColor(Color.WHITE)

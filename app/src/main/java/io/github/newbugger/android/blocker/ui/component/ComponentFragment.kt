@@ -135,7 +135,7 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
-        activity?.menuInflater?.inflate(R.menu.component_list_long_click_menu, menu)
+        requireActivity().menuInflater.inflate(R.menu.component_list_long_click_menu, menu)
         /*context?.let {
             if (PreferenceUtil.getControllerType(it) != EControllerMethod.IFW) {
                 menu.removeItem(R.id.block_by_ifw)
@@ -179,7 +179,7 @@ class ComponentFragment : Fragment(), ComponentContract.View, ComponentContract.
     }
 
     override fun showFilteringPopUpMenu() {
-        PopupMenu(activity, activity?.findViewById(R.id.menu_filter)).apply {
+        PopupMenu(requireActivity(), requireActivity().findViewById(R.id.menu_filter)).apply {
             menuInflater.inflate(R.menu.filter_component, menu)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {

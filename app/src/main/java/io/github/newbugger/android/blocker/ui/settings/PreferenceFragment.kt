@@ -48,7 +48,7 @@ class PreferenceFragment: PreferenceFragmentCompat(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == android.R.id.home) {
-            startActivity(Intent(activity, SettingsActivity::class.java))
+            startActivity(Intent(requireActivity(), SettingsActivity::class.java))
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -81,15 +81,15 @@ class PreferenceFragment: PreferenceFragmentCompat(),
         file: String?,
         action: (file: String?) -> Unit
     ) {
-        activity?.let {
+        requireActivity().let {
             AlertDialog.Builder(it)
-                .setTitle(title)
-                .setMessage(message)
-                .setCancelable(true)
-                .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-                .setPositiveButton(R.string.ok) { _, _ -> action(file) }
-                .create()
-                .show()
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setCancelable(true)
+                    .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+                    .setPositiveButton(R.string.ok) { _, _ -> action(file) }
+                    .create()
+                    .show()
         }
     }
 
