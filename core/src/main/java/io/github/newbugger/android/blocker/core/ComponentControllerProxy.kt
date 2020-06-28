@@ -5,7 +5,6 @@ import android.content.pm.ComponentInfo
 import io.github.newbugger.android.blocker.core.ifw.IfwController
 import io.github.newbugger.android.blocker.core.root.EControllerMethod
 import io.github.newbugger.android.blocker.core.root.RootController
-import io.github.newbugger.android.blocker.core.shizuku.ShizukuController
 
 /**
  * Created by Mercury on 2018/3/10.
@@ -16,7 +15,6 @@ class ComponentControllerProxy private constructor(method: EControllerMethod, co
     private var controller: IController = when (method) {
         EControllerMethod.IFW -> IfwController(context)
         EControllerMethod.PM -> RootController(context)
-        EControllerMethod.SHIZUKU -> ShizukuController(context)
     }
 
     override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {

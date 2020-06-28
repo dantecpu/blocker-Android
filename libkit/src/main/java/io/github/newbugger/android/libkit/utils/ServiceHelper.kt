@@ -37,17 +37,6 @@ class ServiceHelper(private val packageName: String) {
         parseServiceInfo()
     }
 
-    /*fun refreshShizuku() {
-        serviceList.clear()
-        serviceInfo = try {
-            ShizukuApi
-        } catch (e: Exception) {
-            Log.e(tag, "Cannot get running service list:", e)
-            ""
-        }
-        parseServiceInfo()
-    }*/
-
     private fun parseServiceInfo() {
         if (serviceInfo.contains("(nothing)")) {
             return

@@ -47,9 +47,6 @@
     <string name="pref_controller_settings">Controller Settings</string>
     <string name="pref_controller_chooser_title">Choose Controller</string>
     <string name="pref_controller_type">Controller Type</string>
-    <string name="pref_transact_settings">Transact Settings</string>
-    <string name="pref_transact_chooser_title">Choose Transact</string>
-    <string name="pref_transact_type">Transact Type</string>
     <string name="fail">Failed</string>
     <string name="pref_rule_settings">Blocker Rules</string>
     <string name="export_rules">Export Blocker Rules</string>

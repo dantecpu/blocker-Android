@@ -100,7 +100,3 @@
 -keep class io.github.newbugger.android.blocker.strategy.entity.** { *; }
 -keepclassmembers enum * { *; }
 -keep class android.os.** { *; }
-
-#-keepclasseswithmembers class android.content.pm.PackageManager { *; }
-#-keepclasseswithmembers class android.content.pm.IPackageManager { *; }
--keepclasseswithmembers class android.content.pm.** { *; }

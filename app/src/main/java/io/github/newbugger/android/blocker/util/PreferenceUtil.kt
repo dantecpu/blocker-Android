@@ -14,13 +14,8 @@ object PreferenceUtil {
         return when (pref.getString(context.getString(R.string.key_pref_controller_type), context.getString(R.string.key_pref_controller_type_default_value))) {
             "ifw" -> EControllerMethod.IFW
             "pm" -> EControllerMethod.PM
-            "shizuku" -> EControllerMethod.SHIZUKU
-            else -> EControllerMethod.SHIZUKU
+            else -> EControllerMethod.IFW
         }
-    }
-
-    fun checkShizukuType(context: Context): Boolean {
-        return getControllerType(context) == EControllerMethod.SHIZUKU
     }
 
 }

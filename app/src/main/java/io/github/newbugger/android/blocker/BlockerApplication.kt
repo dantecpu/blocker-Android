@@ -6,7 +6,6 @@ import android.content.Context
 import com.topjohnwu.superuser.BuildConfig
 import com.topjohnwu.superuser.Shell
 import io.github.newbugger.android.blocker.libsu.LibsuInitializer
-import me.weishu.reflection.Reflection
 
 
 class BlockerApplication : Application() {
@@ -23,7 +22,6 @@ class BlockerApplication : Application() {
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
         context = this
-        Reflection.unseal(this) // the dependency of shizuku as to keep there
     }
 
     companion object {

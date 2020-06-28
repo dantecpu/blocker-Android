@@ -24,8 +24,6 @@ import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
 import io.github.newbugger.android.blocker.ui.settings.SettingsActivity
-import io.github.newbugger.android.blocker.util.PreferenceUtil
-import io.github.newbugger.android.blocker.shizuku.ShizukuBinder
 import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
 import io.github.newbugger.android.libkit.utils.ConstantUtil
@@ -54,7 +52,6 @@ class HomeActivity : AppCompatActivity(), IActivityView {
 
     override fun onStart() {
         super.onStart()
-        shizukuSetup(this)
         createNotificationChannel()
     }
 
@@ -165,13 +162,6 @@ class HomeActivity : AppCompatActivity(), IActivityView {
         super.onBackPressed()
         if (drawer.isDrawerOpen) {
             drawer.closeDrawer()
-        }
-    }
-
-    private fun shizukuSetup(context: Context) {
-        context.let {
-            if (!PreferenceUtil.checkShizukuType(it)) return
-            if (!ShizukuBinder.shizukuRequestPermission(it)) return
         }
     }
 

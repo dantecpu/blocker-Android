@@ -61,13 +61,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         // Log.d(tag, "Load components for $packageName, type: $type")
         view?.setLoadingIndicator(true)
         doAsync(exceptionHandler) {
-            if (type == EComponentType.SERVICE &&
-                    !PreferenceUtil.checkShizukuType(context)) {
-                // TODO: get dumpsys serviceList using shizuku service
-                /*if (PreferenceUtil.checkShizukuType(context))
-                    serviceHelper.refreshShizuku()
-                else
-                    serviceHelper.refreshRoot()*/
+            if (type == EComponentType.SERVICE) {
                 serviceHelper.refreshRoot()
             }
             val componentList = getComponents(packageName, type)
@@ -233,13 +227,8 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
             ifwController.batchEnable(components) { componentInfo ->
                 if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager,
                                 ComponentName(componentInfo.packageName, componentInfo.name))) {
-                    if (PreferenceUtil.checkShizukuType(context)) {
-                        ComponentControllerProxy.getInstance(EControllerMethod.SHIZUKU, context)
-                                .enable(componentInfo.packageName, componentInfo.name)
-                    } else {
-                        ComponentControllerProxy.getInstance(EControllerMethod.PM, context)
-                                .enable(componentInfo.packageName, componentInfo.name)
-                    }
+                    ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
+                            .enable(componentInfo.packageName, componentInfo.name)
                 }
                 uiThread {
                     view?.refreshComponentState(componentInfo.name)

@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.newbugger.android.blocker.R
@@ -31,7 +29,6 @@ class PreferenceFragment: PreferenceFragmentCompat(),
     private lateinit var importIfwRulePreference: Preference
     private lateinit var resetIfwPreference: Preference
     private lateinit var importMatRulesPreference: Preference
-    private lateinit var aboutPreference: Preference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,7 +127,6 @@ class PreferenceFragment: PreferenceFragmentCompat(),
             ) {
                 presenter.resetIFW()
             } */
-            aboutPreference -> showAbout()
             else -> return false
         }
         return true
@@ -162,14 +158,12 @@ class PreferenceFragment: PreferenceFragmentCompat(),
         exportIfwRulePreference = findPreference(getString(R.string.key_pref_export_ifw_rules))!!
         resetIfwPreference = findPreference(getString(R.string.key_pref_reset_ifw_rules))!!
         importMatRulesPreference = findPreference(getString(R.string.key_pref_import_mat_rules))!!
-        aboutPreference = findPreference(getString(R.string.key_pref_about))!!
         exportRulePreference.onPreferenceClickListener = this
         importRulePreference.onPreferenceClickListener = this
         exportIfwRulePreference.onPreferenceClickListener = this
         importIfwRulePreference.onPreferenceClickListener = this
         importMatRulesPreference.onPreferenceClickListener = this
         resetIfwPreference.onPreferenceClickListener = this
-        aboutPreference.onPreferenceClickListener = this
     }
 
     private fun selectMatFile() {
@@ -182,13 +176,6 @@ class PreferenceFragment: PreferenceFragmentCompat(),
         } else {
             ToastUtil.showToast(getString(R.string.file_manager_required))
         }
-    }
-
-    private fun showAbout() {
-        CustomTabsIntent.Builder()
-            .setShowTitle(true)
-            .build()
-            .launchUrl(requireContext(), Uri.parse(ConstantUtil.aboutURL))
     }
 
     private fun showConfirmationDialog(

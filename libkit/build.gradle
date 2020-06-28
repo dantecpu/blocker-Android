@@ -19,7 +19,5 @@ dependencies {
     api 'androidx.preference:preference:1.1.1'
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api 'com.google.code.gson:gson:2.8.6'
-    api 'moe.shizuku.privilege:api:4.0.0'
-    api 'me.weishu:free_reflection:2.2.0'
     api 'com.github.topjohnwu.libsu:core:2.5.1'
 }

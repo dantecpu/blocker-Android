@@ -1,12 +1,8 @@
 package io.github.newbugger.android.blocker.ui.home
 
 import android.content.Context
-import android.content.pm.PackageManager
 import androidx.preference.PreferenceManager
-import io.github.newbugger.android.blocker.core.shizuku.api.ShizukuApi
-import io.github.newbugger.android.blocker.core.shizuku.util.Preference
 import io.github.newbugger.android.blocker.util.DialogUtil
-import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.libkit.entity.Application
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ManagerUtils
@@ -80,13 +76,7 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     // indeed do not need component presenter
     override fun enableApplication(packageName: String) {
         doAsync(exceptionHandler) {
-            if (!PreferenceUtil.checkShizukuType(context!!))
-                ManagerUtils.enableApplication(packageName)
-            else
-                if (Preference.checkTransactType(context!!))
-                    ShizukuApi.setApplicationWrapper(packageName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
-                else
-                    ShizukuApi.setApplicationRemote(packageName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
+            ManagerUtils.enableApplication(packageName)
             uiThread {
                 homeView?.updateState(packageName)
             }
@@ -95,13 +85,7 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
 
     override fun disableApplication(packageName: String) {
         doAsync(exceptionHandler) {
-            if (!PreferenceUtil.checkShizukuType(context!!))
-                ManagerUtils.disableApplication(packageName)
-            else
-                if (Preference.checkTransactType(context!!))
-                    ShizukuApi.setApplicationWrapper(packageName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
-                else
-                    ShizukuApi.setApplicationRemote(packageName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED)
+            ManagerUtils.disableApplication(packageName)
             uiThread {
                 homeView?.updateState(packageName)
             }

@@ -16,19 +16,6 @@
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
-        android:key="@string/key_pref_transact_settings"
-        android:title="@string/pref_transact_settings">
-        <androidx.preference.ListPreference
-            android:defaultValue="@string/key_pref_transact_type_default_value"
-            android:dialogTitle="@string/pref_transact_chooser_title"
-            android:entries="@array/pref_transactType_entries"
-            android:entryValues="@array/pref_transactType_value"
-            android:key="@string/key_pref_transact_type"
-            android:summary="%s"
-            android:title="@string/pref_transact_type" />
-    </androidx.preference.PreferenceCategory>
-
-    <androidx.preference.PreferenceCategory
         android:key="@string/key_pref_rules"
         android:title="@string/pref_rule_settings">
         <androidx.preference.Preference
