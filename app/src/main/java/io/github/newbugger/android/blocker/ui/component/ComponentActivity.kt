@@ -4,7 +4,6 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.SparseArray
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -107,8 +106,8 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
     private fun showApplicationBriefInfo(application: Application) {
         app_info_app_name.text = getString(R.string.application_label, application.label)
         app_info_app_package_name.text = getString(R.string.package_name, application.packageName)
-        app_info_target_sdk_version.text = getString(R.string.target_sdk_version, CODENAME.get(application.targetSdkVersion, ConstantUtil.sdkUNKNOWN))
-        app_info_min_sdk_version.text = getString(R.string.min_sdk_version, CODENAME.get(application.minSdkVersion, ConstantUtil.sdkUNKNOWN))
+        app_info_target_sdk_version.text = getString(R.string.target_sdk_version, application.targetSdkVersion.toString())
+        app_info_min_sdk_version.text = getString(R.string.min_sdk_version, application.minSdkVersion.toString())
         doAsync {
             val icon = application.getApplicationIcon(packageManager)
             uiThread {
@@ -140,43 +139,4 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         colorAnimation.start()
     }
 
-    companion object {
-        private val CODENAME: SparseArray<String> = SparseArray(32)
-
-        init {
-            CODENAME.put(1, "Android 1.0")
-            CODENAME.put(2, "Android 1.1")
-            CODENAME.put(3, "Android 1.5")
-            CODENAME.put(4, "Android 1.6")
-            CODENAME.put(5, "Android 2.0")
-            CODENAME.put(6, "Android 2.0.1")
-            CODENAME.put(7, "Android 2.1")
-            CODENAME.put(8, "Android 2.2")
-            CODENAME.put(9, "Android 2.3")
-            CODENAME.put(10, "Android 2.3.3")
-            CODENAME.put(11, "Android 3.0")
-            CODENAME.put(12, "Android 3.1")
-            CODENAME.put(13, "Android 3.2")
-            CODENAME.put(14, "Android 4.0.1")
-            CODENAME.put(15, "Android 4.0.3")
-            CODENAME.put(16, "Android 4.1")
-            CODENAME.put(17, "Android 4.2")
-            CODENAME.put(18, "Android 4.3")
-            CODENAME.put(19, "Android 4.4")
-            CODENAME.put(21, "Android 5.0")
-            CODENAME.put(22, "Android 5.1")
-            CODENAME.put(23, "Android 6.0")
-            CODENAME.put(24, "Android 7.0")
-            CODENAME.put(25, "Android 7.1")
-            CODENAME.put(26, "Android 8.0")
-            CODENAME.put(27, "Android 8.1")
-            CODENAME.put(28, "Android P")
-            CODENAME.put(29, "Android 10")
-            CODENAME.put(30, "Android R")
-            CODENAME.put(31, "Android S")
-            CODENAME.put(32, "Android T")
-            CODENAME.put(33, "Android U")
-            // Reference : https://source.android.com/setup/start/build-numbers
-        }
-    }
 }

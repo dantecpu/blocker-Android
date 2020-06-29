@@ -10,7 +10,6 @@ object ConstantUtil {
 
     // .ui.settings.PreferenceFragment
     const val matRulePathRequestCode = 100
-    const val aboutURL = "https://github.com/NewBugger/blocker-Android"
 
     // .libkit.utils.ApplicationUtil
     const val BLOCKER_PACKAGE_NAME = "io.github.newbugger.android.blocker"
@@ -19,9 +18,6 @@ object ConstantUtil {
 
     // .ui.home.ApplicationListFragment
     const val IS_SYSTEM: String = "IS_SYSTEM"
-
-    // .ui.component.ComponentActivity
-    const val sdkUNKNOWN = "Unknown"
 
     // .core.root.RootController
     const val COMMAND_ENABLE_COMPONENT = "pm enable %s/%s"
