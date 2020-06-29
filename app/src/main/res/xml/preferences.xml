@@ -48,12 +48,4 @@
             android:title="@string/import_mat_rules" />
     </androidx.preference.PreferenceCategory>
 
-    <androidx.preference.PreferenceCategory
-        android:key="@string/key_pref_about_category"
-        android:title="@string/about">
-        <androidx.preference.Preference
-            android:key="@string/key_pref_about"
-            android:title="@string/about" />
-    </androidx.preference.PreferenceCategory>
-
 </androidx.preference.PreferenceScreen>

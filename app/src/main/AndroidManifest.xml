@@ -13,7 +13,7 @@
         <activity
             android:name=".ui.home.HomeActivity"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.OverlapSystemBar">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -22,13 +22,12 @@
 
         <activity
             android:name=".ui.component.ComponentActivity"
-            android:theme="@style/AppTheme.OverlapSystemBar" />
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.settings.SettingsActivity"
-            android:theme="@style/AppTheme.PlayStoreStyle"
-            android:launchMode="singleTask"
-            android:label="@string/title_activity_settings" />
+            android:launchMode="singleTask" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

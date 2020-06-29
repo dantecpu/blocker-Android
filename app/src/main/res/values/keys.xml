@@ -12,6 +12,4 @@
     <string name="key_pref_reset_ifw_rules">pref_key_reset_ifw_rules</string>
     <string name="key_pref_import_mat_rules">pref_key_import_mat_rules</string>
     <string name="key_pref_other">pref_key_other</string>
-    <string name="key_pref_about_category">pref_key_about_category</string>
-    <string name="key_pref_about">pref_key_about</string>
 </resources>

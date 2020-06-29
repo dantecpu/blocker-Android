@@ -43,7 +43,6 @@
     <string name="done">Done</string>
     <string name="export_ifw_rules">Export IFW Rules</string>
     <string name="import_ifw_rules">Import IFW Rules</string>
-    <string name="title_activity_settings">Settings</string>
     <string name="pref_controller_settings">Controller Settings</string>
     <string name="pref_controller_chooser_title">Choose Controller</string>
     <string name="pref_controller_type">Controller Type</string>
@@ -52,7 +51,6 @@
     <string name="export_rules">Export Blocker Rules</string>
     <string name="import_rules">Import Blocker Rules</string>
     <string name="pref_ifw_settings">IFW Rules</string>
-    <string name="about">About</string>
     <string name="import_rule">Import Rule</string>
     <string name="export_rule">Export Rule</string>
     <string name="processing">Processing …</string>
