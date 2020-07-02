@@ -222,7 +222,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
             ifwController.batchEnable(components) { componentInfo ->
                 if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager,
                                 ComponentName(componentInfo.packageName, componentInfo.name))) {
-                    ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
+                    ComponentControllerProxy.getInstance(EControllerMethod.PM, context)
                             .enable(componentInfo.packageName, componentInfo.name)
                 }
                 uiThread {
