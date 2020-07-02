@@ -14,6 +14,8 @@ import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
+import java.io.IOException
+import java.lang.RuntimeException
 
 
 class SettingsPresenter(
@@ -28,6 +30,7 @@ class SettingsPresenter(
     }
     private val uiScope = CoroutineScope(Dispatchers.Main + exceptionHandler)
 
+    @Throws(RuntimeException::class, IOException::class)
     override fun exportAllRules() = uiScope.launch {
         var succeedCount = 0
         var failedCount = 0
@@ -57,6 +60,7 @@ class SettingsPresenter(
         settingsView.showExportResult(true, succeedCount, failedCount)
     }
 
+    @Throws(RuntimeException::class, IOException::class)
     override fun importAllRules() = uiScope.launch {
         var restoredCount = 0
         var rulesCount: Int
@@ -87,6 +91,7 @@ class SettingsPresenter(
         NotificationUtil.finishProcessingNotification(context, restoredCount, notificationBuilder)
     }
 
+    @Throws(RuntimeException::class, IOException::class)
     override fun exportAllIfwRules() = uiScope.launch {
         withContext(Dispatchers.IO) {
             notificationBuilder = NotificationUtil.createProcessingNotification(context, 0)
@@ -95,6 +100,7 @@ class SettingsPresenter(
         }
     }
 
+    @Throws(RuntimeException::class, IOException::class)
     override fun importAllIfwRules() = uiScope.launch {
         var count: Int
         withContext(Dispatchers.IO) {
@@ -105,6 +111,7 @@ class SettingsPresenter(
         settingsView.showExportResult(true, count, 0)
     }
 
+    @Throws(RuntimeException::class, IOException::class)
     override fun resetIFW() {
         val errorHandler = CoroutineExceptionHandler { _, e ->
             e.printStackTrace()
@@ -123,6 +130,7 @@ class SettingsPresenter(
         }
     }
 
+    @Throws(RuntimeException::class, IOException::class)
     override fun importMatRules(filePath: String?) {
         val errorHandler = CoroutineExceptionHandler { _, e ->
             e.printStackTrace()

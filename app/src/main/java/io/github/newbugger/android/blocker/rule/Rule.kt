@@ -22,11 +22,13 @@ import io.github.newbugger.android.libkit.utils.*
 import java.io.File
 import java.io.FileWriter
 import java.io.FileReader
+import java.io.IOException
+import java.lang.RuntimeException
 
 
 object Rule {
 
-    // TODO remove template code
+    // over Blocker rule mode, both IFW and PM are applied
     fun export(context: Context, packageName: String): RulesResult {
         val pm = context.packageManager
         val applicationInfo = ApplicationUtil.getApplicationComponents(pm, packageName)
@@ -39,7 +41,7 @@ object Rule {
                 disabledComponentsCount++
             }
             if (!ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.RECEIVER))
+                rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.RECEIVER, EControllerMethod.PM))
                 disabledComponentsCount++
             }
         }
@@ -49,7 +51,7 @@ object Rule {
                 disabledComponentsCount++
             }
             if (!ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.SERVICE))
+                rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.SERVICE, EControllerMethod.PM))
                 disabledComponentsCount++
             }
         }
@@ -59,13 +61,13 @@ object Rule {
                 disabledComponentsCount++
             }
             if (!ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.ACTIVITY))
+                rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.ACTIVITY, EControllerMethod.PM))
                 disabledComponentsCount++
             }
         }
         applicationInfo.providers?.forEach {
             if (!ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.RECEIVER))
+                rule.components.add(ComponentRule(it.packageName, it.name, EComponentType.RECEIVER, EControllerMethod.PM))
                 disabledComponentsCount++
             }
         }
@@ -78,6 +80,7 @@ object Rule {
         }
     }
 
+    // over Blocker rule mode, both IFW and PM are applied
     fun import(context: Context, file: File): RulesResult {
         val jsonReader = JsonReader(FileReader(file))
         val appRule = Gson().fromJson<BlockerRule>(jsonReader, BlockerRule::class.java)
@@ -105,10 +108,12 @@ object Rule {
                                     ?: false
                             EComponentType.ACTIVITY -> ifwController?.add(it.packageName, it.name, ComponentType.ACTIVITY)
                                     ?: false
-                            else -> controller.disable(it.packageName, it.name)
+                            // content provider needs PM to implement it
+                            EComponentType.PROVIDER -> controller.disable(it.packageName, it.name)
+                            EComponentType.UNKNOWN -> false
                         }
                     }
-                    else -> controller.disable(it.packageName, it.name)
+                    EControllerMethod.PM -> controller.disable(it.packageName, it.name)
                 }
                 if (controllerResult) {
                     succeedCount++
@@ -162,6 +167,7 @@ object Rule {
         return RulesResult(true, succeedCount, failedCount)
     }
 
+    // over Ifw rule mode, only three components are exported
     fun exportIfwRules(context: Context): Int {
         val ifwFolder = StorageUtils.getIfwFolder()
         val ifwBackupFolder = getBlockerIFWFolder(context)
@@ -185,6 +191,7 @@ object Rule {
         return FileUtils.count(ifwBackupFolder)
     }
 
+    // over Ifw rule mode, only three components are exported
     fun importIfwRules(context: Context): Int {
         val controller = ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
         // var succeedCount = 0
@@ -250,6 +257,7 @@ object Rule {
         return result
     }
 
+    @Throws(RuntimeException::class, IOException::class)
     fun exportPrescription(context: Context,
                            packageName: String, className: String,
                            typeC: String, sender: String,

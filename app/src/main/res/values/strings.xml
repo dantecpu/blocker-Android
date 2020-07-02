@@ -47,10 +47,10 @@
     <string name="pref_controller_chooser_title">Choose Controller</string>
     <string name="pref_controller_type">Controller Type</string>
     <string name="fail">Failed</string>
-    <string name="pref_rule_settings">Blocker Rules</string>
+    <string name="pref_rule_settings">Blocker Rules (recommended)</string>
     <string name="export_rules">Export Blocker Rules</string>
     <string name="import_rules">Import Blocker Rules</string>
-    <string name="pref_ifw_settings">IFW Rules</string>
+    <string name="pref_ifw_settings">IFW Rules (Content Provider not available)</string>
     <string name="import_rule">Import Rule</string>
     <string name="export_rule">Export Rule</string>
     <string name="processing">Processing …</string>
