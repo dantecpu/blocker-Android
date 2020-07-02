@@ -37,51 +37,51 @@ object Rule {
         val ifwController = IntentFirewallImpl.getInstance(context, packageName)
         applicationInfo.receivers?.forEach {
             if (ifwController.getComponentEnableState(it.packageName, it.name)) {
-                rule.components.add(ComponentRule(it.packageName, it.name, true, EComponentType.RECEIVER, EControllerMethod.IFW))
+                rule.components.add(ComponentRule(it.name, true, EComponentType.RECEIVER, EControllerMethod.IFW))
             } else {
-                rule.components.add(ComponentRule(it.packageName, it.name, false, EComponentType.RECEIVER, EControllerMethod.IFW))
+                rule.components.add(ComponentRule(it.name, false, EComponentType.RECEIVER, EControllerMethod.IFW))
                 disabledComponentsCount++
             }
             if (ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.packageName, it.name, true, EComponentType.RECEIVER, EControllerMethod.PM))
+                rule.components.add(ComponentRule(it.name, true, EComponentType.RECEIVER, EControllerMethod.PM))
             } else {
-                rule.components.add(ComponentRule(it.packageName, it.name, false, EComponentType.RECEIVER, EControllerMethod.PM))
+                rule.components.add(ComponentRule(it.name, false, EComponentType.RECEIVER, EControllerMethod.PM))
                 disabledComponentsCount++
             }
         }
         applicationInfo.services?.forEach {
             if (ifwController.getComponentEnableState(it.packageName, it.name)) {
-                rule.components.add(ComponentRule(it.packageName, it.name, true, EComponentType.SERVICE, EControllerMethod.IFW))
+                rule.components.add(ComponentRule(it.name, true, EComponentType.SERVICE, EControllerMethod.IFW))
             } else {
-                rule.components.add(ComponentRule(it.packageName, it.name, false, EComponentType.SERVICE, EControllerMethod.IFW))
+                rule.components.add(ComponentRule(it.name, false, EComponentType.SERVICE, EControllerMethod.IFW))
                 disabledComponentsCount++
             }
             if (ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.packageName, it.name, true, EComponentType.SERVICE, EControllerMethod.PM))
+                rule.components.add(ComponentRule(it.name, true, EComponentType.SERVICE, EControllerMethod.PM))
             } else {
-                rule.components.add(ComponentRule(it.packageName, it.name, false, EComponentType.SERVICE, EControllerMethod.PM))
+                rule.components.add(ComponentRule(it.name, false, EComponentType.SERVICE, EControllerMethod.PM))
                 disabledComponentsCount++
             }
         }
         applicationInfo.activities?.forEach {
             if (ifwController.getComponentEnableState(it.packageName, it.name)) {
-                rule.components.add(ComponentRule(it.packageName, it.name, true, EComponentType.ACTIVITY, EControllerMethod.IFW))
+                rule.components.add(ComponentRule(it.name, true, EComponentType.ACTIVITY, EControllerMethod.IFW))
             } else {
-                rule.components.add(ComponentRule(it.packageName, it.name, false, EComponentType.ACTIVITY, EControllerMethod.IFW))
+                rule.components.add(ComponentRule(it.name, false, EComponentType.ACTIVITY, EControllerMethod.IFW))
                 disabledComponentsCount++
             }
             if (ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.packageName, it.name, true, EComponentType.ACTIVITY, EControllerMethod.PM))
+                rule.components.add(ComponentRule(it.name, true, EComponentType.ACTIVITY, EControllerMethod.PM))
             } else {
-                rule.components.add(ComponentRule(it.packageName, it.name, false, EComponentType.ACTIVITY, EControllerMethod.PM))
+                rule.components.add(ComponentRule(it.name, false, EComponentType.ACTIVITY, EControllerMethod.PM))
                 disabledComponentsCount++
             }
         }
         applicationInfo.providers?.forEach {
             if (ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.packageName, it.name, true, EComponentType.RECEIVER, EControllerMethod.PM))
+                rule.components.add(ComponentRule(it.name, true, EComponentType.RECEIVER, EControllerMethod.PM))
             } else {
-                rule.components.add(ComponentRule(it.packageName, it.name, false, EComponentType.RECEIVER, EControllerMethod.PM))
+                rule.components.add(ComponentRule(it.name, false, EComponentType.RECEIVER, EControllerMethod.PM))
                 disabledComponentsCount++
             }
         }
@@ -96,9 +96,9 @@ object Rule {
 
     // over Blocker rule mode, both IFW and PM are applied
     fun import(context: Context, file: File): RulesResult {
+        val packageName = file.name.replace(ConstantUtil.EXTENSION_JSON, "")
         val jsonReader = JsonReader(FileReader(file))
-        val appRule = Gson().fromJson<BlockerRule>(jsonReader, BlockerRule::class.java)
-                ?: return RulesResult(false, 0, 0)
+        val appRule = Gson().fromJson<BlockerRule>(jsonReader, BlockerRule::class.java) ?: return RulesResult(false, 0, 0)
         var succeedCount = 0
         var failedCount = 0
         // val total = appRule.components.size
@@ -118,31 +118,31 @@ object Rule {
                         when (it.type) {
                             EComponentType.RECEIVER -> {
                                 if (it.enabled) {
-                                    ifwController?.add(it.packageName, it.name, ComponentType.BROADCAST) ?: false
+                                    ifwController?.add(packageName, it.name, ComponentType.BROADCAST) ?: false
                                 } else {
-                                    ifwController?.remove(it.packageName, it.name, ComponentType.BROADCAST) ?: false
+                                    ifwController?.remove(packageName, it.name, ComponentType.BROADCAST) ?: false
                                 }
                             }
                             EComponentType.SERVICE -> {
                                 if (it.enabled) {
-                                    ifwController?.add(it.packageName, it.name, ComponentType.SERVICE) ?: false
+                                    ifwController?.add(packageName, it.name, ComponentType.SERVICE) ?: false
                                 } else {
-                                    ifwController?.remove(it.packageName, it.name, ComponentType.SERVICE) ?: false
+                                    ifwController?.remove(packageName, it.name, ComponentType.SERVICE) ?: false
                                 }
                             }
                             EComponentType.ACTIVITY -> {
                                 if (it.enabled) {
-                                    ifwController?.add(it.packageName, it.name, ComponentType.ACTIVITY) ?: false
+                                    ifwController?.add(packageName, it.name, ComponentType.ACTIVITY) ?: false
                                 } else {
-                                    ifwController?.remove(it.packageName, it.name, ComponentType.ACTIVITY) ?: false
+                                    ifwController?.remove(packageName, it.name, ComponentType.ACTIVITY) ?: false
                                 }
                             }
                             // content provider needs PM to implement it
                             EComponentType.PROVIDER -> {
                                 if (it.enabled) {
-                                    controller.enable(it.packageName, it.name)
+                                    controller.enable(packageName, it.name)
                                 } else {
-                                    controller.disable(it.packageName, it.name)
+                                    controller.disable(packageName, it.name)
                                 }
                             }
                             EComponentType.UNKNOWN -> false
@@ -150,9 +150,9 @@ object Rule {
                     }
                     EControllerMethod.PM -> {
                         if (it.enabled) {
-                            controller.enable(it.packageName, it.name)
+                            controller.enable(packageName, it.name)
                         } else {
-                            controller.disable(it.packageName, it.name)
+                            controller.disable(packageName, it.name)
                         }
                     }
                 }
