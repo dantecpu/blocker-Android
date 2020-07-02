@@ -1,6 +1,5 @@
 package io.github.newbugger.android.libkit.libsu
 
-import android.util.Log
 import com.topjohnwu.superuser.Shell
 import io.github.newbugger.android.libkit.exception.RootUnavailableException
 import java.io.IOException
@@ -16,10 +15,10 @@ object LibsuCommand {
     fun command(comm: String): Shell.Result {
         try {
             check()
-            return Shell.su(comm).exec().also {
+            return Shell.su(comm).exec()/*.also {
                 Log.d(javaClass.name,
                         it.out.joinToString(separator = ", "))
-            }
+            }*/
         } catch (e: Exception) {
             throw Exception(e)
         }
