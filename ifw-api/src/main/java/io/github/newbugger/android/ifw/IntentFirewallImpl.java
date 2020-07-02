@@ -1,7 +1,6 @@
 package io.github.newbugger.android.ifw;
 
 import android.content.Context;
-import android.util.Log;
 import io.github.newbugger.android.ifw.entity.Activity;
 import io.github.newbugger.android.ifw.entity.Broadcast;
 import io.github.newbugger.android.ifw.entity.Component;
@@ -34,7 +33,7 @@ public class IntentFirewallImpl implements IntentFirewall {
     private final String packageName;
     private final String cacheDir;
 
-    private IntentFirewallImpl(Context context, String packageName) {
+    private IntentFirewallImpl(Context context, String packageName) throws RuntimeException {
         this.packageName = packageName;
         this.filename = packageName + ConstantUtil.EXTENSION_XML;
         cacheDir = context.getCacheDir().toString() + File.separator;
@@ -43,7 +42,7 @@ public class IntentFirewallImpl implements IntentFirewall {
         openFile();
     }
 
-    public static IntentFirewall getInstance(@NonNull Context context, String packageName) {
+    public static IntentFirewall getInstance(@NonNull Context context, String packageName) throws RuntimeException {
         synchronized (IntentFirewallImpl.class) {
             if (instance == null || !instance.getPackageName().equals(packageName)) {
                 instance = new IntentFirewallImpl(context, packageName);
@@ -52,7 +51,7 @@ public class IntentFirewallImpl implements IntentFirewall {
         return instance;
     }
 
-    public Rules getRules() {
+    public Rules getRules() throws RuntimeException {
         return rules;
     }
 
@@ -78,7 +77,7 @@ public class IntentFirewallImpl implements IntentFirewall {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @Override
-    public boolean add(String packageName, String componentName, ComponentType type) {
+    public boolean add(String packageName, String componentName, ComponentType type) throws RuntimeException {
         switch (type) {
             case ACTIVITY:
                 if (rules.getActivity() == null) {
@@ -100,7 +99,7 @@ public class IntentFirewallImpl implements IntentFirewall {
         }
     }
 
-    private boolean addComponentFilter(String packageName, String componentName, Component component) {
+    private boolean addComponentFilter(String packageName, String componentName, Component component) throws RuntimeException {
         if (component == null) {
             return false;
         }
@@ -117,11 +116,10 @@ public class IntentFirewallImpl implements IntentFirewall {
             }
         }
         filters.add(new ComponentFilter(filterRule));
-        Log.d(tag, "Added component:" + packageName + "/" + componentName);
         return true;
     }
 
-    private boolean removeComponentFilter(String packageName, String componentName, Component component) {
+    private boolean removeComponentFilter(String packageName, String componentName, Component component) throws RuntimeException {
         if (component == null) {
             return false;
         }
@@ -140,7 +138,7 @@ public class IntentFirewallImpl implements IntentFirewall {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @Override
-    public boolean remove(String packageName, String componentName, ComponentType type) {
+    public boolean remove(String packageName, String componentName, ComponentType type) throws RuntimeException {
         switch (type) {
             case ACTIVITY:
                 return removeComponentFilter(packageName, componentName, rules.getActivity());
@@ -157,7 +155,7 @@ public class IntentFirewallImpl implements IntentFirewall {
     // show pm state when on other controller (public method)
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @Override
-    public boolean getComponentEnableState(String packageName, String componentName) {
+    public boolean getComponentEnableState(String packageName, String componentName) throws RuntimeException {
         List<ComponentFilter> filters = new ArrayList<>();
         if (rules.getActivity() != null) {
             filters.addAll(rules.getActivity().getComponentFilters());
@@ -172,27 +170,26 @@ public class IntentFirewallImpl implements IntentFirewall {
     }
 
     @Override
-    public void clear() {
+    public void clear() throws RuntimeException {
         clear(filename);
     }
 
     @Override
-    public void clear(String name) {
+    public void clear(String name) throws RuntimeException {
         if (name == null) {
             return;
         }
         String rulePath = StorageUtils.getIfwFolder() + filename;
-        Log.d(tag, "delete file: " + rulePath);
         // TODO: implement this
         // RootTools.deleteFileOrDirectory(rulePath, false);
     }
 
     @Override
-    public void reload() {
+    public void reload() throws RuntimeException {
         openFile();
     }
 
-    private boolean getFilterEnableState(String packageName, String componentName, List<ComponentFilter> componentFilters) {
+    private boolean getFilterEnableState(String packageName, String componentName, List<ComponentFilter> componentFilters) throws RuntimeException {
         if (componentFilters == null) {
             return true;
         }
@@ -208,7 +205,7 @@ public class IntentFirewallImpl implements IntentFirewall {
         return true;
     }
 
-    private void openFile() {
+    private void openFile() throws RuntimeException {
         removeCache();
         if (FileUtils.isExist(destPath)) {
             String ruleContent = FileUtils.read(destPath);
@@ -228,7 +225,7 @@ public class IntentFirewallImpl implements IntentFirewall {
         }
     }
 
-    public boolean removeCache() {
+    public boolean removeCache() throws RuntimeException {
         try {
             File cacheFile = new File(cacheDir, filename);
             boolean result = cacheFile.exists() && cacheFile.delete();
@@ -236,13 +233,12 @@ public class IntentFirewallImpl implements IntentFirewall {
                 reload();
             }
             return result;
-        }catch (Exception e) {
-            Log.e(tag, "Cannot delete cache file: " + cacheDir, e);
+        } catch (Exception e) {
             return false;
         }
     }
 
-    private void ensureNoEmptyTag() {
+    private void ensureNoEmptyTag() throws RuntimeException {
         if (rules.getActivity() != null && rules.getActivity().getComponentFilters() != null) {
             if (rules.getActivity().getComponentFilters().size() == 0) {
                 rules.setActivity(null);
@@ -260,16 +256,16 @@ public class IntentFirewallImpl implements IntentFirewall {
         }
     }
 
-    private String formatName(String packageName, String name) {
+    private String formatName(String packageName, String name) throws RuntimeException {
         return String.format(FILTER_TEMPLATE, packageName, name);
     }
 
-    private void handleException(Exception e) {
+    private void handleException(Exception e) throws RuntimeException {
         e.printStackTrace();
     }
 
     @Override
-    public String getPackageName() {
+    public String getPackageName() throws RuntimeException {
         return packageName;
     }
 }

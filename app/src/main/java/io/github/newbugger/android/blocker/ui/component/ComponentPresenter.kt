@@ -58,7 +58,6 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun loadComponents(packageName: String, type: EComponentType) {
-        // Log.d(tag, "Load components for $packageName, type: $type")
         view?.setLoadingIndicator(true)
         doAsync(exceptionHandler) {
             if (type == EComponentType.SERVICE) {
@@ -83,7 +82,6 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun enable(packageName: String, componentName: String): Boolean {
-        // Log.d(tag, "Enable component: $componentName")
         val handler = { t: Throwable ->
             GlobalScope.launch(Dispatchers.Main) {
                 DialogUtil().showWarningDialogWithMessage(context, t)
@@ -113,7 +111,6 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun disable(packageName: String, componentName: String): Boolean {
-        // Log.d(tag, "Disable component: $componentName")
         val handler = { e: Throwable ->
             GlobalScope.launch(Dispatchers.Main) {
                 DialogUtil().showWarningDialogWithMessage(context, e)
@@ -142,7 +139,6 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun addToIFW(packageName: String, componentName: String, type: EComponentType) {
-        // Log.d(tag, "Disable component via IFW: $componentName")
         doAsync(exceptionHandler) {
             ifwController.disable(packageName, componentName)
             uiThread {
@@ -152,7 +148,6 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun removeFromIFW(packageName: String, componentName: String, type: EComponentType) {
-        // Log.d(tag, "Disable component via IFW: $componentName")
         doAsync(exceptionHandler) {
             ifwController.enable(packageName, componentName)
             uiThread {

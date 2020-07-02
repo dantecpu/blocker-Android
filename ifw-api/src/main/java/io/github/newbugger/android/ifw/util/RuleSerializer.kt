@@ -1,6 +1,5 @@
 package io.github.newbugger.android.ifw.util
 
-import android.util.Log
 import io.github.newbugger.android.ifw.entity.Rules
 import org.simpleframework.xml.core.Persister
 import java.io.File
@@ -15,7 +14,6 @@ object RuleSerializer {
         return try {
             serializer.read(Rules::class.java, file)
         } catch (e: Exception) {
-            Log.e(tag, "${file.absolutePath} is not a valid ifw rule, skipping", e)
             null
         }
     }

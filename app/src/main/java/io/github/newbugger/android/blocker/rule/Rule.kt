@@ -28,7 +28,6 @@ object Rule {
 
     // TODO remove template code
     fun export(context: Context, packageName: String): RulesResult {
-        // Log.d(tag, "Backup rules for $packageName")
         val pm = context.packageManager
         val applicationInfo = ApplicationUtil.getApplicationComponents(pm, packageName)
         val rule = BlockerRule(packageName = applicationInfo.packageName, versionName = applicationInfo.versionName, versionCode = 1)
@@ -152,7 +151,6 @@ object Rule {
                 if (result) {
                     succeedCount++
                 } else {
-                    // Log.d(tag, "Failed to change component state for : $it")
                     failedCount++
                 }
                 action(context, name, (succeedCount + failedCount), total)

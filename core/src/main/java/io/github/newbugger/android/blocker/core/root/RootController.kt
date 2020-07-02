@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ComponentInfo
 import android.content.pm.PackageManager
-import android.util.Log
 import io.github.newbugger.android.blocker.core.IController
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
@@ -17,7 +16,6 @@ import io.github.newbugger.android.libkit.utils.ConstantUtil
  */
 
 class RootController(val context: Context) : IController {
-    private val tag = javaClass.name
 
     override fun switchComponent(packageName: String, componentName: String, state: Int): Boolean {
         val comm: String = when (state) {
@@ -25,7 +23,6 @@ class RootController(val context: Context) : IController {
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> removeEscapeCharacter(String.format(ConstantUtil.COMMAND_DISABLE_COMPONENT, packageName, componentName))
             else -> return false
         }
-        Log.d(tag, "command:$comm, componentState is $state")
         try {
             return LibsuCommand.code(LibsuCommand.command(comm))
         } catch (e: Exception) {

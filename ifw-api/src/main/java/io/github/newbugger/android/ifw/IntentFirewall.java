@@ -5,19 +5,19 @@ import io.github.newbugger.android.ifw.entity.ComponentType;
 public interface IntentFirewall {
     void save() throws Exception;
 
-    boolean add(String packageName, String componentName, ComponentType type);
+    boolean add(String packageName, String componentName, ComponentType type) throws RuntimeException;
 
-    boolean remove(String packageName, String componentName, ComponentType type);
+    boolean remove(String packageName, String componentName, ComponentType type) throws RuntimeException;
 
-    boolean getComponentEnableState(String packageName, String componentName);
+    boolean getComponentEnableState(String packageName, String componentName) throws RuntimeException;
 
-    void clear();
+    void clear() throws RuntimeException;
 
-    void clear(String name);
+    void clear(String name) throws RuntimeException;
 
-    void reload();
+    void reload() throws RuntimeException;
 
-    String getPackageName();
+    String getPackageName() throws RuntimeException;
 
-    boolean removeCache();
+    boolean removeCache() throws RuntimeException;
 }

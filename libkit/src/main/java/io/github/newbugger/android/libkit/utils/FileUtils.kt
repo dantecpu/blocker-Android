@@ -6,7 +6,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.util.Log
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
 import java.io.File
 
@@ -110,7 +109,6 @@ object FileUtils {
     fun copy(source: String, dest: String) {
         val comm = "cp -rf $source/* $dest/"
         LibsuCommand.command(comm)
-        Log.d(tag, "Copy $source to $dest")
     }
 
     @JvmStatic
@@ -121,9 +119,7 @@ object FileUtils {
             "rm -f '$file'"
         }
         val output = LibsuCommand.output(LibsuCommand.command(comm)).joinToString(separator = ", ")
-        val result = output.trim().isEmpty()
-        Log.d(tag, "Delete file $file, result = $result")
-        return result
+        return output.trim().isEmpty()
     }
 
     /*@JvmStatic
@@ -173,13 +169,9 @@ object FileUtils {
                 }
                 // TODO handle non-primary volumes
             } else if (isDownloadsDocument(uri)) {
-                try {
-                    val id = DocumentsContract.getDocumentId(uri)
-                    val contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), id.toLong())
-                    return getDataColumn(context, contentUri, null, null)
-                } catch (e: NumberFormatException) {
-                    Log.e(tag, "Error parsing document id", e)
-                }
+                val id = DocumentsContract.getDocumentId(uri)
+                val contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), id.toLong())
+                return getDataColumn(context, contentUri, null, null)
             } else if (isMediaDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()

@@ -1,7 +1,6 @@
 package io.github.newbugger.android.libkit.utils;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -67,7 +66,6 @@ public class StorageUtils {
                     .getMethod("getBoolean", String.class, boolean.class)
                     .invoke(null, SYSTEM_PROPERTY_EFS_ENABLED, false);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            Log.e("blocker.StorageUtils", "Cannot access internal method", e);
             return false;
         }
     }
