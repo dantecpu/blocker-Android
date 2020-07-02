@@ -173,30 +173,9 @@ object ApplicationUtil {
         return providers
     }
 
-    /**
-     * get a list of components of a specified application
-     *
-     * @param pm          PackageManager
-     * @param packageName package name
-     * @param flags       usable flags are below
-     * GET_ACTIVITIES, GET_CONFIGURATIONS, GET_GIDS, GET_INSTRUMENTATION,
-     * GET_INTENT_FILTERS, GET_PERMISSIONS, GET_PROVIDERS, GET_RECEIVERS,
-     * GET_SERVICES, GET_SIGNATURES, MATCH_DISABLED_COMPONENTS (API level 24), MATCH_DISABLED_UNTIL_USED_COMPONENTS(API level 24)
-     * @return a set of components
-     */
-    private fun getApplicationComponents(pm: PackageManager, packageName: String, flags: Int): PackageInfo? {
-        var info: PackageInfo? = null
-        try {
-            info = pm.getPackageInfo(packageName, flags)
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-        return info
-    }
-
     fun getApplicationInfo(context: Context, packageName: String): Application? {
         val pm = context.packageManager
-        val info = getApplicationComponents(pm, packageName, 0) ?: return null
+        val info = pm.getPackageInfo(packageName, 0) ?: return null
         return Application(pm, info).apply {
             val blockedApps = getBlockedApplication(context)
             isBlocked = blockedApps.contains(this.packageName)
@@ -210,7 +189,6 @@ object ApplicationUtil {
      * @param packageName package name
      * @return a set of components
      */
-    @Suppress("DEPRECATION")
     fun getApplicationComponents(pm: PackageManager, packageName: String): PackageInfo {
         var flags = PackageManager.GET_ACTIVITIES or PackageManager.GET_PROVIDERS or
                 PackageManager.GET_RECEIVERS or PackageManager.GET_SERVICES or
@@ -249,17 +227,6 @@ object ApplicationUtil {
         val state: Int
         try {
             state = pm.getComponentEnabledSetting(componentName)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        }
-        return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED || state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
-    }
-
-    fun checkPackageIsEnabled(pm: PackageManager, packageName: String): Boolean {
-        val state: Int
-        try {
-            state = pm.getApplicationEnabledSetting(packageName)
         } catch (e: Exception) {
             e.printStackTrace()
             return false
