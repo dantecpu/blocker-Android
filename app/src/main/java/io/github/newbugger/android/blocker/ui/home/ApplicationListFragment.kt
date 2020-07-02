@@ -175,9 +175,6 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
         val application = listAdapter.getDataAt(position)
         val packageName = application.packageName
         when (item.itemId) {
-            /*R.id.block_application -> presenter.blockApplication(packageName)
-            R.id.unblock_application -> presenter.unblockApplication(packageName)*/
-            /*R.id.force_stop -> presenter.forceStop(packageName)*/
             R.id.enable_application -> presenter.enableApplication(packageName)
             R.id.disable_application -> presenter.disableApplication(packageName)
         }
@@ -317,10 +314,6 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
                         itemView.setBackgroundColor(Color.WHITE)
                     } else {
                         itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.md_grey_300))
-                    }
-                    if (application.isBlocked) {
-                        // TODO: remove blockApplication part
-                        itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.md_red_50))
                     }
                     doAsync {
                         val icon = application.getApplicationIcon(pm)

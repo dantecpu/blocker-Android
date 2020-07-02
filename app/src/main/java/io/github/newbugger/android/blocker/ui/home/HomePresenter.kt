@@ -92,7 +92,6 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
         }
     }
 
-    // TODO: what is blockApplication ?
     override fun blockApplication(packageName: String) {
         doAsync(exceptionHandler) {
             ApplicationUtil.addBlockedApplication(context!!, packageName)
