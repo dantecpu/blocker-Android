@@ -63,7 +63,7 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
             ApplicationComparatorType.INSTALLATION_TIME -> applications.asSequence().sortedByDescending { it.firstInstallTime }
             ApplicationComparatorType.LAST_UPDATE_TIME -> applications.asSequence().sortedByDescending { it.lastUpdateTime }
         }
-        return sortedList.asSequence().sortedWith(compareBy({ !it.isBlocked }, { !it.isEnabled })).toMutableList()
+        return sortedList.asSequence().sortedWith(compareBy { !it.isEnabled }).toMutableList()
     }
 
     override fun forceStop(packageName: String) {

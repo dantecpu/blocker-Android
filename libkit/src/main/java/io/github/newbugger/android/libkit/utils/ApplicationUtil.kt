@@ -25,14 +25,11 @@ object ApplicationUtil {
      */
     fun getApplicationList(context: Context): MutableList<Application> {
         val pm = context.packageManager
-        val blockedApps = getBlockedApplication(context)
         return pm.getInstalledPackages(0)
                 .asSequence()
                 .filterNot { it.packageName == ConstantUtil.BLOCKER_PACKAGE_NAME }
                 .map {
-                    Application(pm, it).apply {
-                        isBlocked = blockedApps.contains(it.packageName)
-                    }
+                    Application(pm, it)
                 }
                 .toMutableList()
     }
@@ -45,15 +42,12 @@ object ApplicationUtil {
      */
     fun getThirdPartyApplicationList(context: Context): MutableList<Application> {
         val pm = context.packageManager
-        val blockedApps = getBlockedApplication(context)
         return pm.getInstalledPackages(0)
                 .asSequence()
                 .filter { it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0 }
                 .filterNot { it.packageName == ConstantUtil.BLOCKER_PACKAGE_NAME }
                 .map {
-                    Application(pm, it).apply {
-                        isBlocked = blockedApps.contains(it.packageName)
-                    }
+                    Application(pm, it)
                 }
                 .toMutableList()
     }
@@ -66,14 +60,23 @@ object ApplicationUtil {
      */
     fun getSystemApplicationList(context: Context): MutableList<Application> {
         val pm = context.packageManager
-        val blockedApps = getBlockedApplication(context)
         return pm.getInstalledPackages(0)
                 .asSequence()
                 .filter { it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0 }
                 .map {
-                    Application(pm, it).apply {
-                        isBlocked = blockedApps.contains(it.packageName)
-                    }
+                    Application(pm, it)
+                }
+                .toMutableList()
+    }
+
+    fun getGoogleSystemApplicationList(context: Context): MutableList<Application> {
+        val pm = context.packageManager
+        return pm.getInstalledPackages(0)
+                .asSequence()
+                .filter { it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0 }
+                .filter { it.packageName.startsWith("com.google.") }
+                .map {
+                    Application(pm, it)
                 }
                 .toMutableList()
     }
@@ -176,10 +179,7 @@ object ApplicationUtil {
     fun getApplicationInfo(context: Context, packageName: String): Application? {
         val pm = context.packageManager
         val info = pm.getPackageInfo(packageName, 0) ?: return null
-        return Application(pm, info).apply {
-            val blockedApps = getBlockedApplication(context)
-            isBlocked = blockedApps.contains(this.packageName)
-        }
+        return Application(pm, info)
     }
 
     /**

@@ -40,8 +40,9 @@ class SettingsPresenter(
             e.printStackTrace()
         }
         withContext(Dispatchers.IO + errorHandler) {
-            val applicationList = ApplicationUtil.getApplicationList(context)
-            appCount = applicationList.size
+            val applicationList = ApplicationUtil.getThirdPartyApplicationList(context)
+            val applicationListGoogle = ApplicationUtil.getGoogleSystemApplicationList(context)
+            appCount = applicationList.size + applicationListGoogle.size
             notificationBuilder = NotificationUtil.createProcessingNotification(context, appCount)
             applicationList.forEach { currentApp ->
                 Rule.export(context, currentApp.packageName)
@@ -52,6 +53,17 @@ class SettingsPresenter(
                     (succeedCount + failedCount),
                     appCount,
                     notificationBuilder
+                )
+            }
+            applicationListGoogle.forEach { currentApp ->
+                Rule.export(context, currentApp.packageName)
+                succeedCount++
+                NotificationUtil.updateProcessingNotification(
+                        context,
+                        currentApp.label,
+                        (succeedCount + failedCount),
+                        appCount,
+                        notificationBuilder
                 )
             }
             delay(1000L)
