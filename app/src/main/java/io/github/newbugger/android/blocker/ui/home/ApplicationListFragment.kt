@@ -34,7 +34,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
             presenter.openApplicationDetails(application)
         }
         override fun onAppLongClick(application: Application) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            // "can not implemented"
         }
     }
 
@@ -310,7 +310,8 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
             fun bindApplication(application: Application) {
                 view?.apply {
                     itemView.app_name.text = application.label
-                    itemView.isLongClickable = false
+                    itemView.isClickable = true
+                    itemView.isLongClickable = true
                     itemView.setOnClickListener { listener.onAppClick(application) }
                     if (application.isEnabled) {
                         itemView.setBackgroundColor(Color.WHITE)
