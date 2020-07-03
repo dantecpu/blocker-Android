@@ -36,54 +36,30 @@ object Rule {
         var disabledComponentsCount = 0
         val ifwController = IntentFirewallImpl.getInstance(context, packageName)
         applicationInfo.receivers?.forEach {
-            if (ifwController.getComponentEnableState(it.packageName, it.name)) {
-                rule.components.add(ComponentRule(it.name, true, EComponentType.RECEIVER, EControllerMethod.IFW))
-            } else {
-                rule.components.add(ComponentRule(it.name, false, EComponentType.RECEIVER, EControllerMethod.IFW))
-                disabledComponentsCount++
-            }
-            if (ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.name, true, EComponentType.RECEIVER, EControllerMethod.PM))
-            } else {
-                rule.components.add(ComponentRule(it.name, false, EComponentType.RECEIVER, EControllerMethod.PM))
-                disabledComponentsCount++
-            }
+            val stateIFW = ifwController.getComponentEnableState(it.packageName, it.name)
+            val statePM = ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))
+            rule.components.add(ComponentRule(it.name, stateIFW, EComponentType.RECEIVER, EControllerMethod.IFW))
+            rule.components.add(ComponentRule(it.name, statePM, EComponentType.RECEIVER, EControllerMethod.PM))
+            disabledComponentsCount++
         }
         applicationInfo.services?.forEach {
-            if (ifwController.getComponentEnableState(it.packageName, it.name)) {
-                rule.components.add(ComponentRule(it.name, true, EComponentType.SERVICE, EControllerMethod.IFW))
-            } else {
-                rule.components.add(ComponentRule(it.name, false, EComponentType.SERVICE, EControllerMethod.IFW))
-                disabledComponentsCount++
-            }
-            if (ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.name, true, EComponentType.SERVICE, EControllerMethod.PM))
-            } else {
-                rule.components.add(ComponentRule(it.name, false, EComponentType.SERVICE, EControllerMethod.PM))
-                disabledComponentsCount++
-            }
+            val stateIFW = ifwController.getComponentEnableState(it.packageName, it.name)
+            val statePM = ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))
+            rule.components.add(ComponentRule(it.name, stateIFW, EComponentType.SERVICE, EControllerMethod.IFW))
+            rule.components.add(ComponentRule(it.name, statePM, EComponentType.SERVICE, EControllerMethod.PM))
+            disabledComponentsCount++
         }
         applicationInfo.activities?.forEach {
-            if (ifwController.getComponentEnableState(it.packageName, it.name)) {
-                rule.components.add(ComponentRule(it.name, true, EComponentType.ACTIVITY, EControllerMethod.IFW))
-            } else {
-                rule.components.add(ComponentRule(it.name, false, EComponentType.ACTIVITY, EControllerMethod.IFW))
-                disabledComponentsCount++
-            }
-            if (ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.name, true, EComponentType.ACTIVITY, EControllerMethod.PM))
-            } else {
-                rule.components.add(ComponentRule(it.name, false, EComponentType.ACTIVITY, EControllerMethod.PM))
-                disabledComponentsCount++
-            }
+            val stateIFW = ifwController.getComponentEnableState(it.packageName, it.name)
+            val statePM = ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))
+            rule.components.add(ComponentRule(it.name, stateIFW, EComponentType.ACTIVITY, EControllerMethod.IFW))
+            rule.components.add(ComponentRule(it.name, statePM, EComponentType.ACTIVITY, EControllerMethod.PM))
+            disabledComponentsCount++
         }
         applicationInfo.providers?.forEach {
-            if (ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))) {
-                rule.components.add(ComponentRule(it.name, true, EComponentType.RECEIVER, EControllerMethod.PM))
-            } else {
-                rule.components.add(ComponentRule(it.name, false, EComponentType.RECEIVER, EControllerMethod.PM))
-                disabledComponentsCount++
-            }
+            val statePM = ApplicationUtil.checkComponentIsEnabled(pm, ComponentName(it.packageName, it.name))
+            rule.components.add(ComponentRule(it.name, statePM, EComponentType.PROVIDER, EControllerMethod.PM))
+            disabledComponentsCount++
         }
         return if (rule.components.isNotEmpty()) {
             val ruleFile = File(getBlockerRuleFolder(context), packageName + ConstantUtil.EXTENSION_JSON)
