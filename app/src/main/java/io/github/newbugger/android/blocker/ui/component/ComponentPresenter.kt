@@ -29,11 +29,12 @@ import java.io.File
 
 class ComponentPresenter(val context: Context, var view: ComponentContract.View?, val packageName: String) : ComponentContract.Presenter, IController {
     override var currentComparator: EComponentComparatorType = EComponentComparatorType.NAME_ASCENDING  // changed order
+    private val controllerType = PreferenceUtil.getControllerType(context)
     private val pm: PackageManager
     private val serviceHelper by lazy { ServiceHelper(packageName) }
     private val ifwController by lazy { ComponentControllerProxy.getInstance(EControllerMethod.IFW, context) }
     private val controller: IController by lazy {
-        val controllerType = PreferenceUtil.getControllerType(context)
+        controllerType
         ComponentControllerProxy.getInstance(controllerType, context)
     }
     private val exceptionHandler = { e: Throwable ->
@@ -90,13 +91,13 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
             t.printStackTrace()
         }
         doAsync(handler) {
-            PreferenceUtil.getControllerType(context).let {
-                if (it == EControllerMethod.IFW) {
+            when (controllerType) {
+                EControllerMethod.IFW -> {
                     if (!checkIFWState(packageName, componentName)) {
                         ComponentControllerProxy.getInstance(EControllerMethod.IFW, context).enable(packageName, componentName)
                     }
                 }
-                if (it == EControllerMethod.PM) {
+                EControllerMethod.PM -> {
                     if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager, ComponentName(packageName, componentName))) {
                         ComponentControllerProxy.getInstance(EControllerMethod.PM, context).enable(packageName, componentName)
                     }
@@ -193,7 +194,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     override fun updateComponentViewModel(viewModel: ComponentItemViewModel) {
         viewModel.state = ApplicationUtil.checkComponentIsEnabled(pm,
                 ComponentName(viewModel.packageName, viewModel.name))
-        if (PreferenceUtil.getControllerType(context) == EControllerMethod.IFW) {
+        if (controllerType == EControllerMethod.IFW) {
             viewModel.ifwState = ifwController.checkComponentEnableState(viewModel.packageName, viewModel.name)
         }
         if (type == EComponentType.SERVICE) {
