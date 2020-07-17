@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
 import io.github.newbugger.android.blocker.core.ComponentControllerProxy
 import io.github.newbugger.android.blocker.core.IController
+import io.github.newbugger.android.blocker.core.prescription.PrescriptionUtil
 import io.github.newbugger.android.blocker.core.root.EControllerMethod
 import io.github.newbugger.android.blocker.rule.entity.BlockerRule
 import io.github.newbugger.android.blocker.rule.entity.ComponentRule
@@ -283,7 +284,8 @@ object Rule {
                            auth: String?, path: String?, pathOption: String?): Int {
         val prescriptionFolder = getBlockerPrescriptionFolder(context)
         val filename = packageName.split(".").last() + "." + className.split(".").last() + ConstantUtil.EXTENSION_XML
-        val content = PrescriptionUtil.template(packageName, className, typeC, sender, action, cat, typeF, scheme, auth, path, pathOption)
+        val content = PrescriptionUtil.template(
+                packageName, className, typeC, sender, action, cat, typeF, scheme, auth, path, pathOption)
         FileWriter(File(prescriptionFolder, filename)).apply {
             write(PrescriptionUtil.head())
             write(PrescriptionUtil.header())

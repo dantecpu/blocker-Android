@@ -1,4 +1,4 @@
-package io.github.newbugger.android.libkit.utils
+package io.github.newbugger.android.blocker.core.prescription
 
 import android.util.Xml
 import org.xmlpull.v1.XmlSerializer
