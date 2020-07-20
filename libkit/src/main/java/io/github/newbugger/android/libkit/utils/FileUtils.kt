@@ -8,12 +8,12 @@ import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
 import java.io.File
 
 
 object FileUtils {
-    private val tag = javaClass.name
 
     @JvmStatic
     fun isExist(path: String): Boolean {
@@ -111,9 +111,23 @@ object FileUtils {
         }
     }
 
+    // api 29 only, a dirty usage
+    @RequiresApi(29)
+    @JvmStatic
+    fun getExternalStoragePath(): String {
+        return "/storage/emulated/0/Blocker"
+    }
+
+    // api 29 only, a dirty usage
+    @RequiresApi(29)
+    @JvmStatic
+    fun getExternalStorageMove(src: String, dst: String) {
+        copy(src, dst)
+    }
+
     @JvmStatic
     fun copy(source: String, dest: String) {
-        val comm = "cp -RT $source $dest"
+        val comm = "cp -RTf $source $dest"
         LibsuCommand.command(comm)
     }
 
@@ -255,4 +269,5 @@ object FileUtils {
     fun isGooglePhotosUri(uri: Uri): Boolean {
         return "com.google.android.apps.photos.content" == uri.authority
     }
+
 }

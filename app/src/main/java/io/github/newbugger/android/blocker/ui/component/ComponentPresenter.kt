@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ComponentInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import android.widget.Toast
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.core.ComponentControllerProxy
@@ -269,6 +270,9 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         view?.showToastMessage(context.getString(R.string.processing), Toast.LENGTH_SHORT)
         doAsync(exceptionHandler) {
             val blockerFolder = Rule.getBlockerRuleFolder(context)
+            if (Build.VERSION.SDK_INT == 29 && PreferenceUtil.getDirtyAccess(context)) {
+                Rule.getBlockerSomeFolderMove(Rule.getBlockerRuleFolderDirty(), blockerFolder)
+            }
             val destFile = File(blockerFolder, packageName + ConstantUtil.EXTENSION_JSON)
             val result =
                     if (!destFile.exists()) {

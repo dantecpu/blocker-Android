@@ -13,6 +13,10 @@
             android:key="@string/key_pref_controller_type"
             android:summary="%s"
             android:title="@string/pref_controller_type" />
+        <androidx.preference.SwitchPreference
+            android:defaultValue="false"
+            android:key="dirty_external"
+            android:title="dirty external access (Android 10)" />
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory

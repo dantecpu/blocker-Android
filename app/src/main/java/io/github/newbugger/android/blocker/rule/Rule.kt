@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ComponentInfo
 import android.os.Build
+import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
@@ -66,6 +67,9 @@ object Rule {
         return if (rule.components.isNotEmpty()) {
             val ruleFile = File(getBlockerRuleFolder(context), packageName + ConstantUtil.EXTENSION_JSON)
             saveRuleToStorage(rule, ruleFile)
+            if (Build.VERSION.SDK_INT == 29 && PreferenceUtil.getDirtyAccess(context)) {
+                getBlockerSomeFolderMove(getBlockerRuleFolder(context), getBlockerRuleFolderDirty())
+            }
             RulesResult(true, disabledComponentsCount, 0)
         } else {
             RulesResult(false, 0, 0)
@@ -207,6 +211,9 @@ object Rule {
                 }.forEach {
                     File(it).delete()
                 }
+        if (Build.VERSION.SDK_INT == 29 && PreferenceUtil.getDirtyAccess(context)) {
+            getBlockerSomeFolderMove(ifwBackupFolder, getBlockerIFWFolderDirty())
+        }
         return FileUtils.count(ifwBackupFolder)
     }
 
@@ -215,6 +222,9 @@ object Rule {
         val controller = ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
         // var succeedCount = 0
         val ifwBackupFolder = getBlockerIFWFolder(context)
+        if (Build.VERSION.SDK_INT == 29 && PreferenceUtil.getDirtyAccess(context)) {
+            getBlockerSomeFolderMove(getBlockerIFWFolderDirty(), ifwBackupFolder)
+        }
         FileUtils.listFiles(ifwBackupFolder).filter {
             it.endsWith("xml")
         }.forEach {
@@ -294,6 +304,9 @@ object Rule {
             write(PrescriptionUtil.footer())
             close()
         }
+        if (Build.VERSION.SDK_INT == 29 && PreferenceUtil.getDirtyAccess(context)) {
+            getBlockerSomeFolderMove(prescriptionFolder, getBlockerPrescriptionFolderDirty())
+        }
         return 1
     }
 
@@ -346,6 +359,33 @@ object Rule {
             (FileUtils.getExternalStoragePath(context) + File.separator + "prescription").also {
                 if (!File(it).exists()) File(it).mkdir()
             }
+
+    // api 29 only, a dirty usage
+    @RequiresApi(29)
+    fun getBlockerRuleFolderDirty(): String =
+            (FileUtils.getExternalStoragePath() + File.separator + "rule").also {
+                if (!File(it).exists()) File(it).mkdir()
+            }
+
+    // api 29 only, a dirty usage
+    @RequiresApi(29)
+    private fun getBlockerIFWFolderDirty(): String =
+            (FileUtils.getExternalStoragePath() + File.separator + "ifw").also {
+                if (!File(it).exists()) File(it).mkdir()
+            }
+
+    // api 29 only, a dirty usage
+    @RequiresApi(29)
+    private fun getBlockerPrescriptionFolderDirty(): String =
+            (FileUtils.getExternalStoragePath() + File.separator + "prescription").also {
+                if (!File(it).exists()) File(it).mkdir()
+            }
+
+    // api 29 only, a dirty usage
+    @RequiresApi(29)
+    fun getBlockerSomeFolderMove(src: String, dst: String) {
+        FileUtils.getExternalStorageMove(src, dst)
+    }
 
     private fun getController(context: Context): IController {
         val controllerType = PreferenceUtil.getControllerType(context)

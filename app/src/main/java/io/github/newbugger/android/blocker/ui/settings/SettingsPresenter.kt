@@ -1,12 +1,14 @@
 package io.github.newbugger.android.blocker.ui.settings
 
 import android.content.Context
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.google.gson.Gson
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.rule.Rule
 import io.github.newbugger.android.blocker.rule.entity.BlockerRule
 import io.github.newbugger.android.blocker.util.NotificationUtil
+import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
@@ -82,6 +84,9 @@ class SettingsPresenter(
                 ConstantUtil.EXTENSION_JSON
             )
             notificationBuilder = NotificationUtil.createProcessingNotification(context, rulesCount)
+            if (Build.VERSION.SDK_INT == 29 && PreferenceUtil.getDirtyAccess(context)) {
+                Rule.getBlockerSomeFolderMove(Rule.getBlockerRuleFolderDirty(), Rule.getBlockerRuleFolder(context))
+            }
             FileUtils.listFiles(Rule.getBlockerRuleFolder(context)).filter {
                 it.endsWith(ConstantUtil.EXTENSION_JSON)
             }.forEach {
