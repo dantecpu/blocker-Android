@@ -93,7 +93,7 @@ class SettingsPresenter(
                 restoredCount++
                 NotificationUtil.updateProcessingNotification(
                     context,
-                    rule.packageName ?: "",
+                    rule.packageName,
                     restoredCount,
                     rulesCount,
                     notificationBuilder

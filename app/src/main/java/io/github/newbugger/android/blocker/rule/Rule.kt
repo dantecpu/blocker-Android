@@ -3,6 +3,7 @@ package io.github.newbugger.android.blocker.rule
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ComponentInfo
+import android.os.Build
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
@@ -33,7 +34,7 @@ object Rule {
     fun export(context: Context, packageName: String): RulesResult {
         val pm = context.packageManager
         val applicationInfo = ApplicationUtil.getApplicationComponents(pm, packageName)
-        val rule = BlockerRule(packageName = applicationInfo.packageName, versionName = applicationInfo.versionName, versionCode = applicationInfo.longVersionCode.toInt())
+        val rule = BlockerRule(packageName = applicationInfo.packageName, versionName = applicationInfo.versionName, versionCode = if (Build.VERSION.SDK_INT >= 28) applicationInfo.longVersionCode.toInt() else applicationInfo.versionCode)
         var disabledComponentsCount = 0
         val ifwController = IntentFirewallImpl.getInstance(context, packageName)
         applicationInfo.receivers?.forEach {
@@ -331,35 +332,24 @@ object Rule {
         return false
     }
 
-    fun getBlockerRuleFolder(context: Context): String {
-        val path = FileUtils.getExternalStoragePath(context) +
-                File.separator + "rule" + File.separator
-        if (!File(path).exists()) {
-            File(path).mkdirs()
-        }
-        return path
-    }
+    fun getBlockerRuleFolder(context: Context): String =
+            (FileUtils.getExternalStoragePath(context) + File.separator + "rule").also {
+                if (!File(it).exists()) File(it).mkdir()
+            }
 
-    private fun getBlockerIFWFolder(context: Context): String {
-        val path = FileUtils.getExternalStoragePath(context) +
-                File.separator + "ifw" + File.separator
-        if (!File(path).exists()) {
-            File(path).mkdirs()
-        }
-        return path
-    }
+    private fun getBlockerIFWFolder(context: Context): String =
+            (FileUtils.getExternalStoragePath(context) + File.separator + "ifw").also {
+                if (!File(it).exists()) File(it).mkdir()
+            }
 
-    private fun getBlockerPrescriptionFolder(context: Context): String {
-        val path = FileUtils.getExternalStoragePath(context) +
-                File.separator + "prescription" + File.separator
-        if (!File(path).exists()) {
-            File(path).mkdirs()
-        }
-        return path
-    }
+    private fun getBlockerPrescriptionFolder(context: Context): String =
+            (FileUtils.getExternalStoragePath(context) + File.separator + "prescription").also {
+                if (!File(it).exists()) File(it).mkdir()
+            }
 
     private fun getController(context: Context): IController {
         val controllerType = PreferenceUtil.getControllerType(context)
         return ComponentControllerProxy.getInstance(controllerType, context)
     }
+
 }

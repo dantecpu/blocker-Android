@@ -4,6 +4,8 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
@@ -102,12 +104,16 @@ object FileUtils {
 
     @JvmStatic
     fun getExternalStoragePath(context: Context): String {
-        return context.getExternalFilesDir(null).toString()
+        return if (Build.VERSION.SDK_INT > 28) {
+            context.getExternalFilesDir(null)!!.absolutePath
+        } else {
+            Environment.getExternalStorageDirectory().absolutePath
+        }
     }
 
     @JvmStatic
     fun copy(source: String, dest: String) {
-        val comm = "cp -rf $source/* $dest/"
+        val comm = "cp -RT $source $dest"
         LibsuCommand.command(comm)
     }
 

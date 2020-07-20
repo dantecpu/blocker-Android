@@ -10,11 +10,11 @@ android {
 
     defaultConfig {
         applicationId "io.github.newbugger.android.blocker"
-        minSdkVersion 28
+        minSdkVersion 24
         //noinspection OldTargetApi
         targetSdkVersion 29
-        versionCode 9
-        versionName "0.0.9.1"
+        versionCode 10
+        versionName "1.0.0.1"
         multiDexEnabled true
     }
 
