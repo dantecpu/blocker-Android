@@ -20,10 +20,7 @@ import io.github.newbugger.android.libkit.entity.getSimpleName
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.ServiceHelper
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.File
 
 
@@ -152,8 +149,10 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     // TODO: specify details for Prescription
     override fun generatePrescription(context: Context, packageName: String, componentName: String, typeC: String) {
         GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
-            Rule.exportPrescription(context, packageName, componentName, typeC, "other",
-                    null, null, null, null, null, null, null)
+            withContext(Dispatchers.IO) {
+                Rule.exportPrescription(context, packageName, componentName, typeC, "other",
+                        null, null, null, null, null, null, null)
+            }
             launch(Dispatchers.Main) {
                 view?.refreshComponentState(componentName)
             }
