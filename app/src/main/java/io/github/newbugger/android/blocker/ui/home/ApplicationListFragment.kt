@@ -21,8 +21,9 @@ import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import kotlinx.android.synthetic.main.app_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_app_list.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class ApplicationListFragment : Fragment(), HomeContract.View {
@@ -315,9 +316,9 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
                     } else {
                         itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.md_grey_300))
                     }
-                    doAsync {
+                    GlobalScope.launch(Dispatchers.Default) {
                         val icon = application.getApplicationIcon(pm)
-                        uiThread {
+                        launch(Dispatchers.Main) {
                             itemView.app_icon.setImageDrawable(icon)
                         }
                     }

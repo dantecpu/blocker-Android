@@ -18,8 +18,9 @@ import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_component.*
 import kotlinx.android.synthetic.main.application_brief_info_layout.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class ComponentActivity : AppCompatActivity(), IActivityView {
@@ -108,9 +109,9 @@ class ComponentActivity : AppCompatActivity(), IActivityView {
         app_info_app_package_name.text = getString(R.string.package_name, application.packageName)
         app_info_target_sdk_version.text = getString(R.string.target_sdk_version, application.targetSdkVersion.toString())
         app_info_min_sdk_version.text = getString(R.string.min_sdk_version, application.minSdkVersion.toString())
-        doAsync {
+        GlobalScope.launch(Dispatchers.Default) {
             val icon = application.getApplicationIcon(packageManager)
-            uiThread {
+            launch(Dispatchers.Main) {
                 app_info_icon.setImageDrawable(icon)
             }
         }

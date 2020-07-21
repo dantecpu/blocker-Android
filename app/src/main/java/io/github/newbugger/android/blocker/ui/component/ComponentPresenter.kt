@@ -20,11 +20,10 @@ import io.github.newbugger.android.libkit.entity.getSimpleName
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.ServiceHelper
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import java.io.File
 
 
@@ -38,11 +37,9 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         controllerType
         ComponentControllerProxy.getInstance(controllerType, context)
     }
-    private val exceptionHandler = { e: Throwable ->
-        GlobalScope.launch(Dispatchers.Main) {
-            DialogUtil().showWarningDialogWithMessage(context, e)
-        }
-        e.printStackTrace()
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        DialogUtil().showWarningDialogWithMessage(context, throwable)
+        throwable.printStackTrace()
     }
     private lateinit var type: EComponentType
 
@@ -61,14 +58,14 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
 
     override fun loadComponents(packageName: String, type: EComponentType) {
         view?.setLoadingIndicator(true)
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             if (type == EComponentType.SERVICE) {
                 serviceHelper.refreshRoot()
             }
             val componentList = getComponents(packageName, type)
             val viewModels = initViewModel(componentList)
             val sortedViewModels = sortComponentList(viewModels, currentComparator)
-            uiThread {
+            launch(Dispatchers.Main) {
                 view?.setLoadingIndicator(false)
                 if (sortedViewModels.isEmpty()) {
                     view?.showNoComponent()
@@ -84,14 +81,11 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun enable(packageName: String, componentName: String): Boolean {
-        val handler = { t: Throwable ->
-            GlobalScope.launch(Dispatchers.Main) {
-                DialogUtil().showWarningDialogWithMessage(context, t)
-                view?.refreshComponentState(componentName)
-            }
-            t.printStackTrace()
+        val handler = CoroutineExceptionHandler { _, throwable ->
+            DialogUtil().showWarningDialogWithMessage(context, throwable)
+            view?.refreshComponentState(componentName)
         }
-        doAsync(handler) {
+        GlobalScope.launch(Dispatchers.Default + handler) {
             when (controllerType) {
                 EControllerMethod.IFW -> {
                     if (!checkIFWState(packageName, componentName)) {
@@ -105,7 +99,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
                 }
             }
             controller.enable(packageName, componentName)
-            uiThread {
+            launch(Dispatchers.Main) {
                 view?.refreshComponentState(componentName)
             }
         }
@@ -113,16 +107,13 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun disable(packageName: String, componentName: String): Boolean {
-        val handler = { e: Throwable ->
-            GlobalScope.launch(Dispatchers.Main) {
-                DialogUtil().showWarningDialogWithMessage(context, e)
-                view?.refreshComponentState(componentName)
-            }
-            e.printStackTrace()
+        val handler = CoroutineExceptionHandler { _, throwable ->
+            DialogUtil().showWarningDialogWithMessage(context, throwable)
+            view?.refreshComponentState(componentName)
         }
-        doAsync(handler) {
+        GlobalScope.launch(Dispatchers.Default + handler) {
             controller.disable(packageName, componentName)
-            uiThread {
+            launch(Dispatchers.Main) {
                 view?.refreshComponentState(componentName)
             }
         }
@@ -141,18 +132,18 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun addToIFW(packageName: String, componentName: String, type: EComponentType) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             ifwController.disable(packageName, componentName)
-            uiThread {
+            launch(Dispatchers.Main) {
                 view?.refreshComponentState(componentName)
             }
         }
     }
 
     override fun removeFromIFW(packageName: String, componentName: String, type: EComponentType) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             ifwController.enable(packageName, componentName)
-            uiThread {
+            launch(Dispatchers.Main) {
                 view?.refreshComponentState(componentName)
             }
         }
@@ -160,10 +151,10 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
 
     // TODO: specify details for Prescription
     override fun generatePrescription(context: Context, packageName: String, componentName: String, typeC: String) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             Rule.exportPrescription(context, packageName, componentName, typeC, "other",
                     null, null, null, null, null, null, null)
-            uiThread {
+            launch(Dispatchers.Main) {
                 view?.refreshComponentState(componentName)
             }
         }
@@ -204,14 +195,14 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun disableAllComponents(packageName: String, type: EComponentType) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             val components = getComponents(packageName, type)
             controller.batchDisable(components) { componentInfo ->
-                uiThread {
+                launch(Dispatchers.Main) {
                     view?.refreshComponentState(componentInfo.name)
                 }
             }
-            uiThread {
+            launch(Dispatchers.Main) {
                 view?.showActionDone()
                 loadComponents(packageName, type)
             }
@@ -219,7 +210,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun enableAllComponents(packageName: String, type: EComponentType) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             val components = getComponents(packageName, type)
             ifwController.batchEnable(components) { componentInfo ->
                 if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager,
@@ -227,11 +218,11 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
                     ComponentControllerProxy.getInstance(EControllerMethod.PM, context)
                             .enable(componentInfo.packageName, componentInfo.name)
                 }
-                uiThread {
+                launch(Dispatchers.Main) {
                     view?.refreshComponentState(componentInfo.name)
                 }
             }
-            uiThread {
+            launch(Dispatchers.Main) {
                 view?.showActionDone()
                 loadComponents(packageName, type)
             }
@@ -244,9 +235,9 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     private fun exportBlockerRule(packageName: String) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             val result = Rule.export(context, packageName)
-            uiThread {
+            launch(Dispatchers.Main) {
                 if (result.isSucceed) {
                     view?.showActionDone()
                 } else {
@@ -268,7 +259,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     @SuppressLint("CheckResult")
     private fun importBlockerRule(packageName: String) {
         view?.showToastMessage(context.getString(R.string.processing), Toast.LENGTH_SHORT)
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             val blockerFolder = Rule.getBlockerRuleFolder(context)
             if (Build.VERSION.SDK_INT == 29 && PreferenceUtil.getDirtyAccess(context)) {
                 Rule.getBlockerSomeFolderMove(Rule.getBlockerRuleFolderDirty(), blockerFolder)
@@ -280,7 +271,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
                     } else {
                         Rule.import(context, destFile)
                     }
-            uiThread {
+            launch(Dispatchers.Main) {
                 if (result.isSucceed) {
                     ToastUtil.showToast(context.getString(R.string.done))
                 } else {

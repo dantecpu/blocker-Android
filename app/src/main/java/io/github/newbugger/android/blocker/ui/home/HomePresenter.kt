@@ -6,20 +6,17 @@ import io.github.newbugger.android.blocker.util.DialogUtil
 import io.github.newbugger.android.libkit.entity.Application
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ManagerUtils
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 
 
 class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Presenter {
     private var context: Context? = null
-    private val exceptionHandler = { e: Throwable ->
-        GlobalScope.launch(Dispatchers.Main) {
-            DialogUtil().showWarningDialogWithMessage(context, e)
-        }
-        e.printStackTrace()
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        DialogUtil().showWarningDialogWithMessage(context, throwable)
+        throwable.printStackTrace()
     }
 
     override fun start(context: Context) {
@@ -34,14 +31,14 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
 
     override fun loadApplicationList(context: Context, isSystemApplication: Boolean) {
         homeView?.setLoadingIndicator(true)
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             val applications: MutableList<Application> = if (isSystemApplication) {
                 ApplicationUtil.getSystemApplicationList(context)
             } else {
                 ApplicationUtil.getThirdPartyApplicationList(context)
             }
             val sortedList = sortApplicationList(applications)
-            uiThread {
+            launch(Dispatchers.Main) {
                 if (sortedList.isEmpty()) {
                     homeView?.showNoApplication()
                 } else {
@@ -67,7 +64,7 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     }
 
     override fun forceStop(packageName: String) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             ManagerUtils.forceStop(packageName)
         }
     }
@@ -75,36 +72,36 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     // too simple implement: long press at app list then click Disable menu
     // indeed do not need component presenter
     override fun enableApplication(packageName: String) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             ManagerUtils.enableApplication(packageName)
-            uiThread {
+            launch(Dispatchers.Main) {
                 homeView?.updateState(packageName)
             }
         }
     }
 
     override fun disableApplication(packageName: String) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             ManagerUtils.disableApplication(packageName)
-            uiThread {
+            launch(Dispatchers.Main) {
                 homeView?.updateState(packageName)
             }
         }
     }
 
     override fun blockApplication(packageName: String) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             ApplicationUtil.addBlockedApplication(context!!, packageName)
-            uiThread {
+            launch(Dispatchers.Main) {
                 homeView?.updateState(packageName)
             }
         }
     }
 
     override fun unblockApplication(packageName: String) {
-        doAsync(exceptionHandler) {
+        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
             ApplicationUtil.removeBlockedApplication(context!!, packageName)
-            uiThread {
+            launch(Dispatchers.Main) {
                 homeView?.updateState(packageName)
             }
         }
