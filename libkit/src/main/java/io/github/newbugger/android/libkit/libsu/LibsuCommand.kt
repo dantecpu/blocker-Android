@@ -12,6 +12,7 @@ object LibsuCommand {
             throw RootUnavailableException()
     }
 
+    @Throws(RootUnavailableException::class)
     fun command(comm: String): Shell.Result {
         try {
             check()
@@ -24,11 +25,13 @@ object LibsuCommand {
         }
     }
 
+    @Throws(RootUnavailableException::class)
     fun code(u: Shell.Result): Boolean {
         check()
         return u.isSuccess
     }
 
+    @Throws(RootUnavailableException::class)
     fun output(u: Shell.Result): List<String> {
         check()
         return u.out
