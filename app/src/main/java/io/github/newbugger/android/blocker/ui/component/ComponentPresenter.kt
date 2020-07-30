@@ -20,11 +20,7 @@ import io.github.newbugger.android.libkit.entity.getSimpleName
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.ServiceHelper
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.File
 
 
@@ -59,7 +55,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
 
     override fun loadComponents(packageName: String, type: EComponentType) {
         view?.setLoadingIndicator(true)
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             if (type == EComponentType.SERVICE) {
                 serviceHelper.refreshRoot()
             }
@@ -86,7 +82,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
             DialogUtil().showWarningDialogWithMessage(context, throwable)
             view?.refreshComponentState(componentName)
         }
-        GlobalScope.launch(Dispatchers.Default + handler) {
+        CoroutineScope(Dispatchers.Default + handler).launch {
             when (controllerType) {
                 EControllerMethod.IFW -> {
                     if (!checkIFWState(packageName, componentName)) {
@@ -112,7 +108,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
             DialogUtil().showWarningDialogWithMessage(context, throwable)
             view?.refreshComponentState(componentName)
         }
-        GlobalScope.launch(Dispatchers.Default + handler) {
+        CoroutineScope(Dispatchers.Default + handler).launch {
             controller.disable(packageName, componentName)
             launch(Dispatchers.Main) {
                 view?.refreshComponentState(componentName)
@@ -133,7 +129,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun addToIFW(packageName: String, componentName: String, type: EComponentType) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             ifwController.disable(packageName, componentName)
             launch(Dispatchers.Main) {
                 view?.refreshComponentState(componentName)
@@ -142,7 +138,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun removeFromIFW(packageName: String, componentName: String, type: EComponentType) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             ifwController.enable(packageName, componentName)
             launch(Dispatchers.Main) {
                 view?.refreshComponentState(componentName)
@@ -152,11 +148,9 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
 
     // TODO: specify details for Prescription
     override fun generatePrescription(context: Context, packageName: String, componentName: String, typeC: String) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
-            withContext(Dispatchers.IO) {
-                Rule.exportPrescription(context, packageName, componentName, typeC, "other",
-                        null, null, null, null, null, null, null)
-            }
+        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            Rule.exportPrescription(context, packageName, componentName, typeC, "other",
+                    null, null, null, null, null, null, null)
             launch(Dispatchers.Main) {
                 view?.refreshComponentState(componentName)
             }
@@ -198,7 +192,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun disableAllComponents(packageName: String, type: EComponentType) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             val components = getComponents(packageName, type)
             controller.batchDisable(components) { componentInfo ->
                 launch(Dispatchers.Main) {
@@ -213,7 +207,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     override fun enableAllComponents(packageName: String, type: EComponentType) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             val components = getComponents(packageName, type)
             ifwController.batchEnable(components) { componentInfo ->
                 if (!ApplicationUtil.checkComponentIsEnabled(context.packageManager,
@@ -238,7 +232,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     }
 
     private fun exportBlockerRule(packageName: String) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             val result = Rule.export(context, packageName)
             launch(Dispatchers.Main) {
                 if (result.isSucceed) {
@@ -262,7 +256,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     @SuppressLint("CheckResult")
     private fun importBlockerRule(packageName: String) {
         view?.showToastMessage(context.getString(R.string.processing), Toast.LENGTH_SHORT)
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             val blockerFolder = Rule.getBlockerRuleFolder(context)
             if (Build.VERSION.SDK_INT == 29 && PreferenceUtil.getDirtyAccess(context)) {
                 Rule.getBlockerSomeFolderMove(Rule.getBlockerRuleFolderDirty(), blockerFolder)

@@ -6,10 +6,7 @@ import io.github.newbugger.android.blocker.util.DialogUtil
 import io.github.newbugger.android.libkit.entity.Application
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ManagerUtils
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Presenter {
@@ -31,7 +28,7 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
 
     override fun loadApplicationList(context: Context, isSystemApplication: Boolean) {
         homeView?.setLoadingIndicator(true)
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             val applications: MutableList<Application> = if (isSystemApplication) {
                 ApplicationUtil.getSystemApplicationList(context)
             } else {
@@ -64,7 +61,7 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     }
 
     override fun forceStop(packageName: String) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             ManagerUtils.forceStop(packageName)
         }
     }
@@ -72,7 +69,7 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     // too simple implement: long press at app list then click Disable menu
     // indeed do not need component presenter
     override fun enableApplication(packageName: String) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             ManagerUtils.enableApplication(packageName)
             launch(Dispatchers.Main) {
                 homeView?.updateState(packageName)
@@ -81,7 +78,7 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     }
 
     override fun disableApplication(packageName: String) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             ManagerUtils.disableApplication(packageName)
             launch(Dispatchers.Main) {
                 homeView?.updateState(packageName)
@@ -90,7 +87,7 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     }
 
     override fun blockApplication(packageName: String) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             ApplicationUtil.addBlockedApplication(context!!, packageName)
             launch(Dispatchers.Main) {
                 homeView?.updateState(packageName)
@@ -99,7 +96,7 @@ class HomePresenter(private var homeView: HomeContract.View?) : HomeContract.Pre
     }
 
     override fun unblockApplication(packageName: String) {
-        GlobalScope.launch(Dispatchers.Default + exceptionHandler) {
+        CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             ApplicationUtil.removeBlockedApplication(context!!, packageName)
             launch(Dispatchers.Main) {
                 homeView?.updateState(packageName)

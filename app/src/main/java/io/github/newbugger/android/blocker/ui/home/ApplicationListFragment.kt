@@ -21,8 +21,8 @@ import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import kotlinx.android.synthetic.main.app_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_app_list.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -316,7 +316,7 @@ class ApplicationListFragment : Fragment(), HomeContract.View {
                     } else {
                         itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.md_grey_300))
                     }
-                    GlobalScope.launch(Dispatchers.Default) {
+                    CoroutineScope(Dispatchers.Default).launch {
                         val icon = application.getApplicationIcon(pm)
                         launch(Dispatchers.Main) {
                             itemView.app_icon.setImageDrawable(icon)
