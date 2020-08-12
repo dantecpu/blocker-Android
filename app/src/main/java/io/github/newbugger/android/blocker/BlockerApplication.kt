@@ -1,31 +1,36 @@
 package io.github.newbugger.android.blocker
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import com.topjohnwu.superuser.BuildConfig
 import com.topjohnwu.superuser.Shell
 import io.github.newbugger.android.blocker.libsu.LibsuInitializer
+import io.github.newbugger.android.blocker.util.BuildUtil
 
 
 class BlockerApplication : Application() {
 
-    // from: topjohnwu/Magisk/blob/master/app/src/main/java/com/topjohnwu/magisk/core/App.kt
     init {
-        Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR)
-        Shell.Config.verboseLogging(BuildConfig.DEBUG)
-        Shell.Config.setTimeout(10)
-        Shell.Config.setFlags(Shell.FLAG_USE_MAGISK_BUSYBOX)
-        Shell.Config.addInitializers(LibsuInitializer::class.java)
+        Shell.setDefaultBuilder((Shell.Builder.create()
+                .apply {
+                    if (BuildUtil.BuildProperty.isTimeOut()) {
+                        setTimeout(10)
+                    }
+                }
+                .setFlags(Shell.FLAG_REDIRECT_STDERR)
+                .setInitializers(LibsuInitializer::class.java)).also {
+                    if (BuildUtil.BuildProperty.isBuildDebug()) {
+                        Shell.enableVerboseLogging = BuildConfig.DEBUG
+                    }
+                }
+        )
     }
 
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
+    override fun onCreate() {
+        super.onCreate()
         context = this
     }
 
     companion object {
-        @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
     }
 
