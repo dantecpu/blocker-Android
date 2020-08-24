@@ -3,11 +3,13 @@ package io.github.newbugger.android.blocker.rule
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ComponentInfo
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
+import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.core.ComponentControllerProxy
 import io.github.newbugger.android.blocker.core.IController
 import io.github.newbugger.android.blocker.core.prescription.PrescriptionUtil
@@ -26,10 +28,8 @@ import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
 import io.github.newbugger.android.libkit.utils.StorageUtils
 import io.github.newbugger.android.storage.directfileaccess.FileUtil.getExternalPath
-import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
-import java.io.IOException
+import io.github.newbugger.android.storage.mediastore.DefaultMediaStore.Companion.defaultMediaStore
+import java.io.*
 
 
 object Rule {
@@ -68,8 +68,7 @@ object Rule {
             disabledComponentsCount++
         }
         return if (rule.components.isNotEmpty()) {
-            val ruleFile = File(getBlockerRuleFolder(context), packageName + ConstantUtil.EXTENSION_JSON)
-            saveRuleToStorage(rule, ruleFile)
+            saveRuleToStorage(context, packageName, rule)
             if (Build.VERSION.SDK_INT == 29 && PreferenceUtil.getDirtyAccess(context)) {
                 getBlockerSomeFolderMove(getBlockerRuleFolder(context), getBlockerRuleFolderDirty())
             }
@@ -327,11 +326,20 @@ object Rule {
         return lines
     }
 
-    private fun saveRuleToStorage(rule: BlockerRule, dest: File) {
-        if (dest.exists()) {
-            dest.delete()
+    private fun saveRuleToStorage(context: Context, packageName: String, rule: BlockerRule) {
+        val json: String = GsonBuilder().setPrettyPrinting().create().toJson(rule)
+        val filename: String = packageName + ConstantUtil.EXTENSION_JSON
+        if (Build.VERSION.SDK_INT >= 29) {
+            context.defaultMediaStore.outputStream(context.defaultMediaStore.Downloads().newFile(context.getString(R.string.app_name), filename, "application/json").uri).use {
+                it.bufferedWriter(Charsets.UTF_8).write(json)
+                it.close()
+            }
+        } else {
+            File(getBlockerRuleFolder(context), filename).let {
+                if (it.exists()) it.delete()
+                it.writeText(json)
+            }
         }
-        dest.writeText(GsonBuilder().setPrettyPrinting().create().toJson(rule))
     }
 
     private fun isApplicationUninstalled(context: Context, savedList: MutableList<String>, packageName: String): Boolean {

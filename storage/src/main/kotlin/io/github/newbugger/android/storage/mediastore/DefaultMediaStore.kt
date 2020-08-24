@@ -44,10 +44,10 @@ class DefaultMediaStore(ctx: Context) {
     }
 
     @Throws(FileNotFoundException::class)
-    fun inputStream(uri: Uri) = contentResolver.openInputStream(uri) ?: throw FileNotFoundException()
+    fun inputStream(uri: Uri) = contentResolver.openInputStream(uri)?.buffered() ?: throw FileNotFoundException()
 
     @Throws(FileNotFoundException::class)
-    fun outputStream(uri: Uri) = contentResolver.openOutputStream(uri) ?: throw FileNotFoundException()
+    fun outputStream(uri: Uri) = contentResolver.openOutputStream(uri)?.buffered() ?: throw FileNotFoundException()
 
     @RequiresApi(29)
     inner class Images {
@@ -70,8 +70,8 @@ class DefaultMediaStore(ctx: Context) {
             return getFile(tableUri, relativePath(appName), displayName)
         }
 
-        fun newFile(appName: String, displayName: String): MediaStoreFile {
-            return newFile(tableUri, relativePath(appName), displayName, null)
+        fun newFile(appName: String, displayName: String, mimeType: String? = null): MediaStoreFile {
+            return newFile(tableUri, relativePath(appName), displayName, mimeType)
         }
 
         private fun relativePath(appName: String): String = Environment.DIRECTORY_DOWNLOADS + File.separator + appName
@@ -113,12 +113,7 @@ class DefaultMediaStore(ctx: Context) {
                 val id = cursor.getLong(idColumn)
                 val data = cursor.getString(dataColumn)
                 if (data.endsWith(relativePath + File.separator + displayName)) {
-                    return MediaStoreFile(
-                            id,
-                            data,
-                            tableUri,
-                            contentResolver
-                    )
+                    return MediaStoreFile(id, data, tableUri, contentResolver)
                 }
             }
         }
@@ -139,12 +134,7 @@ class DefaultMediaStore(ctx: Context) {
             if (cursor.moveToFirst()) {
                 val id = cursor.getLong(idIndex)
                 val data = cursor.getString(dataColumn)
-                return MediaStoreFile(
-                        id,
-                        data,
-                        tableUri,
-                        contentResolver
-                )
+                return MediaStoreFile(id, data, tableUri, contentResolver)
             }
         }
 

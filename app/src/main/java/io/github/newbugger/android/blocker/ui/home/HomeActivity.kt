@@ -7,9 +7,11 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -24,10 +26,12 @@ import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
 import io.github.newbugger.android.blocker.ui.settings.SettingsActivity
+import io.github.newbugger.android.blocker.util.BuildUtil
 import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
+import io.github.newbugger.android.storage.mediastore.DefaultMediaStore.Companion.defaultMediaStore
 import kotlinx.android.synthetic.main.activity_home.*
 
 
@@ -48,11 +52,17 @@ class HomeActivity : AppCompatActivity(), IActivityView {
             setupWithViewPager(app_viewpager)
             setupTab(this)
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && BuildUtil.BuildProperty.isBuildDebug()) {
+            this.defaultMediaStore.outputStream(this.defaultMediaStore.Downloads().newFile(this.getString(R.string.app_name), "filename.txt", "text/plain").uri).use {
+                it.bufferedWriter(Charsets.UTF_8).write("text")
+                it.close()
+            }
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        createNotificationChannel()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { createNotificationChannel() }
     }
 
     override fun onStop() {
@@ -165,6 +175,7 @@ class HomeActivity : AppCompatActivity(), IActivityView {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
         val channelId = "processing_progress_indicator"
         val channelName = getString(R.string.processing_progress_indicator)
