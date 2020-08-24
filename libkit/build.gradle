@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         minSdkVersion 24
@@ -14,9 +15,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':storage')
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    api 'androidx.preference:preference:1.1.1'
+    api 'androidx.preference:preference-ktx:1.1.1'
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api 'com.google.code.gson:gson:2.8.6'
     api 'com.github.topjohnwu.libsu:core:3.0.1'

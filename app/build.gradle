@@ -5,8 +5,7 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
-    ndkVersion '21.3.6528147'  // https://github.com/gradle/gradle/issues/12440
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "io.github.newbugger.android.blocker"
@@ -21,8 +20,7 @@ android {
             multiDexEnabled true
             zipAlignEnabled true
             minifyEnabled true
-            // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-debug.pro'
         }
         debug {
             multiDexEnabled true
@@ -64,4 +62,5 @@ dependencies {
     implementation project(':core')
     implementation project(':ifw-api')
     implementation project(':libkit')
+    implementation project(':storage')
 }

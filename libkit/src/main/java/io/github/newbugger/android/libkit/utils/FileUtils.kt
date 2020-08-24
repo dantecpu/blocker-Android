@@ -4,8 +4,6 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
@@ -101,15 +99,6 @@ object FileUtils {
         return Environment.getExternalStorageState() in
                 setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)
     }*/
-
-    @JvmStatic
-    fun getExternalStoragePath(context: Context): String {
-        return if (Build.VERSION.SDK_INT > 28) {
-            context.getExternalFilesDir(null)!!.absolutePath
-        } else {
-            Environment.getExternalStorageDirectory().absolutePath
-        }
-    }
 
     // api 29 only, a dirty usage
     @RequiresApi(29)

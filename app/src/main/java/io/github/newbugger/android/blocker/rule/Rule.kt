@@ -21,12 +21,15 @@ import io.github.newbugger.android.ifw.IntentFirewall
 import io.github.newbugger.android.ifw.IntentFirewallImpl
 import io.github.newbugger.android.ifw.entity.ComponentType
 import io.github.newbugger.android.ifw.util.RuleSerializer
-import io.github.newbugger.android.libkit.utils.*
+import io.github.newbugger.android.libkit.utils.ApplicationUtil
+import io.github.newbugger.android.libkit.utils.ConstantUtil
+import io.github.newbugger.android.libkit.utils.FileUtils
+import io.github.newbugger.android.libkit.utils.StorageUtils
+import io.github.newbugger.android.storage.directfileaccess.FileUtil.getExternalPath
 import java.io.File
-import java.io.FileWriter
 import java.io.FileReader
+import java.io.FileWriter
 import java.io.IOException
-import java.lang.RuntimeException
 
 
 object Rule {
@@ -346,19 +349,13 @@ object Rule {
     }
 
     fun getBlockerRuleFolder(context: Context): String =
-            (FileUtils.getExternalStoragePath(context) + File.separator + "rule").also {
-                if (!File(it).exists()) File(it).mkdir()
-            }
+            context.getExternalPath("rule")
 
     private fun getBlockerIFWFolder(context: Context): String =
-            (FileUtils.getExternalStoragePath(context) + File.separator + "ifw").also {
-                if (!File(it).exists()) File(it).mkdir()
-            }
+            context.getExternalPath("ifw")
 
     private fun getBlockerPrescriptionFolder(context: Context): String =
-            (FileUtils.getExternalStoragePath(context) + File.separator + "prescription").also {
-                if (!File(it).exists()) File(it).mkdir()
-            }
+            context.getExternalPath("prescription")
 
     // api 29 only, a dirty usage
     @RequiresApi(29)

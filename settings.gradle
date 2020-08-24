@@ -1,1 +1,1 @@
-include ':app', ':core', ':ifw-api', ':libkit'
+include ':app', ':core', ':ifw-api', ':libkit', ':storage'
