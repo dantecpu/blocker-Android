@@ -3,7 +3,6 @@ package io.github.newbugger.android.blocker.rule
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ComponentInfo
-import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.google.gson.Gson
@@ -27,8 +26,9 @@ import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
 import io.github.newbugger.android.libkit.utils.StorageUtils
-import io.github.newbugger.android.storage.directfileaccess.FileUtil.getExternalPath
-import io.github.newbugger.android.storage.mediastore.DefaultMediaStore.Companion.defaultMediaStore
+import io.github.newbugger.android.storage.directfileaccess.DirectFileUtil.getExternalPath
+import io.github.newbugger.android.storage.mediastore.MediaStoreUtil
+import io.github.newbugger.android.storage.mediastore.MediaStoreUtil.defaultMediaStoreOutputStream
 import java.io.*
 
 
@@ -330,8 +330,8 @@ object Rule {
         val json: String = GsonBuilder().setPrettyPrinting().create().toJson(rule)
         val filename: String = packageName + ConstantUtil.EXTENSION_JSON
         if (Build.VERSION.SDK_INT >= 29) {
-            context.defaultMediaStore.outputStream(context.defaultMediaStore.Downloads().newFile(context.getString(R.string.app_name), filename, "application/json").uri).use {
-                it.bufferedWriter(Charsets.UTF_8).write(json)
+            context.defaultMediaStoreOutputStream(MediaStoreUtil.Downloads.newFile(context, context.getString(R.string.app_name), filename, "application/json").uri).use {
+                json.byteInputStream(Charsets.UTF_8).copyTo(it)
                 it.close()
             }
         } else {

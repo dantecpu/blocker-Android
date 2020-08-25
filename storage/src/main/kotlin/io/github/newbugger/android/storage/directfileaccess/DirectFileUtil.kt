@@ -10,11 +10,12 @@ import android.os.Environment
 import androidx.core.app.ActivityCompat
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.IOException
 
 
-object FileUtil {
+object DirectFileUtil {
 
-    @Throws(SecurityException::class, FileNotFoundException::class)
+    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
     fun Context.getExternalPath(path: String): String =
             if (Build.VERSION.SDK_INT >= 29) {
                 this.getExternalFilesDirPath(path)
@@ -22,27 +23,27 @@ object FileUtil {
                 this.getExternalStorageDirectoryPath(path)
             }
 
-    @Throws(SecurityException::class, FileNotFoundException::class)
+    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
     private fun Context.getExternalFilesDirPath(path: String): String =
             (this.getExternalFilesDir() + File.separator + path).also {
                 if (!File(it).exists()) File(it).mkdir()
             }
 
-    @Throws(SecurityException::class, FileNotFoundException::class)
+    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
     private fun Context.getExternalFilesDir(): String =
             (this.getExternalFilesDir(null)!!.absolutePath).also {
                 if (!File(it).exists()) File(it).mkdir()
             }
 
     @TargetApi(28)
-    @Throws(SecurityException::class, FileNotFoundException::class)
+    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
     private fun Context.getExternalStorageDirectoryPath(path: String): String =
             (this.getExternalStorageDirectory() + File.separator + path).also {
                 if (!File(it).exists()) File(it).mkdir()
             }
 
     @TargetApi(28)
-    @Throws(SecurityException::class, FileNotFoundException::class)
+    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
     private fun Context.getExternalStorageDirectory(): String =
             this.let {
                 it.requestStorageReadPermission()
