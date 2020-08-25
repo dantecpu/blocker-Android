@@ -53,6 +53,11 @@ object MediaStoreUtil {
 
     @RequiresApi(29)
     object Images {
+        fun getFolderFile(context: Context, appName: String, mimeType: String? = null): MutableList<MediaStoreFile?> {
+            // context.requestStorageReadPermission()
+            return context.getFolderFile(tableUri, relativePath(appName), mimeType)
+        }
+
         fun getFile(context: Context, appName: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
             return context.getFile(tableUri, relativePath(appName), displayName, mimeType)
         }
@@ -79,6 +84,11 @@ object MediaStoreUtil {
      */
     @RequiresApi(29)
     object Downloads {
+        fun getFolderFile(context: Context, appName: String, mimeType: String? = null): MutableList<MediaStoreFile?> {
+            // context.requestStorageReadPermission()
+            return context.getFolderFile(tableUri, relativePath(appName), mimeType)
+        }
+
         fun getFile(context: Context, appName: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
             // context.requestStorageReadPermission()
             return context.getFile(tableUri, relativePath(appName), displayName, mimeType)
@@ -96,6 +106,12 @@ object MediaStoreUtil {
 
     @RequiresApi(29)
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
+    private fun Context.getFolderFile(tableUri: Uri, relativePath: String, mimeType: String? = null): MutableList<MediaStoreFile?> {
+        return queryFolderFile(tableUri, relativePath, mimeType)
+    }
+
+    @RequiresApi(29)
+    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
     private fun Context.getFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
         return queryFile(tableUri, relativePath, displayName, mimeType)
     }
@@ -109,6 +125,40 @@ object MediaStoreUtil {
             queryFile(tableUri, relativePath, displayName, mimeType)?.delete()
             insertFile(tableUri, relativePath, displayName, mimeType)
         }
+    }
+
+    /**
+     * todo bug: cannot use MediaStore.MediaColumns.RELATIVE_PATH on either query.selection or cursor.getColumn
+     * so use deprecated MediaStore.MediaColumns.DATA
+     */
+    @RequiresApi(29)
+    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
+    private fun Context.queryFolderFile(tableUri: Uri, relativePath: String, mimeType: String? = null): MutableList<MediaStoreFile?> {
+        val collection: MutableList<MediaStoreFile?> = ArrayList()
+
+        val projection = arrayOf(MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.RELATIVE_PATH, MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.MIME_TYPE)
+        val sortOrder = "${MediaStore.MediaColumns.DISPLAY_NAME} ASC"
+
+        contentResolver.query(tableUri, projection, null, null, sortOrder)?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
+            val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+            val relativeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.RELATIVE_PATH)
+            val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
+            val mimeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idColumn)
+                val data = cursor.getString(dataColumn)
+                val relative = cursor.getString(relativeColumn)
+                val name = cursor.getString(nameColumn)
+                val mime = cursor.getString(mimeColumn)
+                val relativeName = relativePath + File.separator + name
+                if ((data.endsWith(relativeName) || relative == relativePath) && (mimeType == null || mimeType == mime)) {
+                    collection.add(MediaStoreFile(id, relativeName, tableUri, contentResolver))
+                }
+            }
+        }
+
+        return collection
     }
 
     /**

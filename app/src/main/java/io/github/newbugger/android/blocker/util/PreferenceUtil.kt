@@ -18,7 +18,4 @@ object PreferenceUtil {
         }
     }
 
-    fun getDirtyAccess(context: Context): Boolean =
-            PreferenceManager.getDefaultSharedPreferences(context).getBoolean("dirty_external", false)
-
 }

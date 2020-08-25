@@ -27,6 +27,7 @@ import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
 import io.github.newbugger.android.blocker.ui.settings.SettingsActivity
 import io.github.newbugger.android.blocker.util.BuildUtil
+import io.github.newbugger.android.blocker.util.MediaStoreLocalUtil
 import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
 import io.github.newbugger.android.libkit.utils.ConstantUtil
@@ -54,13 +55,8 @@ class HomeActivity : AppCompatActivity(), IActivityView {
             setupTab(this)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && BuildUtil.BuildProperty.isBuildDebug()) {
-            this.defaultMediaStoreOutputStream(MediaStoreUtil.Downloads.newFile(this, this.getString(R.string.app_name), "filename.txt", "text/plain").uri).use {
-                "test".byteInputStream(Charsets.UTF_8).copyTo(it)
-                it.close()
-            }
-            this.defaultMediaStoreOutputStream(MediaStoreUtil.Downloads.getFile(this, this.getString(R.string.app_name), "filename.txt", "text/plain")!!.uri).use {
-                it.close()
-            }
+            MediaStoreLocalUtil.writeText(this, "test", null, "filename.txt", "text/plain")
+            MediaStoreLocalUtil.readText(this, null, "filename.txt", "text/plain")
         }
     }
 

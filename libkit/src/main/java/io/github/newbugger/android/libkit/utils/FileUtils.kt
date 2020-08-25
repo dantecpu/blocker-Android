@@ -6,7 +6,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import androidx.annotation.RequiresApi
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
 import java.io.File
 
@@ -99,20 +98,6 @@ object FileUtils {
         return Environment.getExternalStorageState() in
                 setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)
     }*/
-
-    // api 29 only, a dirty usage
-    @RequiresApi(29)
-    @JvmStatic
-    fun getExternalStoragePath(): String {
-        return "/storage/emulated/0/Blocker"
-    }
-
-    // api 29 only, a dirty usage
-    @RequiresApi(29)
-    @JvmStatic
-    fun getExternalStorageMove(src: String, dst: String) {
-        copy(src, dst)
-    }
 
     @JvmStatic
     fun copy(source: String, dest: String) {

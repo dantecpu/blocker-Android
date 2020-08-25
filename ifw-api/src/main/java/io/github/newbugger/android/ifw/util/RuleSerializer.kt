@@ -17,4 +17,12 @@ object RuleSerializer {
             null
         }
     }
+
+    fun deserialize(file: String): Rules? {
+        return try {
+            serializer.read(Rules::class.java, file)
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

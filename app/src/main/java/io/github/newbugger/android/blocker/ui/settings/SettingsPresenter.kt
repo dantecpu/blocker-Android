@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.rule.Rule
 import io.github.newbugger.android.blocker.rule.entity.BlockerRule
+import io.github.newbugger.android.blocker.util.MediaStoreLocalUtil
 import io.github.newbugger.android.blocker.util.NotificationUtil
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
@@ -84,25 +85,41 @@ class SettingsPresenter(
                 ConstantUtil.EXTENSION_JSON
             )
             notificationBuilder = NotificationUtil.createProcessingNotification(context, rulesCount)
-            if (Build.VERSION.SDK_INT == 29 && PreferenceUtil.getDirtyAccess(context)) {
-                Rule.getBlockerSomeFolderMove(Rule.getBlockerRuleFolderDirty(), Rule.getBlockerRuleFolder(context))
-            }
-            FileUtils.listFiles(Rule.getBlockerRuleFolder(context)).filter {
-                it.endsWith(ConstantUtil.EXTENSION_JSON)
-            }.forEach {
-                val rule = Gson().fromJson(FileReader(it), BlockerRule::class.java)
-                if (!ApplicationUtil.isAppInstalled(context.packageManager, rule.packageName)) {
-                    return@forEach
+            if (Build.VERSION.SDK_INT >= 29) {
+                MediaStoreLocalUtil.readAllText(context, Rule.NAME_RULE_BLOCKER).forEach { (packageName, text) ->
+                    if (packageName != null && text != null) {
+                        if (!ApplicationUtil.isAppInstalled(context.packageManager, packageName)) {
+                            return@forEach
+                        }
+                        Rule.import(context, text)
+                        restoredCount++
+                        NotificationUtil.updateProcessingNotification(
+                                context,
+                                packageName,
+                                restoredCount,
+                                rulesCount,
+                                notificationBuilder
+                        )
+                    }
                 }
-                Rule.import(context, File(it))
-                restoredCount++
-                NotificationUtil.updateProcessingNotification(
-                    context,
-                    rule.packageName,
-                    restoredCount,
-                    rulesCount,
-                    notificationBuilder
-                )
+            } else {
+                FileUtils.listFiles(Rule.getBlockerRuleFolder(context)).filter {
+                    it.endsWith(ConstantUtil.EXTENSION_JSON)
+                }.forEach {
+                    val packageName = it.replace(ConstantUtil.EXTENSION_JSON, "")
+                    if (!ApplicationUtil.isAppInstalled(context.packageManager, packageName)) {
+                        return@forEach
+                    }
+                    Rule.import(context, File(it).readText())
+                    restoredCount++
+                    NotificationUtil.updateProcessingNotification(
+                            context,
+                            packageName,
+                            restoredCount,
+                            rulesCount,
+                            notificationBuilder
+                    )
+                }
             }
         }
         NotificationUtil.finishProcessingNotification(context, restoredCount, notificationBuilder)
