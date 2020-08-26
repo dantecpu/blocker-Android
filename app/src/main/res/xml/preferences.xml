@@ -40,4 +40,12 @@
             android:title="@string/reset_ifw" />
     </androidx.preference.PreferenceCategory>
 
+    <androidx.preference.PreferenceCategory
+        android:key="@string/key_pref_other"
+        android:title="@string/others">
+        <androidx.preference.Preference
+            android:key="@string/pref_saf_key"
+            android:title="@string/pref_saf_title" />
+    </androidx.preference.PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>

@@ -1,16 +1,24 @@
 package io.github.newbugger.android.blocker.ui.settings
 
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.newbugger.android.blocker.R
+import io.github.newbugger.android.blocker.util.BuildUtil
+import io.github.newbugger.android.blocker.util.SAFLocalUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
+import io.github.newbugger.android.libkit.utils.ConstantUtil
 
 
 class PreferenceFragment: PreferenceFragmentCompat(),
@@ -25,6 +33,7 @@ class PreferenceFragment: PreferenceFragmentCompat(),
     private lateinit var exportIfwRulePreference: Preference
     private lateinit var importIfwRulePreference: Preference
     private lateinit var resetIfwPreference: Preference
+    private lateinit var safPreference: Preference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +54,23 @@ class PreferenceFragment: PreferenceFragmentCompat(),
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    @RequiresApi(29)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && data != null) {
+            when (requestCode) {
+                ConstantUtil.documentRequestCode -> {
+                    // content://com.android.providers.downloads.documents/tree/msd%3A82
+                    val uri = (data.data).also {
+                        if (BuildUtil.BuildProperty.isBuildDebug()) Log.e(javaClass.name, it.toString())
+                    } ?: return
+                    SAFLocalUtil.takePersistableUriPermission(requireActivity(), uri)
+                }
+                else -> return
+            }
+        }
     }
 
     override fun showExportResult(isSucceed: Boolean, successfulCount: Int, failedCount: Int) {
@@ -116,6 +142,11 @@ class PreferenceFragment: PreferenceFragmentCompat(),
             ) {
                 presenter.importAllIfwRules()
             }
+            safPreference -> {
+                if (Build.VERSION.SDK_INT >= 29) {
+                    grantSAFAccess(requireContext())
+                }
+            }
             /* resetIfwPreference -> showDialog(
                 getString(R.string.warning),
                 getString(R.string.reset_ifw_warning_message)
@@ -127,17 +158,29 @@ class PreferenceFragment: PreferenceFragmentCompat(),
         return true
     }
 
+    @RequiresApi(29)
+    private fun grantSAFAccess(context: Context) {
+        if (SAFLocalUtil.checkDefaultSAFUriPermission(context)) {
+            val intent = SAFLocalUtil.intentActionOpenDocumentTree()
+            startActivityForResult(intent, ConstantUtil.documentRequestCode)
+        } else {
+            Toast.makeText(context, "Storage Access has granted.", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun findPreference() {
         exportRulePreference = findPreference(getString(R.string.key_pref_export_rules))!!
         importRulePreference = findPreference(getString(R.string.key_pref_import_rules))!!
         importIfwRulePreference = findPreference(getString(R.string.key_pref_import_ifw_rules))!!
         exportIfwRulePreference = findPreference(getString(R.string.key_pref_export_ifw_rules))!!
         resetIfwPreference = findPreference(getString(R.string.key_pref_reset_ifw_rules))!!
+        safPreference = findPreference(getString(R.string.pref_saf_key))!!
         exportRulePreference.onPreferenceClickListener = this
         importRulePreference.onPreferenceClickListener = this
         exportIfwRulePreference.onPreferenceClickListener = this
         importIfwRulePreference.onPreferenceClickListener = this
         resetIfwPreference.onPreferenceClickListener = this
+        safPreference.onPreferenceClickListener = this
     }
 
     private fun showConfirmationDialog(

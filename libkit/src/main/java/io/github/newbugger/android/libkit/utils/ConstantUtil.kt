@@ -16,6 +16,9 @@ object ConstantUtil {
     // .ui.home.ApplicationListFragment
     const val IS_SYSTEM: String = "IS_SYSTEM"
 
+    // .ui.settings
+    const val documentRequestCode = 1
+
     // .core.root.RootController
     const val COMMAND_ENABLE_COMPONENT = "pm enable %s/%s"
     const val COMMAND_DISABLE_COMPONENT = "pm disable %s/%s"

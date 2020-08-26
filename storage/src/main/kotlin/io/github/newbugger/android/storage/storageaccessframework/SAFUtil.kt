@@ -9,16 +9,17 @@
 
 package io.github.newbugger.android.storage.storageaccessframework
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Binder
 import android.os.Environment
 import android.provider.DocumentsContract
+import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
+import io.github.newbugger.android.storage.BuildConfig
 import java.io.FileNotFoundException
 import java.io.IOException
 
@@ -27,40 +28,50 @@ import java.io.IOException
 object SAFUtil {
 
     // todo: reduce the uri permission level ?
-    fun Context.takePersistableUriPermission(uri: Uri) {
-        contentResolver.takePersistableUriPermission(
-            uri.also { preferencesPersistableUriPut(it) },
-            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+    fun takePersistableUriPermission(context: Context, uri: Uri): Boolean {
+        context.contentResolver.takePersistableUriPermission(
+            uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         )
+        return (checkUriPermission(context, uri)).also {
+            if (BuildConfig.DEBUG) Log.e(javaClass.name, it.toString())
+        }
     }
 
-    fun Context.intentActionOpenDocumentTree(requestCode: Int) {
-        Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).also { intent ->
-            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.DIRECTORY_PICTURES)
-            ActivityCompat.startActivityForResult(this as Activity, intent, requestCode, null)
+    fun intentActionOpenDocumentTree(table: String = Environment.DIRECTORY_DOWNLOADS): Intent {
+        return Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            putExtra(DocumentsContract.EXTRA_INITIAL_URI, table)
         }
     }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun Context.preferencesPersistableUriGet(fileName: String, mimeType: String): Uri =
-        (preferencesPersistableUriGet().let {
-            Uri.parse(it)
-        }.let {
-            DocumentFile.fromTreeUri(this, it)
-        }.let {
-            if (it?.exists() == true) it.delete()
-            it?.createFile(mimeType, fileName)
-        }?.uri) ?: throw FileNotFoundException()
+    fun createFile(context: Context, content: String, fileName: String, mimeType: String): Uri =
+            (content.let {
+                Uri.parse(it)
+            }.let {
+                DocumentFile.fromTreeUri(context, it)
+            }.let {
+                if (it?.exists() == true) it.delete()
+                it?.createFile(mimeType, fileName)
+            }?.uri) ?: throw FileNotFoundException()
 
-    fun Context.preferencesPersistableUriCheck(): Boolean =
-            preferencesPersistableUriGet() == null
+    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
+    fun createFile(context: Context, content: Uri, fileName: String, mimeType: String): Uri =
+            (content.let {
+                DocumentFile.fromTreeUri(context, it)
+            }.let {
+                if (it?.exists() == true) it.delete()
+                it?.createFile(mimeType, fileName)
+            }?.uri) ?: throw FileNotFoundException()
 
-    private fun Context.preferencesPersistableUriGet(): String? =
-        PreferenceManager.getDefaultSharedPreferences(this).getString("saf", null)
-
-    private fun Context.preferencesPersistableUriPut(uri: Uri) {
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saf", uri.toString()).apply()
+    // https://stackoverflow.com/q/6307793
+    private fun checkUriPermission(context: Context, uri: Uri): Boolean {
+        return context.checkUriPermission(
+                uri,
+                Binder.getCallingPid(),
+                Binder.getCallingUid(),
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
 }
