@@ -17,7 +17,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.provider.OpenableColumns
 import androidx.annotation.RequiresApi
 import java.io.File
 import java.io.FileNotFoundException
@@ -28,41 +27,20 @@ import java.io.IOException
  * from https://github.com/topjohnwu/Magisk/commit/9e81db8
  */
 
-object MediaStoreUtil {
+@RequiresApi(29)
+class DefaultMediaStore(private val context: Context) {
 
-    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun Context.defaultMediaStoreDisplayName(uri: Uri): String {
-        require(uri.scheme == "content") { "Uri lacks 'content' scheme: $uri" }
-        val projection = arrayOf(OpenableColumns.DISPLAY_NAME)
-        contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
-            val displayNameColumn = cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
-            if (cursor.moveToFirst()) {
-                return cursor.getString(displayNameColumn)
-            }
-        }
-        return uri.toString()
-    }
-
-    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun Context.defaultMediaStoreInputStream(uri: Uri) =
-        contentResolver.openInputStream(uri)?.buffered() ?: throw FileNotFoundException()
-
-    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun Context.defaultMediaStoreOutputStream(uri: Uri) =
-        contentResolver.openOutputStream(uri)?.buffered() ?: throw FileNotFoundException()
-
-    @RequiresApi(29)
-    object Images {
-        fun getFolderFile(context: Context, appName: String, mimeType: String? = null): MutableList<MediaStoreFile?> {
+    inner class Images {
+        fun getFolderFile(appName: String, mimeType: String? = null): MutableList<MediaStoreFile?> {
             // context.requestStorageReadPermission()
             return context.getFolderFile(tableUri, relativePath(appName), mimeType)
         }
 
-        fun getFile(context: Context, appName: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
+        fun getFile(appName: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
             return context.getFile(tableUri, relativePath(appName), displayName, mimeType)
         }
 
-        fun newFile(context: Context, appName: String, displayName: String, mimeType: String? = null): MediaStoreFile {
+        fun newFile(appName: String, displayName: String, mimeType: String? = null): MediaStoreFile {
             return context.newFile(tableUri, relativePath(appName), displayName, mimeType)
         }
 
@@ -82,19 +60,18 @@ object MediaStoreUtil {
      *
      * Need the READ_EXTERNAL_STORAGE permission if accessing video files that your app didn't create.
      */
-    @RequiresApi(29)
-    object Downloads {
-        fun getFolderFile(context: Context, appName: String, mimeType: String? = null): MutableList<MediaStoreFile?> {
+    inner class Downloads {
+        fun getFolderFile(appName: String, mimeType: String? = null): MutableList<MediaStoreFile?> {
             // context.requestStorageReadPermission()
             return context.getFolderFile(tableUri, relativePath(appName), mimeType)
         }
 
-        fun getFile(context: Context, appName: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
+        fun getFile(appName: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
             // context.requestStorageReadPermission()
             return context.getFile(tableUri, relativePath(appName), displayName, mimeType)
         }
 
-        fun newFile(context: Context, appName: String, displayName: String, mimeType: String? = null): MediaStoreFile {
+        fun newFile(appName: String, displayName: String, mimeType: String? = null): MediaStoreFile {
             // context.requestStorageReadPermission()
             return context.newFile(tableUri, relativePath(appName), displayName, mimeType)
         }
@@ -104,21 +81,18 @@ object MediaStoreUtil {
         private val tableUri: Uri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
     }
 
-    @RequiresApi(29)
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.getFolderFile(tableUri: Uri, relativePath: String, mimeType: String? = null): MutableList<MediaStoreFile?> {
+    private fun Context.getFolderFile(tableUri: Uri, relativePath: String, mimeType: String?): MutableList<MediaStoreFile?> {
         return queryFolderFile(tableUri, relativePath, mimeType)
     }
 
-    @RequiresApi(29)
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.getFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
+    private fun Context.getFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String?): MediaStoreFile? {
         return queryFile(tableUri, relativePath, displayName, mimeType)
     }
 
-    @RequiresApi(29)
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.newFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String? = null): MediaStoreFile {
+    private fun Context.newFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String?): MediaStoreFile {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             insertFile(tableUri, relativePath, displayName, mimeType)
         } else {
@@ -131,10 +105,9 @@ object MediaStoreUtil {
      * todo bug: cannot use MediaStore.MediaColumns.RELATIVE_PATH on either query.selection or cursor.getColumn
      * so use deprecated MediaStore.MediaColumns.DATA
      */
-    @RequiresApi(29)
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.queryFolderFile(tableUri: Uri, relativePath: String, mimeType: String? = null): MutableList<MediaStoreFile?> {
-        val collection: MutableList<MediaStoreFile?> = ArrayList()
+    private fun Context.queryFolderFile(tableUri: Uri, relativePath: String, mimeType: String?): MutableList<MediaStoreFile?> {
+        val collection = mutableListOf<MediaStoreFile?>()
 
         val projection = arrayOf(MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.RELATIVE_PATH, MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.MIME_TYPE)
         val sortOrder = "${MediaStore.MediaColumns.DISPLAY_NAME} ASC"
@@ -165,9 +138,8 @@ object MediaStoreUtil {
      * todo bug: cannot use MediaStore.MediaColumns.RELATIVE_PATH on either query.selection or cursor.getColumn
      * so use deprecated MediaStore.MediaColumns.DATA
      */
-    @RequiresApi(29)
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.queryFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
+    private fun Context.queryFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String?): MediaStoreFile? {
         val relativeName = relativePath + File.separator + displayName
 
         val projection = arrayOf(MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.RELATIVE_PATH, MediaStore.MediaColumns.MIME_TYPE)
@@ -194,9 +166,8 @@ object MediaStoreUtil {
         return null
     }
 
-    @RequiresApi(29)
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.insertFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String? = null): MediaStoreFile {
+    private fun Context.insertFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String?): MediaStoreFile {
         val fileUri = insertValue(tableUri, relativePath, displayName, mimeType)
 
         val projection = arrayOf(MediaStore.MediaColumns._ID)
@@ -212,12 +183,11 @@ object MediaStoreUtil {
         throw IOException("can not insertFile $relativePath/$displayName")
     }
 
-    @RequiresApi(29)
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.insertValue(tableUri: Uri, relativePath: String, displayName: String, mimeType: String? = null): Uri {
+    private fun Context.insertValue(tableUri: Uri, relativePath: String, displayName: String? = null, mimeType: String? = null): Uri {
         return ContentValues(3).apply {
             put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
-            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+            if (displayName != null) put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
             if (mimeType != null) put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
         }.let {
             // before Android 11, MediaStore can not rename new file when file exists,
@@ -239,6 +209,11 @@ object MediaStoreUtil {
             val selectionArgs = arrayOf(id.toString())
             return contentResolver.delete(uri, selection, selectionArgs) == 1
         }
+    }
+
+    companion object {
+        val Context.defaultMediaStore: DefaultMediaStore
+            get() = DefaultMediaStore(this)
     }
 
 }

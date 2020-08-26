@@ -32,8 +32,6 @@ import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.StatusBarUtil
-import io.github.newbugger.android.storage.mediastore.MediaStoreUtil
-import io.github.newbugger.android.storage.mediastore.MediaStoreUtil.defaultMediaStoreOutputStream
 import kotlinx.android.synthetic.main.activity_home.*
 
 
@@ -55,8 +53,8 @@ class HomeActivity : AppCompatActivity(), IActivityView {
             setupTab(this)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && BuildUtil.BuildProperty.isBuildDebug()) {
-            MediaStoreLocalUtil.writeText(this, "test", null, "filename.txt", "text/plain")
-            MediaStoreLocalUtil.readText(this, null, "filename.txt", "text/plain")
+            MediaStoreLocalUtil.writeText(this, ConstantUtil.NAME_RULE_TEST_CONTENT, ConstantUtil.NAME_RULE_TEST, ConstantUtil.NAME_RULE_TEST_TITLE, MediaStoreLocalUtil.mimeTypePlain)
+            MediaStoreLocalUtil.readText(this, ConstantUtil.NAME_RULE_TEST, ConstantUtil.NAME_RULE_TEST_TITLE, MediaStoreLocalUtil.mimeTypePlain)
         }
     }
 

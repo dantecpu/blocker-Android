@@ -40,12 +40,4 @@
             android:title="@string/reset_ifw" />
     </androidx.preference.PreferenceCategory>
 
-    <androidx.preference.PreferenceCategory
-        android:key="@string/key_pref_other"
-        android:title="@string/others">
-        <androidx.preference.Preference
-            android:key="@string/key_pref_import_mat_rules"
-            android:title="@string/import_mat_rules" />
-    </androidx.preference.PreferenceCategory>
-
 </androidx.preference.PreferenceScreen>

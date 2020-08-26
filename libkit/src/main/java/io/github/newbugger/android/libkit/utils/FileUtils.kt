@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
+import io.github.newbugger.android.storage.directfileaccess.DirectFileUtil.getExternalDirectory
 import java.io.File
 
 
@@ -157,7 +158,7 @@ object FileUtils {
                 val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 val type = split[0]
                 if ("primary".equals(type, ignoreCase = true)) {
-                    return context.getExternalFilesDir(null).toString() +
+                    return context.getExternalDirectory() +
                             File.separator + "blocker" +
                             File.separator + split[1]
                 }

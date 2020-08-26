@@ -1,7 +1,6 @@
 package io.github.newbugger.android.blocker.ui.settings
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -12,8 +11,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.util.ToastUtil
-import io.github.newbugger.android.libkit.utils.ConstantUtil
-import io.github.newbugger.android.libkit.utils.FileUtils
 
 
 class PreferenceFragment: PreferenceFragmentCompat(),
@@ -28,7 +25,6 @@ class PreferenceFragment: PreferenceFragmentCompat(),
     private lateinit var exportIfwRulePreference: Preference
     private lateinit var importIfwRulePreference: Preference
     private lateinit var resetIfwPreference: Preference
-    private lateinit var importMatRulesPreference: Preference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,7 +116,6 @@ class PreferenceFragment: PreferenceFragmentCompat(),
             ) {
                 presenter.importAllIfwRules()
             }
-            importMatRulesPreference -> selectMatFile()
             /* resetIfwPreference -> showDialog(
                 getString(R.string.warning),
                 getString(R.string.reset_ifw_warning_message)
@@ -132,50 +127,17 @@ class PreferenceFragment: PreferenceFragmentCompat(),
         return true
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                ConstantUtil.matRulePathRequestCode -> {
-                    val filePath = FileUtils.getUriPath(requireContext(), data?.data)
-                    showDialog(
-                            getString(R.string.warning),
-                            getString(R.string.import_all_rules_warning_message),
-                            filePath
-                    ) {
-                        presenter.importMatRules(it)
-                    }
-                }
-                else -> return
-            }
-        }
-    }
-
     private fun findPreference() {
         exportRulePreference = findPreference(getString(R.string.key_pref_export_rules))!!
         importRulePreference = findPreference(getString(R.string.key_pref_import_rules))!!
         importIfwRulePreference = findPreference(getString(R.string.key_pref_import_ifw_rules))!!
         exportIfwRulePreference = findPreference(getString(R.string.key_pref_export_ifw_rules))!!
         resetIfwPreference = findPreference(getString(R.string.key_pref_reset_ifw_rules))!!
-        importMatRulesPreference = findPreference(getString(R.string.key_pref_import_mat_rules))!!
         exportRulePreference.onPreferenceClickListener = this
         importRulePreference.onPreferenceClickListener = this
         exportIfwRulePreference.onPreferenceClickListener = this
         importIfwRulePreference.onPreferenceClickListener = this
-        importMatRulesPreference.onPreferenceClickListener = this
         resetIfwPreference.onPreferenceClickListener = this
-    }
-
-    private fun selectMatFile() {
-        val pm = context?.packageManager ?: return
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "*/*"
-        if (intent.resolveActivity(pm) != null) {
-            startActivityForResult(intent, ConstantUtil.matRulePathRequestCode)
-        } else {
-            ToastUtil.showToast(getString(R.string.file_manager_required))
-        }
     }
 
     private fun showConfirmationDialog(

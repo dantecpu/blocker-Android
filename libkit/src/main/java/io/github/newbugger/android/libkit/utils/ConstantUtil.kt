@@ -8,9 +8,6 @@ object ConstantUtil {
     const val PACKAGE_NAME = "package_name"
     const val STATUS_BAR_ALPHA = 32
 
-    // .ui.settings.PreferenceFragment
-    const val matRulePathRequestCode = 100
-
     // .libkit.utils.ApplicationUtil
     const val BLOCKER_PACKAGE_NAME = "io.github.newbugger.android.blocker"
     const val BLOCKED_CONF_NAME = "Blocked"
@@ -26,5 +23,11 @@ object ConstantUtil {
     // .rule.Rule
     const val EXTENSION_JSON = ".json"
     const val EXTENSION_XML = ".xml"
+    const val NAME_RULE_BLOCKER = "rule"
+    const val NAME_RULE_IFW = "ifw"
+    const val NAME_RULE_PRESCRIPTION = "prescription"
+    const val NAME_RULE_TEST = "test"
+    const val NAME_RULE_TEST_TITLE = "filename.txt"
+    const val NAME_RULE_TEST_CONTENT = "test"
 
 }

@@ -1,13 +1,10 @@
 package io.github.newbugger.android.blocker.util
 
 import android.content.Context
-import android.net.Uri
 import androidx.annotation.RequiresApi
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.libkit.utils.ConstantUtil
-import io.github.newbugger.android.storage.mediastore.MediaStoreUtil
-import io.github.newbugger.android.storage.mediastore.MediaStoreUtil.defaultMediaStoreInputStream
-import io.github.newbugger.android.storage.mediastore.MediaStoreUtil.defaultMediaStoreOutputStream
+import io.github.newbugger.android.storage.mediastore.entity.MediaStoreTextUtil
 import java.io.File
 
 
@@ -16,11 +13,16 @@ object MediaStoreLocalUtil {
 
     fun readAllText(context: Context, appName: String?, mimeType: String? = mimeTypeJson): Map<String?, String?> {
         val map = HashMap<String?, String?>()
-        MediaStoreUtil.Downloads.getFolderFile(context, context.appName(appName), mimeType).forEach { file ->
-            file?.uri?.let { uri ->
-                context.defaultMediaStoreInputStream(uri).use {
-                    map[file.relativeName.split(File.separator).last().replace(ConstantUtil.EXTENSION_JSON, "")] = it.bufferedReader().readText()
-                    it.close()
+        MediaStoreTextUtil.readAllText(context, context.appName(appName), mimeType).forEach { (filename, text) ->
+            when (mimeType) {
+                mimeTypeJson -> {
+                    map[filename?.split(File.separator)?.last()?.replace(ConstantUtil.EXTENSION_JSON, "")] = text
+                }
+                mimeTypeXml -> {
+                    map[filename?.split(File.separator)?.last()?.replace(ConstantUtil.EXTENSION_XML, "")] = text
+                }
+                else -> {
+                    return@forEach
                 }
             }
         }
@@ -28,22 +30,19 @@ object MediaStoreLocalUtil {
     }
 
     fun readText(context: Context, appName: String?, displayName: String, mimeType: String? = mimeTypeJson): String? {
-        var text: String? = null
-        MediaStoreUtil.Downloads.getFile(context, context.appName(appName), displayName, mimeType)?.uri?.let { uri: Uri ->
-            context.defaultMediaStoreInputStream(uri).use {
-                text = it.bufferedReader().readText()
-                it.close()
-            }
-        }
-        return text
+        return MediaStoreTextUtil.readText(context, context.appName(appName), displayName.displayName(mimeType), mimeType)
     }
 
     fun writeText(context: Context, content: String, appName: String?, displayName: String, mimeType: String? = mimeTypeJson) {
-        context.defaultMediaStoreOutputStream(MediaStoreUtil.Downloads.newFile(context, context.appName(appName), displayName, mimeType).uri).use {
-            content.byteInputStream(Charsets.UTF_8).copyTo(it)
-            it.close()
-        }
+        MediaStoreTextUtil.writeText(context, content, context.appName(appName), displayName.displayName(mimeType), mimeType)
     }
+
+    private fun String.displayName(mimeType: String?): String =
+            when(mimeType) {
+                mimeTypeJson -> this + ConstantUtil.EXTENSION_JSON
+                mimeTypeXml -> this + ConstantUtil.EXTENSION_XML
+                else -> this
+            }
 
     private fun Context.appName(appName: String?): String =
             this.getString(R.string.app_name).let {
@@ -54,6 +53,8 @@ object MediaStoreLocalUtil {
                 }
             }
 
-    private const val mimeTypeJson: String = "application/json"
+    private const val mimeTypeJson: String = MediaStoreTextUtil.mimeType_Json
+    const val mimeTypeXml: String = MediaStoreTextUtil.mimeType_xml
+    const val mimeTypePlain: String = MediaStoreTextUtil.mimeType_plain
 
 }

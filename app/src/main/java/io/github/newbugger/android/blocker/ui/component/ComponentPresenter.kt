@@ -259,7 +259,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
         view?.showToastMessage(context.getString(R.string.processing), Toast.LENGTH_SHORT)
         CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
             val destFile = if (Build.VERSION.SDK_INT >= 29) {
-                MediaStoreLocalUtil.readText(context, Rule.NAME_RULE_BLOCKER, packageName + ConstantUtil.EXTENSION_JSON)
+                MediaStoreLocalUtil.readText(context, ConstantUtil.NAME_RULE_BLOCKER, packageName)
             } else {
                 val blockerFolder = Rule.getBlockerRuleFolder(context)
                 File(blockerFolder, packageName + ConstantUtil.EXTENSION_JSON).readText()

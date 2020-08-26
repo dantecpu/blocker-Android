@@ -16,7 +16,6 @@ import io.github.newbugger.android.blocker.rule.entity.RulesResult
 import io.github.newbugger.android.blocker.ui.component.EComponentType
 import io.github.newbugger.android.blocker.util.MediaStoreLocalUtil
 import io.github.newbugger.android.blocker.util.PreferenceUtil
-import io.github.newbugger.android.ifw.IntentFirewall
 import io.github.newbugger.android.ifw.IntentFirewallImpl
 import io.github.newbugger.android.ifw.entity.ComponentType
 import io.github.newbugger.android.ifw.util.RuleSerializer
@@ -24,10 +23,9 @@ import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
 import io.github.newbugger.android.libkit.utils.StorageUtils
-import io.github.newbugger.android.storage.directfileaccess.DirectFileUtil.getExternalPath
+import io.github.newbugger.android.storage.directfileaccess.DirectFileUtil.getExternalDirectory
 import java.io.File
 import java.io.FileWriter
-import java.io.IOException
 
 
 object Rule {
@@ -78,16 +76,9 @@ object Rule {
         val appRule = Gson().fromJson<BlockerRule>(file, BlockerRule::class.java) ?: return RulesResult(false, 0, 0)
         var succeedCount = 0
         var failedCount = 0
-        // val total = appRule.components.size
+        val total = appRule.components.size
         val controller = getController(context)
-        var ifwController: IntentFirewall? = null
-        // Detects if contains IFW rules, if exists, create a new controller.
-        appRule.components.forEach ifwDetection@{
-            if (it.method == EControllerMethod.IFW) {
-                ifwController = IntentFirewallImpl.getInstance(context, appRule.packageName)
-                return@ifwDetection
-            }
-        }
+        val ifwController = IntentFirewallImpl.getInstance(context, appRule.packageName)
         try {
             appRule.components.forEach {
                 val controllerResult = when (it.method) {
@@ -95,23 +86,35 @@ object Rule {
                         when (it.type) {
                             EComponentType.RECEIVER -> {
                                 if (it.enabled) {
-                                    ifwController?.add(appRule.packageName, it.name, ComponentType.BROADCAST) ?: false
+                                    (ifwController?.add(appRule.packageName, it.name, ComponentType.BROADCAST)).also {
+                                        ifwController?.save()
+                                    } ?: false
                                 } else {
-                                    ifwController?.remove(appRule.packageName, it.name, ComponentType.BROADCAST) ?: false
+                                    (ifwController?.remove(appRule.packageName, it.name, ComponentType.BROADCAST)).also {
+                                        ifwController?.save()
+                                    } ?: false
                                 }
                             }
                             EComponentType.SERVICE -> {
                                 if (it.enabled) {
-                                    ifwController?.add(appRule.packageName, it.name, ComponentType.SERVICE) ?: false
+                                    (ifwController?.add(appRule.packageName, it.name, ComponentType.SERVICE)).also {
+                                        ifwController?.save()
+                                    } ?: false
                                 } else {
-                                    ifwController?.remove(appRule.packageName, it.name, ComponentType.SERVICE) ?: false
+                                    (ifwController?.remove(appRule.packageName, it.name, ComponentType.SERVICE)).also {
+                                        ifwController?.save()
+                                    } ?: false
                                 }
                             }
                             EComponentType.ACTIVITY -> {
                                 if (it.enabled) {
-                                    ifwController?.add(appRule.packageName, it.name, ComponentType.ACTIVITY) ?: false
+                                    (ifwController?.add(appRule.packageName, it.name, ComponentType.ACTIVITY)).also {
+                                        ifwController?.save()
+                                    } ?: false
                                 } else {
-                                    ifwController?.remove(appRule.packageName, it.name, ComponentType.ACTIVITY) ?: false
+                                    (ifwController?.remove(appRule.packageName, it.name, ComponentType.ACTIVITY)).also {
+                                        ifwController?.save()
+                                    } ?: false
                                 }
                             }
                             // content provider needs PM to implement it
@@ -138,45 +141,6 @@ object Rule {
                 } else {
                     failedCount++
                 }
-            }
-            ifwController?.save()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return RulesResult(false, succeedCount, failedCount)
-        }
-        return RulesResult(true, succeedCount, failedCount)
-    }
-
-    fun importMatRules(context: Context, file: File, action: (context: Context, name: String, current: Int, total: Int) -> Unit): RulesResult {
-        var succeedCount = 0
-        var failedCount = 0
-        val total = countLines(file)
-        val controller = getController(context)
-        val uninstalledAppList = mutableListOf<String>()
-        try {
-            file.forEachLine {
-                if (it.trim().isEmpty() || !it.contains("/")) {
-                    failedCount++
-                    return@forEachLine
-                }
-                val splitResult = it.split("/")
-                if (splitResult.size != 2) {
-                    failedCount++
-                    return@forEachLine
-                }
-                val packageName = splitResult[0]
-                val name = splitResult[1]
-                if (isApplicationUninstalled(context, uninstalledAppList, packageName)) {
-                    failedCount++
-                    return@forEachLine
-                }
-                val result = controller.disable(packageName, name)
-                if (result) {
-                    succeedCount++
-                } else {
-                    failedCount++
-                }
-                action(context, name, (succeedCount + failedCount), total)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -212,49 +176,49 @@ object Rule {
         val controller = ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
         var succeedCount = 0
         if (Build.VERSION.SDK_INT >= 29) {
-            MediaStoreLocalUtil.readAllText(context, NAME_RULE_IFW, "application/xml").forEach { (packageName, text) ->
-                if (packageName != null && text != null) {
-                    val rule = RuleSerializer.deserialize(text) ?: return@forEach
-                    val activities = rule.activity?.componentFilters
-                            ?.asSequence()
-                            ?.map { filter -> filter.name.split("/") }
-                            ?.map { names ->
-                                val component = ComponentInfo()
-                                component.packageName = names[0]
-                                component.name = names[1]
-                                component
-                            }
-                            ?.toList() ?: mutableListOf()
-                    val broadcast = rule.broadcast?.componentFilters
-                            ?.asSequence()
-                            ?.map { filter -> filter.name.split("/") }
-                            ?.map { names ->
-                                val component = ComponentInfo()
-                                component.packageName = names[0]
-                                component.name = names[1]
-                                component
-                            }
-                            ?.toList() ?: mutableListOf()
-                    val service = rule.service?.componentFilters
-                            ?.asSequence()
-                            ?.map { filter -> filter.name.split("/") }
-                            ?.map { names ->
-                                val component = ComponentInfo()
-                                component.packageName = names[0]
-                                component.name = names[1]
-                                component
-                            }
-                            ?.toList() ?: mutableListOf()
-                    controller.batchDisable(activities) { }
-                    controller.batchDisable(broadcast) { }
-                    controller.batchDisable(service) { }
-                    succeedCount++
-                }
+            MediaStoreLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_IFW, MediaStoreLocalUtil.mimeTypeXml).forEach { (packageName, text) ->
+                if (packageName == null || text == null) return@forEach
+                if (!isApplicationInstalled(context, packageName)) return@forEach
+                val rule = RuleSerializer.deserialize(text) ?: return@forEach
+                val activities = rule.activity?.componentFilters
+                        ?.asSequence()
+                        ?.map { filter -> filter.name.split("/") }
+                        ?.map { names ->
+                            val component = ComponentInfo()
+                            component.packageName = names[0]
+                            component.name = names[1]
+                            component
+                        }
+                        ?.toList() ?: mutableListOf()
+                val broadcast = rule.broadcast?.componentFilters
+                        ?.asSequence()
+                        ?.map { filter -> filter.name.split("/") }
+                        ?.map { names ->
+                            val component = ComponentInfo()
+                            component.packageName = names[0]
+                            component.name = names[1]
+                            component
+                        }
+                        ?.toList() ?: mutableListOf()
+                val service = rule.service?.componentFilters
+                        ?.asSequence()
+                        ?.map { filter -> filter.name.split("/") }
+                        ?.map { names ->
+                            val component = ComponentInfo()
+                            component.packageName = names[0]
+                            component.name = names[1]
+                            component
+                        }
+                        ?.toList() ?: mutableListOf()
+                controller.batchDisable(activities) { }
+                controller.batchDisable(broadcast) { }
+                controller.batchDisable(service) { }
+                succeedCount++
             }
         } else {
             val ifwBackupFolder = getBlockerIFWFolder(context)
             FileUtils.listFiles(ifwBackupFolder).filter {
-                it.endsWith(ConstantUtil.EXTENSION_XML)
+                it.endsWith(ConstantUtil.EXTENSION_XML) && isApplicationInstalled(context, it.replace(ConstantUtil.EXTENSION_XML, ""))
             }.forEach {
                 val f = File(it)
                 val rule = RuleSerializer.deserialize(f) ?: return@forEach
@@ -309,12 +273,11 @@ object Rule {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            return false
+            result = false
         }
         return result
     }
 
-    @Throws(RuntimeException::class, IOException::class)
     fun exportPrescription(context: Context,
                            packageName: String, className: String,
                            typeC: String, sender: String,
@@ -322,14 +285,13 @@ object Rule {
                            typeF: String?, scheme: String?,
                            auth: String?, path: String?, pathOption: String?): Int {
         val prescriptionFolder = getBlockerPrescriptionFolder(context)
-        val filename = packageName.split(".").last() + "." + className.split(".").last() + ConstantUtil.EXTENSION_XML
         val content = PrescriptionUtil.template(
                 packageName, className, typeC, sender, action, cat, typeF, scheme, auth, path, pathOption)
         if (Build.VERSION.SDK_INT >= 29) {
             val written = "${PrescriptionUtil.head()}\n${PrescriptionUtil.header()}\n${content}\n${PrescriptionUtil.footer()}"
-            MediaStoreLocalUtil.writeText(context, written, NAME_RULE_PRESCRIPTION, filename)
+            MediaStoreLocalUtil.writeText(context, written, ConstantUtil.NAME_RULE_PRESCRIPTION, packageName)
         } else {
-            FileWriter(File(prescriptionFolder, filename)).apply {
+            FileWriter(File(prescriptionFolder, packageName + ConstantUtil.EXTENSION_XML)).apply {
                 write(PrescriptionUtil.head())
                 write(PrescriptionUtil.header())
                 write(content)
@@ -340,63 +302,34 @@ object Rule {
         return 1
     }
 
-    private fun countLines(file: File): Int {
-        var lines = 0
-        if (!file.exists()) {
-            return lines
-        }
-        file.forEachLine {
-            if (it.trim().isEmpty()) {
-                return@forEachLine
-            }
-            lines++
-        }
-        return lines
-    }
-
     private fun saveRuleToStorage(context: Context, packageName: String, rule: BlockerRule) {
         val json: String = GsonBuilder().setPrettyPrinting().create().toJson(rule)
-        val filename: String = packageName + ConstantUtil.EXTENSION_JSON
         if (Build.VERSION.SDK_INT >= 29) {
-            MediaStoreLocalUtil.writeText(context, json, NAME_RULE_BLOCKER, filename)
+            MediaStoreLocalUtil.writeText(context, json, ConstantUtil.NAME_RULE_BLOCKER, packageName)
         } else {
-            File(getBlockerRuleFolder(context), filename).let {
+            File(getBlockerRuleFolder(context), packageName + ConstantUtil.EXTENSION_JSON).let {
                 if (it.exists()) it.delete()
                 it.writeText(json)
             }
         }
     }
 
-    private fun isApplicationUninstalled(context: Context, savedList: MutableList<String>, packageName: String): Boolean {
-        if (packageName.trim().isEmpty()) {
-            return true
-        }
-        if (savedList.contains(packageName)) {
-            return true
-        }
-        if (!ApplicationUtil.isAppInstalled(context.packageManager, packageName)) {
-            savedList.add(packageName)
-            return true
-        }
-        return false
+    private fun isApplicationInstalled(context: Context, packageName: String): Boolean {
+        return ApplicationUtil.isAppInstalled(context.packageManager, packageName)
     }
 
     fun getBlockerRuleFolder(context: Context): String =
-            context.getExternalPath(NAME_RULE_BLOCKER)
+            context.getExternalDirectory(ConstantUtil.NAME_RULE_BLOCKER)
 
     private fun getBlockerIFWFolder(context: Context): String =
-            context.getExternalPath(NAME_RULE_IFW)
+            context.getExternalDirectory(ConstantUtil.NAME_RULE_IFW)
 
     private fun getBlockerPrescriptionFolder(context: Context): String =
-            context.getExternalPath(NAME_RULE_PRESCRIPTION)
+            context.getExternalDirectory(ConstantUtil.NAME_RULE_PRESCRIPTION)
 
     private fun getController(context: Context): IController {
         val controllerType = PreferenceUtil.getControllerType(context)
         return ComponentControllerProxy.getInstance(controllerType, context)
     }
-
-    const val NAME_RULE_BLOCKER = "rule"
-    private const val NAME_RULE_IFW = "ifw"
-    private const val NAME_RULE_PRESCRIPTION = "prescription"
 
 }

@@ -3,22 +3,16 @@ package io.github.newbugger.android.blocker.ui.settings
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.google.gson.Gson
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.rule.Rule
-import io.github.newbugger.android.blocker.rule.entity.BlockerRule
 import io.github.newbugger.android.blocker.util.MediaStoreLocalUtil
 import io.github.newbugger.android.blocker.util.NotificationUtil
-import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.libkit.utils.FileUtils
 import kotlinx.coroutines.*
 import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileReader
 import java.io.IOException
-import java.lang.RuntimeException
 
 
 class SettingsPresenter(
@@ -80,14 +74,12 @@ class SettingsPresenter(
         var restoredCount = 0
         var rulesCount: Int
         withContext(Dispatchers.IO) {
-            rulesCount = FileUtils.getFileCounts(
-                Rule.getBlockerRuleFolder(context),
-                ConstantUtil.EXTENSION_JSON
-            )
-            notificationBuilder = NotificationUtil.createProcessingNotification(context, rulesCount)
             if (Build.VERSION.SDK_INT >= 29) {
-                MediaStoreLocalUtil.readAllText(context, Rule.NAME_RULE_BLOCKER).forEach { (packageName, text) ->
-                    if (packageName != null && text != null) {
+                MediaStoreLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_BLOCKER).let { all ->
+                    rulesCount = all.size
+                    notificationBuilder = NotificationUtil.createProcessingNotification(context, rulesCount)
+                    all.forEach { (packageName, text) ->
+                        if (packageName == null || text == null) return@forEach
                         if (!ApplicationUtil.isAppInstalled(context.packageManager, packageName)) {
                             return@forEach
                         }
@@ -103,6 +95,8 @@ class SettingsPresenter(
                     }
                 }
             } else {
+                rulesCount = FileUtils.getFileCounts(Rule.getBlockerRuleFolder(context), ConstantUtil.EXTENSION_JSON)
+                notificationBuilder = NotificationUtil.createProcessingNotification(context, rulesCount)
                 FileUtils.listFiles(Rule.getBlockerRuleFolder(context)).filter {
                     it.endsWith(ConstantUtil.EXTENSION_JSON)
                 }.forEach {
@@ -161,33 +155,6 @@ class SettingsPresenter(
             } else {
                 settingsView.showMessage(R.string.ifw_reset_error)
             }
-        }
-    }
-
-    @Throws(RuntimeException::class, IOException::class)
-    override fun importMatRules(filePath: String?) {
-        val errorHandler = CoroutineExceptionHandler { _, e ->
-            e.printStackTrace()
-            NotificationUtil.finishProcessingNotification(context, 0, notificationBuilder)
-        }
-        CoroutineScope(Dispatchers.IO + errorHandler).launch {
-            notificationBuilder = NotificationUtil.createProcessingNotification(context, 0)
-            if (filePath == null) {
-                throw NullPointerException("File path cannot be null")
-            }
-            val file = File(filePath)
-            if (!file.exists()) {
-                throw FileNotFoundException("Cannot find MyAndroidTools Rule File: ${file.path}")
-            }
-            val result = Rule.importMatRules(context, file) { context, name, current, total ->
-                NotificationUtil.updateProcessingNotification(context, name, current, total, notificationBuilder)
-            }
-            delay(1000L)
-            NotificationUtil.finishProcessingNotification(
-                context,
-                result.failedCount + result.succeedCount,
-                notificationBuilder
-            )
         }
     }
 

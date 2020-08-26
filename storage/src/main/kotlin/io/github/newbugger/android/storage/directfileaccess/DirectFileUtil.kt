@@ -16,39 +16,40 @@ import java.io.IOException
 object DirectFileUtil {
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun Context.getExternalPath(path: String): String =
+    fun Context.getExternalDirectory(path: String? = null): String =
             if (Build.VERSION.SDK_INT >= 29) {
-                this.getExternalFilesDirPath(path)
+                this.getExternalFilesDirectory(path)
             } else {
-                this.getExternalStorageDirectoryPath(path)
+                this.getExternalStorageDirectory(path)
             }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.getExternalFilesDirPath(path: String): String =
-            (this.getExternalFilesDir() + File.separator + path).also {
-                if (!File(it).exists()) File(it).mkdir()
-            }
-
-    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.getExternalFilesDir(): String =
-            (this.getExternalFilesDir(null)!!.absolutePath).also {
-                if (!File(it).exists()) File(it).mkdir()
-            }
-
-    @TargetApi(28)
-    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.getExternalStorageDirectoryPath(path: String): String =
-            (this.getExternalStorageDirectory() + File.separator + path).also {
+    private fun Context.getExternalFilesDirectory(path: String?): String =
+            (this.getExternalFilesDir(null)!!.absolutePath).let {
+                if (path == null) {
+                    it
+                } else {
+                    it + File.separator + path
+                }
+            }.also {
                 if (!File(it).exists()) File(it).mkdir()
             }
 
     @TargetApi(28)
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.getExternalStorageDirectory(): String =
-            this.let {
-                it.requestStorageReadPermission()
-                it.requestStorageWritePermission()
+    private fun Context.getExternalStorageDirectory(path: String?): String =
+            this.let { ctx ->
+                ctx.requestStorageReadPermission()
+                ctx.requestStorageWritePermission()
                 Environment.getExternalStorageDirectory().absolutePath
+            }.let {
+                if (path == null) {
+                    it
+                } else {
+                    it + File.separator + path
+                }
+            }.also {
+                if (!File(it).exists()) File(it).mkdir()
             }
 
     @TargetApi(28)
