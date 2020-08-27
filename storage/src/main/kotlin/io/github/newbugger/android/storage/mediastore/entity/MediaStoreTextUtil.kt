@@ -7,7 +7,7 @@ import io.github.newbugger.android.storage.mediastore.MediaStoreKTX.defaultMedia
 import io.github.newbugger.android.storage.mediastore.MediaStoreUtil
 
 
-@RequiresApi(29)
+@RequiresApi(30)
 object MediaStoreTextUtil {
 
     fun readAllText(context: Context, appName: String, mimeType: String? = null): Map<String?, String?> {

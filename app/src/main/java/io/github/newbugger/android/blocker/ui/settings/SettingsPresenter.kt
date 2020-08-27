@@ -5,7 +5,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.rule.Rule
-import io.github.newbugger.android.blocker.util.MediaStoreLocalUtil
+import io.github.newbugger.android.blocker.util.storage.ModernStorageLocalUtil
 import io.github.newbugger.android.blocker.util.NotificationUtil
 import io.github.newbugger.android.libkit.utils.ApplicationUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
@@ -74,8 +74,8 @@ class SettingsPresenter(
         var restoredCount = 0
         var rulesCount: Int
         withContext(Dispatchers.IO) {
-            if (Build.VERSION.SDK_INT >= 29) {
-                MediaStoreLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_BLOCKER).let { all ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                ModernStorageLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_BLOCKER).let { all ->
                     rulesCount = all.size
                     notificationBuilder = NotificationUtil.createProcessingNotification(context, rulesCount)
                     all.forEach { (packageName, text) ->

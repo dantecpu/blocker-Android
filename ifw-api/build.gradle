@@ -28,5 +28,4 @@ dependencies {
         exclude module: 'xpp3'
     }
     implementation project(':libkit')
-    implementation project(':storage')
 }

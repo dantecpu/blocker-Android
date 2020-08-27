@@ -17,7 +17,7 @@ object DirectFileUtil {
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
     fun Context.getExternalDirectory(path: String? = null): String =
-            if (Build.VERSION.SDK_INT >= 29) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 this.getExternalFilesDirectory(path)
             } else {
                 this.getExternalStorageDirectory(path)
@@ -62,6 +62,7 @@ object DirectFileUtil {
         return ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
     }
 
+    @TargetApi(28)
     private fun Context.requestStorageReadPermission(): Boolean {
         val requestCode = 1
         val permission = Manifest.permission.READ_EXTERNAL_STORAGE

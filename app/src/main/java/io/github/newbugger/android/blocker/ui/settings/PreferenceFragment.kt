@@ -16,7 +16,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.util.BuildUtil
-import io.github.newbugger.android.blocker.util.SAFLocalUtil
+import io.github.newbugger.android.blocker.util.storage.SAFLocalUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 
@@ -56,7 +56,7 @@ class PreferenceFragment: PreferenceFragmentCompat(),
         return super.onOptionsItemSelected(item)
     }
 
-    @RequiresApi(29)
+    @RequiresApi(26)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && data != null) {
@@ -66,7 +66,7 @@ class PreferenceFragment: PreferenceFragmentCompat(),
                     val uri = (data.data).also {
                         if (BuildUtil.BuildProperty.isBuildDebug()) Log.e(javaClass.name, it.toString())
                     } ?: return
-                    SAFLocalUtil.takePersistableUriPermission(requireActivity(), uri)
+                    SAFLocalUtil.takePersistableUriPermission(requireActivity(), ConstantUtil.NAME_APP_NAME_DEFAULT, uri)
                 }
                 else -> return
             }
@@ -143,7 +143,7 @@ class PreferenceFragment: PreferenceFragmentCompat(),
                 presenter.importAllIfwRules()
             }
             safPreference -> {
-                if (Build.VERSION.SDK_INT >= 29) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     grantSAFAccess(requireContext())
                 }
             }
@@ -158,13 +158,13 @@ class PreferenceFragment: PreferenceFragmentCompat(),
         return true
     }
 
-    @RequiresApi(29)
+    @RequiresApi(26)
     private fun grantSAFAccess(context: Context) {
-        if (SAFLocalUtil.checkDefaultSAFUriPermission(context)) {
+        if (SAFLocalUtil.checkDefaultSAFUriPermission(context, ConstantUtil.NAME_APP_NAME_DEFAULT)) {
+            Toast.makeText(context, "Storage Access has granted.", Toast.LENGTH_LONG).show()
+        } else {
             val intent = SAFLocalUtil.intentActionOpenDocumentTree()
             startActivityForResult(intent, ConstantUtil.documentRequestCode)
-        } else {
-            Toast.makeText(context, "Storage Access has granted.", Toast.LENGTH_LONG).show()
         }
     }
 

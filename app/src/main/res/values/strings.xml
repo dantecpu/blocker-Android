@@ -48,6 +48,8 @@
     <string name="pref_controller_type">Controller Type</string>
     <string name="pref_saf_key">saf</string>
     <string name="pref_saf_title">grant SAF uri permission</string>
+    <string name="pref_media_key">media</string>
+    <string name="pref_media_title">on to use MediaStore or off to SAF</string>
     <string name="fail">Failed</string>
     <string name="pref_rule_settings">Blocker Rules (recommended)</string>
     <string name="export_rules">Export Blocker Rules</string>

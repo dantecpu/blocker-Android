@@ -14,7 +14,7 @@ import io.github.newbugger.android.blocker.rule.entity.BlockerRule
 import io.github.newbugger.android.blocker.rule.entity.ComponentRule
 import io.github.newbugger.android.blocker.rule.entity.RulesResult
 import io.github.newbugger.android.blocker.ui.component.EComponentType
-import io.github.newbugger.android.blocker.util.MediaStoreLocalUtil
+import io.github.newbugger.android.blocker.util.storage.ModernStorageLocalUtil
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.ifw.IntentFirewallImpl
 import io.github.newbugger.android.ifw.entity.ComponentType
@@ -34,7 +34,7 @@ object Rule {
     fun export(context: Context, packageName: String): RulesResult {
         val pm = context.packageManager
         val applicationInfo = ApplicationUtil.getApplicationComponents(pm, packageName)
-        val rule = BlockerRule(packageName = applicationInfo.packageName, versionName = applicationInfo.versionName, versionCode = if (Build.VERSION.SDK_INT >= 28) applicationInfo.longVersionCode.toInt() else applicationInfo.versionCode)
+        val rule = BlockerRule(packageName = applicationInfo.packageName, versionName = applicationInfo.versionName, versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) applicationInfo.longVersionCode.toInt() else applicationInfo.versionCode)
         var disabledComponentsCount = 0
         val ifwController = IntentFirewallImpl.getInstance(context, packageName)
         applicationInfo.receivers?.forEach {
@@ -175,8 +175,8 @@ object Rule {
     fun importIfwRules(context: Context): Int {
         val controller = ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
         var succeedCount = 0
-        if (Build.VERSION.SDK_INT >= 29) {
-            MediaStoreLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_IFW, MediaStoreLocalUtil.mimeTypeXml).forEach { (packageName, text) ->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            ModernStorageLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_IFW, ModernStorageLocalUtil.mimeTypeXml).forEach { (packageName, text) ->
                 if (packageName == null || text == null) return@forEach
                 if (!isApplicationInstalled(context, packageName)) return@forEach
                 val rule = RuleSerializer.deserialize(text) ?: return@forEach
@@ -287,9 +287,9 @@ object Rule {
         val prescriptionFolder = getBlockerPrescriptionFolder(context)
         val content = PrescriptionUtil.template(
                 packageName, className, typeC, sender, action, cat, typeF, scheme, auth, path, pathOption)
-        if (Build.VERSION.SDK_INT >= 29) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val written = "${PrescriptionUtil.head()}\n${PrescriptionUtil.header()}\n${content}\n${PrescriptionUtil.footer()}"
-            MediaStoreLocalUtil.writeText(context, written, ConstantUtil.NAME_RULE_PRESCRIPTION, packageName)
+            ModernStorageLocalUtil.writeText(context, written, ConstantUtil.NAME_RULE_PRESCRIPTION, packageName)
         } else {
             FileWriter(File(prescriptionFolder, packageName + ConstantUtil.EXTENSION_XML)).apply {
                 write(PrescriptionUtil.head())
@@ -304,8 +304,8 @@ object Rule {
 
     private fun saveRuleToStorage(context: Context, packageName: String, rule: BlockerRule) {
         val json: String = GsonBuilder().setPrettyPrinting().create().toJson(rule)
-        if (Build.VERSION.SDK_INT >= 29) {
-            MediaStoreLocalUtil.writeText(context, json, ConstantUtil.NAME_RULE_BLOCKER, packageName)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            ModernStorageLocalUtil.writeText(context, json, ConstantUtil.NAME_RULE_BLOCKER, packageName)
         } else {
             File(getBlockerRuleFolder(context), packageName + ConstantUtil.EXTENSION_JSON).let {
                 if (it.exists()) it.delete()

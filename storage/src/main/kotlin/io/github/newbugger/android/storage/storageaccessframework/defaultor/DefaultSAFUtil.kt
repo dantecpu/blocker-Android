@@ -1,4 +1,4 @@
-package io.github.newbugger.android.storage.storageaccessframework.entity
+package io.github.newbugger.android.storage.storageaccessframework.defaultor
 
 import android.content.Context
 import android.content.Intent
@@ -6,19 +6,19 @@ import android.net.Uri
 import android.os.Environment
 import androidx.annotation.RequiresApi
 import io.github.newbugger.android.storage.storageaccessframework.SAFUtil
-import io.github.newbugger.android.storage.storageaccessframework.entity.DefaultSAF.Companion.defaultSAF
+import io.github.newbugger.android.storage.storageaccessframework.defaultor.DefaultSAF.Companion.defaultSAF
 
 
 @RequiresApi(26)
 object DefaultSAFUtil {
 
-    fun checkDefaultSAFUriPermission(context: Context): Boolean {
-        return context.defaultSAF().check()
+    fun checkDefaultSAFUriPermission(context: Context, appName: String): Boolean {
+        return context.defaultSAF().check(appName)
     }
 
-    fun takePersistableUriPermission(context: Context, uri: Uri) {
+    fun takePersistableUriPermission(context: Context, appName: String, uri: Uri) {
         if (SAFUtil.takePersistableUriPermission(context, uri)) {
-            context.defaultSAF().put(uri)
+            context.defaultSAF().put(appName, uri.toString())
         }
     }
 
@@ -26,7 +26,7 @@ object DefaultSAFUtil {
         return SAFUtil.intentActionOpenDocumentTree(table)
     }
 
-    private fun Context.defaultSAF() =
+    private fun Context.defaultSAF(): DefaultSAF =
             this.defaultSAF
 
 }

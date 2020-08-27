@@ -21,5 +21,4 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':ifw-api')
     implementation project(':libkit')
-    implementation project(':storage')
 }

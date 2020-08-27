@@ -43,6 +43,10 @@
     <androidx.preference.PreferenceCategory
         android:key="@string/key_pref_other"
         android:title="@string/others">
+        <androidx.preference.SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/pref_media_key"
+            android:title="@string/pref_media_title" />
         <androidx.preference.Preference
             android:key="@string/pref_saf_key"
             android:title="@string/pref_saf_title" />

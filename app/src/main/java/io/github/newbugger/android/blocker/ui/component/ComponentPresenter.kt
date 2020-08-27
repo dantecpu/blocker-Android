@@ -14,7 +14,7 @@ import io.github.newbugger.android.blocker.core.root.EControllerMethod
 import io.github.newbugger.android.blocker.rule.Rule
 import io.github.newbugger.android.blocker.rule.entity.RulesResult
 import io.github.newbugger.android.blocker.util.DialogUtil
-import io.github.newbugger.android.blocker.util.MediaStoreLocalUtil
+import io.github.newbugger.android.blocker.util.storage.ModernStorageLocalUtil
 import io.github.newbugger.android.blocker.util.PreferenceUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
 import io.github.newbugger.android.libkit.entity.getSimpleName
@@ -258,8 +258,8 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     private fun importBlockerRule(packageName: String) {
         view?.showToastMessage(context.getString(R.string.processing), Toast.LENGTH_SHORT)
         CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
-            val destFile = if (Build.VERSION.SDK_INT >= 29) {
-                MediaStoreLocalUtil.readText(context, ConstantUtil.NAME_RULE_BLOCKER, packageName)
+            val destFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                ModernStorageLocalUtil.readText(context, ConstantUtil.NAME_RULE_BLOCKER, packageName)
             } else {
                 val blockerFolder = Rule.getBlockerRuleFolder(context)
                 File(blockerFolder, packageName + ConstantUtil.EXTENSION_JSON).readText()

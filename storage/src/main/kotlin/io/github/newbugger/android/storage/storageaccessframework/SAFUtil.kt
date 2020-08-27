@@ -18,10 +18,7 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.documentfile.provider.DocumentFile
 import io.github.newbugger.android.storage.BuildConfig
-import java.io.FileNotFoundException
-import java.io.IOException
 
 
 @RequiresApi(26)
@@ -43,26 +40,6 @@ object SAFUtil {
             putExtra(DocumentsContract.EXTRA_INITIAL_URI, table)
         }
     }
-
-    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun createFile(context: Context, content: String, fileName: String, mimeType: String): Uri =
-            (content.let {
-                Uri.parse(it)
-            }.let {
-                DocumentFile.fromTreeUri(context, it)
-            }.let {
-                if (it?.exists() == true) it.delete()
-                it?.createFile(mimeType, fileName)
-            }?.uri) ?: throw FileNotFoundException()
-
-    @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun createFile(context: Context, content: Uri, fileName: String, mimeType: String): Uri =
-            (content.let {
-                DocumentFile.fromTreeUri(context, it)
-            }.let {
-                if (it?.exists() == true) it.delete()
-                it?.createFile(mimeType, fileName)
-            }?.uri) ?: throw FileNotFoundException()
 
     // https://stackoverflow.com/q/6307793
     private fun checkUriPermission(context: Context, uri: Uri): Boolean {

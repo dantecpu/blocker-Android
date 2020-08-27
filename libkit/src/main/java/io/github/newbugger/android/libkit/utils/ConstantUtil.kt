@@ -32,5 +32,9 @@ object ConstantUtil {
     const val NAME_RULE_TEST = "test"
     const val NAME_RULE_TEST_TITLE = "filename.txt"
     const val NAME_RULE_TEST_CONTENT = "test"
+    const val NAME_APP_NAME_DEFAULT = "Blocker"
+    const val NAME_APP_NAME_RULE = NAME_RULE_BLOCKER
+    const val NAME_APP_NAME_IFW = NAME_RULE_IFW
+    const val NAME_APP_NAME_PRESCRIPTION = NAME_RULE_PRESCRIPTION
 
 }

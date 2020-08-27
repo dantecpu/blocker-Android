@@ -27,7 +27,7 @@ import io.github.newbugger.android.blocker.adapter.FragmentAdapter
 import io.github.newbugger.android.blocker.base.IActivityView
 import io.github.newbugger.android.blocker.ui.settings.SettingsActivity
 import io.github.newbugger.android.blocker.util.BuildUtil
-import io.github.newbugger.android.blocker.util.MediaStoreLocalUtil
+import io.github.newbugger.android.blocker.util.storage.ModernStorageLocalUtil
 import io.github.newbugger.android.blocker.util.setupActionBar
 import io.github.newbugger.android.libkit.libsu.LibsuCommand
 import io.github.newbugger.android.libkit.utils.ConstantUtil
@@ -52,9 +52,9 @@ class HomeActivity : AppCompatActivity(), IActivityView {
             setupWithViewPager(app_viewpager)
             setupTab(this)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && BuildUtil.BuildProperty.isBuildDebug()) {
-            MediaStoreLocalUtil.writeText(this, ConstantUtil.NAME_RULE_TEST_CONTENT, ConstantUtil.NAME_RULE_TEST, ConstantUtil.NAME_RULE_TEST_TITLE, MediaStoreLocalUtil.mimeTypePlain)
-            MediaStoreLocalUtil.readText(this, ConstantUtil.NAME_RULE_TEST, ConstantUtil.NAME_RULE_TEST_TITLE, MediaStoreLocalUtil.mimeTypePlain)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && BuildUtil.BuildProperty.isBuildDebug()) {
+            ModernStorageLocalUtil.writeText(this, ConstantUtil.NAME_RULE_TEST_CONTENT, ConstantUtil.NAME_RULE_TEST, ConstantUtil.NAME_RULE_TEST_TITLE, ModernStorageLocalUtil.mimeTypePlain)
+            ModernStorageLocalUtil.readText(this, ConstantUtil.NAME_RULE_TEST, ConstantUtil.NAME_RULE_TEST_TITLE, ModernStorageLocalUtil.mimeTypePlain)!!
         }
     }
 

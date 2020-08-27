@@ -1,5 +1,6 @@
 package io.github.newbugger.android.storage.mediastore
 
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
@@ -13,7 +14,7 @@ object MediaStoreKTX {
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
     fun Context.defaultMediaStoreDisplayName(uri: Uri): String {
-        require(uri.scheme == "content") { "Uri lacks 'content' scheme: $uri" }
+        require(uri.scheme == ContentResolver.SCHEME_CONTENT) { "not ${ContentResolver.SCHEME_CONTENT} scheme: $uri" }
         val projection = arrayOf(OpenableColumns.DISPLAY_NAME)
         contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
             val displayNameColumn = cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
