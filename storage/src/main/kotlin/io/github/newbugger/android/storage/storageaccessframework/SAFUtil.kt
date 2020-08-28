@@ -27,7 +27,7 @@ object SAFUtil {
     // todo: reduce the uri permission level ?
     fun takePersistableUriPermission(context: Context, uri: Uri): Boolean {
         context.contentResolver.takePersistableUriPermission(
-            uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            uri, CONST_FLAG_GRANT_URI_PERMISSION
         )
         return (checkUriPermission(context, uri)).also {
             if (BuildConfig.DEBUG) Log.e(javaClass.name, it.toString())
@@ -36,7 +36,7 @@ object SAFUtil {
 
     fun intentActionOpenDocumentTree(table: String = Environment.DIRECTORY_DOWNLOADS): Intent {
         return Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            flags = CONST_FLAG_GRANT_URI_PERMISSION
             putExtra(DocumentsContract.EXTRA_INITIAL_URI, table)
         }
     }
@@ -47,8 +47,11 @@ object SAFUtil {
                 uri,
                 Binder.getCallingPid(),
                 Binder.getCallingUid(),
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                CONST_FLAG_GRANT_URI_PERMISSION
         ) == PackageManager.PERMISSION_GRANTED
     }
+
+    private const val CONST_FLAG_GRANT_URI_PERMISSION =
+            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
 }

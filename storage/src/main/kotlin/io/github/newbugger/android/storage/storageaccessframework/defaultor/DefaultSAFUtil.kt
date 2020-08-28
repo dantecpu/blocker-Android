@@ -12,13 +12,13 @@ import io.github.newbugger.android.storage.storageaccessframework.defaultor.Defa
 @RequiresApi(26)
 object DefaultSAFUtil {
 
-    fun checkDefaultSAFUriPermission(context: Context, appName: String): Boolean {
-        return context.defaultSAF().check(appName)
+    fun getDefaultSAFUriRecord(context: Context, appName: String, uri: Uri) {
+        context.defaultSAF().put(appName, uri)
     }
 
     fun takePersistableUriPermission(context: Context, appName: String, uri: Uri) {
         if (SAFUtil.takePersistableUriPermission(context, uri)) {
-            context.defaultSAF().put(appName, uri.toString())
+            getDefaultSAFUriRecord(context, appName, uri)
         }
     }
 

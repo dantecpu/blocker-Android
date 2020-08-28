@@ -12,8 +12,8 @@ import java.io.File
 @RequiresApi(30)
 object MediaStoreLocalUtil {
 
-    fun readAllText(context: Context, appName: String?, mimeType: String? = mimeTypeJson): Map<String?, String?> {
-        val map = HashMap<String?, String?>()
+    fun readAllText(context: Context, appName: String?, mimeType: String?): MutableMap<String?, String?> {
+        val map = mutableMapOf<String?, String?>()
         MediaStoreTextUtil.readAllText(context, context.appName(appName), mimeType, BuildConfig.APPLICATION_ID).forEach { (filename, text) ->
             when (mimeType) {
                 mimeTypeJson -> {
@@ -30,11 +30,11 @@ object MediaStoreLocalUtil {
         return map
     }
 
-    fun readText(context: Context, appName: String?, displayName: String, mimeType: String? = mimeTypeJson): String? {
+    fun readText(context: Context, appName: String?, displayName: String, mimeType: String?): String? {
         return MediaStoreTextUtil.readText(context, context.appName(appName), displayName.displayName(mimeType), mimeType)
     }
 
-    fun writeText(context: Context, content: String, appName: String?, displayName: String, mimeType: String? = mimeTypeJson) {
+    fun writeText(context: Context, content: String, appName: String?, displayName: String, mimeType: String?) {
         MediaStoreTextUtil.writeText(context, content, context.appName(appName), displayName.displayName(mimeType), mimeType, true)
     }
 
@@ -54,8 +54,8 @@ object MediaStoreLocalUtil {
                 }
             }
 
-    const val mimeTypeJson: String = MediaStoreTextUtil.mimeType_Json
-    const val mimeTypeXml: String = MediaStoreTextUtil.mimeType_xml
-    const val mimeTypePlain: String = MediaStoreTextUtil.mimeType_plain
+    private const val mimeTypeJson: String = MediaStoreTextUtil.mimeType_Json
+    private const val mimeTypeXml: String = MediaStoreTextUtil.mimeType_xml
+    private const val mimeTypePlain: String = MediaStoreTextUtil.mimeType_plain
 
 }

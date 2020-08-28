@@ -11,8 +11,8 @@ import io.github.newbugger.android.storage.storageaccessframework.defaultor.Defa
 @RequiresApi(26)
 object SAFLocalUtil {
 
-    fun checkDefaultSAFUriPermission(context: Context, appName: String): Boolean {
-        return DefaultSAFUtil.checkDefaultSAFUriPermission(context, appName)
+    fun getDefaultSAFUriRecord(context: Context, appName: String, uri: Uri) {
+        DefaultSAFUtil.getDefaultSAFUriRecord(context, appName, uri)
     }
 
     fun takePersistableUriPermission(context: Context, appName: String, uri: Uri) {

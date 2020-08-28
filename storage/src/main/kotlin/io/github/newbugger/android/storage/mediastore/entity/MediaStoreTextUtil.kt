@@ -10,8 +10,8 @@ import io.github.newbugger.android.storage.mediastore.MediaStoreUtil
 @RequiresApi(30)
 object MediaStoreTextUtil {
 
-    fun readAllText(context: Context, appName: String, mimeType: String? = null, owner: String? = null): Map<String?, String?> {
-        val map = hashMapOf<String?, String?>()
+    fun readAllText(context: Context, appName: String, mimeType: String? = null, owner: String? = null): MutableMap<String?, String?> {
+        val map = mutableMapOf<String?, String?>()
         MediaStoreUtil.Downloads.getFolderFile(context, appName, mimeType, owner).forEach { file ->
             file?.uri?.let { uri ->
                 context.defaultMediaStoreInputStream(uri).use {

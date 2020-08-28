@@ -175,7 +175,7 @@ object Rule {
     fun importIfwRules(context: Context): Int {
         val controller = ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
         var succeedCount = 0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !ModernStorageLocalUtil.check(context)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             ModernStorageLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_IFW, ModernStorageLocalUtil.mimeTypeXml).filter { (packageName, text) ->
                 packageName?.isNotEmpty() == true && text?.isNotEmpty() == true
             }.forEach { (packageName, text) ->
@@ -288,9 +288,9 @@ object Rule {
         val prescriptionFolder = getBlockerPrescriptionFolder(context)
         val content = PrescriptionUtil.template(
                 packageName, className, typeC, sender, action, cat, typeF, scheme, auth, path, pathOption)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !ModernStorageLocalUtil.check(context)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val written = "${PrescriptionUtil.head()}\n${PrescriptionUtil.header()}\n${content}\n${PrescriptionUtil.footer()}"
-            ModernStorageLocalUtil.writeText(context, written, ConstantUtil.NAME_RULE_PRESCRIPTION, packageName)
+            ModernStorageLocalUtil.writeText(context, written, ConstantUtil.NAME_RULE_PRESCRIPTION, packageName, ModernStorageLocalUtil.mimeTypeXml)
         } else {
             FileWriter(File(prescriptionFolder, packageName + ConstantUtil.EXTENSION_XML)).apply {
                 write(PrescriptionUtil.head())
@@ -305,7 +305,7 @@ object Rule {
 
     private fun saveRuleToStorage(context: Context, packageName: String, rule: BlockerRule) {
         val json: String = GsonBuilder().setPrettyPrinting().create().toJson(rule)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !ModernStorageLocalUtil.check(context)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             ModernStorageLocalUtil.writeText(context, json, ConstantUtil.NAME_RULE_BLOCKER, packageName)
         } else {
             File(getBlockerRuleFolder(context), packageName + ConstantUtil.EXTENSION_JSON).let {

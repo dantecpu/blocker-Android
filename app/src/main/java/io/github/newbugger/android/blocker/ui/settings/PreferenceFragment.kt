@@ -2,7 +2,6 @@ package io.github.newbugger.android.blocker.ui.settings
 
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
@@ -16,8 +15,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.blocker.util.BuildUtil
-import io.github.newbugger.android.blocker.util.storage.SAFLocalUtil
 import io.github.newbugger.android.blocker.util.ToastUtil
+import io.github.newbugger.android.blocker.util.storage.DocumentFileLocalUtil
+import io.github.newbugger.android.blocker.util.storage.SAFLocalUtil
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 
 
@@ -62,11 +62,16 @@ class PreferenceFragment: PreferenceFragmentCompat(),
         if (resultCode == RESULT_OK && data != null) {
             when (requestCode) {
                 ConstantUtil.documentRequestCode -> {
-                    // content://com.android.providers.downloads.documents/tree/msd%3A82
-                    val uri = (data.data).also {
+                    val uri = (data.data ?: return).also {
                         if (BuildUtil.BuildProperty.isBuildDebug()) Log.e(javaClass.name, it.toString())
-                    } ?: return
-                    SAFLocalUtil.takePersistableUriPermission(requireActivity(), ConstantUtil.NAME_APP_NAME_DEFAULT, uri)
+                    }
+                    DocumentFileLocalUtil.getDirectoryName(requireContext(), uri).let {
+                        if (it == ConstantUtil.NAME_APP_NAME_DEFAULT) {
+                            SAFLocalUtil.takePersistableUriPermission(requireActivity(), it, uri)
+                        } else {
+                            SAFLocalUtil.takePersistableUriPermission(requireContext(), it, uri)
+                        }
+                    }
                 }
                 else -> return
             }
@@ -144,7 +149,7 @@ class PreferenceFragment: PreferenceFragmentCompat(),
             }
             safPreference -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    grantSAFAccess(requireContext())
+                    showSAFIntent()
                 }
             }
             /* resetIfwPreference -> showDialog(
@@ -159,13 +164,9 @@ class PreferenceFragment: PreferenceFragmentCompat(),
     }
 
     @RequiresApi(26)
-    private fun grantSAFAccess(context: Context) {
-        if (SAFLocalUtil.checkDefaultSAFUriPermission(context, ConstantUtil.NAME_APP_NAME_DEFAULT)) {
-            Toast.makeText(context, "Storage Access has granted.", Toast.LENGTH_LONG).show()
-        } else {
-            val intent = SAFLocalUtil.intentActionOpenDocumentTree()
-            startActivityForResult(intent, ConstantUtil.documentRequestCode)
-        }
+    private fun showSAFIntent() {
+        val intent = SAFLocalUtil.intentActionOpenDocumentTree()
+        startActivityForResult(intent, ConstantUtil.documentRequestCode)
     }
 
     private fun findPreference() {

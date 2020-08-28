@@ -258,7 +258,7 @@ class ComponentPresenter(val context: Context, var view: ComponentContract.View?
     private fun importBlockerRule(packageName: String) {
         view?.showToastMessage(context.getString(R.string.processing), Toast.LENGTH_SHORT)
         CoroutineScope(Dispatchers.Default + exceptionHandler).launch {
-            val destFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val destFile = if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !ModernStorageLocalUtil.check(context)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 ModernStorageLocalUtil.readText(context, ConstantUtil.NAME_RULE_BLOCKER, packageName)
             } else {
                 val blockerFolder = Rule.getBlockerRuleFolder(context)

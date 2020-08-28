@@ -16,20 +16,20 @@ import io.github.newbugger.android.storage.BuildConfig
 @RequiresApi(26)
 class DefaultSAF(private val context: Context) {
 
-    fun put(appName: String, content: String) {
-        defaultSAFPreferences.edit(appName, content).also {
+    fun put(appName: String, content: Uri) {
+        defaultSAFPreferences.edit(appName, content.toString()).also {
             if (BuildConfig.DEBUG) Log.e(javaClass.name, "put: $appName $content")
         }
     }
 
-    fun getUri(appName: String): Uri =
+    fun getUri(appName: String): Uri? =
             defaultSAFPreferences.uri(appName).also {
-                if (BuildConfig.DEBUG) Log.e(javaClass.name, "get: $it")
+                if (BuildConfig.DEBUG) Log.e(javaClass.name, "get: $appName $it")
             }
 
     fun getString(appName: String): String? =
             defaultSAFPreferences.string(appName).also {
-                if (BuildConfig.DEBUG) Log.e(javaClass.name, "get: $it")
+                if (BuildConfig.DEBUG) Log.e(javaClass.name, "get: $appName $it")
             }
 
     fun check(appName: String): Boolean =
@@ -42,8 +42,8 @@ class DefaultSAF(private val context: Context) {
             context.getSharedPreferences(defaultPreferencesFlag, Context.MODE_PRIVATE)
 
     private data class DefaultSAFPreferences(private val sharedPreferences: SharedPreferences) {
-        fun string(appName: String): String? = json()?.item(appName)?.get(0)?.content
-        fun uri(appName: String): Uri = Uri.parse(string(appName))
+        fun string(appName: String): String? { return json()?.item(appName)?.let { if (it.isNotEmpty()) { it[0].content } else { null } } }
+        fun uri(appName: String): Uri? { return (string(appName) ?: return null).let { Uri.parse(it) } }
 
         private fun string(): String? = sharedPreferences.getString(defaultSAFFlag, null)
         private fun json(): DDefaultSAFPreferences? = Gson().fromJson<DDefaultSAFPreferences>(string(), DDefaultSAFPreferences::class.java) ?: null
@@ -52,16 +52,10 @@ class DefaultSAF(private val context: Context) {
         fun edit(appName: String, content: String) {
             val json = json()
             if (json?.item(appName)?.isNotEmpty() == true) {
-                val edit = value().apply {
-                    item.addAll(json.item)
-                    this.item(appName).forEach { it.content = content }
-                }.toString()
+                val edit = json.apply { item(appName).forEach { it.content = content } }.toString()
                 sharedPreferences.edit().putString(defaultSAFFlag, edit).apply()
             } else {
-                val add = value().apply {
-                    if (json?.item?.isNotEmpty() == true) item.addAll(json.item)
-                    item.add(DDefaultSAFPreferencesValues(appName = appName, content = content))
-                }.toString()
+                val add = (json ?: value()).apply { item.add(DDefaultSAFPreferencesValues(appName = appName, content = content)) }.toString()
                 sharedPreferences.edit().putString(defaultSAFFlag, add).apply()
             }
         }

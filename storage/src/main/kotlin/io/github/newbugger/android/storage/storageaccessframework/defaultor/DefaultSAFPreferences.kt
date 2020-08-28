@@ -16,6 +16,6 @@ data class DDefaultSAFPreferences(
 }
 
 data class DDefaultSAFPreferencesValues (
-        var appName: String? = "",
-        var content: String? = ""
+        var appName: String = "",
+        var content: String = ""
 )

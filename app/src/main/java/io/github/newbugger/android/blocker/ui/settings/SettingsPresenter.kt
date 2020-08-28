@@ -74,7 +74,7 @@ class SettingsPresenter(
         var restoredCount = 0
         var rulesCount: Int
         withContext(Dispatchers.IO) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !ModernStorageLocalUtil.check(context)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 ModernStorageLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_BLOCKER).filter { (packageName, text) ->
                     packageName?.isNotEmpty() == true && text?.isNotEmpty() == true
                 }.also {

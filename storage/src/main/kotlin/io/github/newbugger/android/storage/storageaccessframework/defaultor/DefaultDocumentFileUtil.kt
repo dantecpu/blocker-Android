@@ -13,35 +13,40 @@ import java.io.IOException
 object DefaultDocumentFileUtil {
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun listFiles(context: Context, appName: String, appNameDefault: String): Map<String, Uri> {
-        val map = hashMapOf<String, Uri>()
-        (DocumentFileUtil.listFiles(context, context.appNameUri(appName, appNameDefault)) ?: throw FileNotFoundException()).forEach {
-            map[it.name!!] = it.uri
+    fun listFiles(context: Context, appName: String, mimeType: String? = null): MutableMap<String?, Uri?> {
+        val map = mutableMapOf<String?, Uri?>()
+        DocumentFileUtil.listFiles(context, context.defaultUri(appName)).filter {
+            it?.isFile == true && (mimeType == null || mimeType == it.type)
+        }.forEach {
+            map[it?.name] = it?.uri
         }
         return map
     }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun getFile(context: Context, appName: String, appNameDefault: String, displayName: String): Uri =
-            DocumentFileUtil.findFile(context, context.appNameUri(appName, appNameDefault), displayName).uri
+    fun getFile(context: Context, appName: String, displayName: String, mimeType: String? = null): Uri =
+            DocumentFileUtil.findFile(context, context.defaultUri(appName), displayName, mimeType)?.uri ?: throw FileNotFoundException()
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun newFile(context: Context, appName: String, appNameDefault: String, displayName: String, mimeType: String, override: Boolean): Uri =
-            DocumentFileUtil.newFile(context, context.appNameUri(appName, appNameDefault), displayName, mimeType, override).uri
+    fun newFile(context: Context, appName: String, displayName: String, mimeType: String, override: Boolean): Uri =
+            DocumentFileUtil.newFile(context, context.defaultUri(appName), displayName, mimeType, override).uri
 
+    /**
+     * but DocumentFile class uses DocumentUri: if given Uri is backed by a DocumentsProvider
+     * so use DocumentFile to create and get Uri is not achievable
+     */
     private fun Context.appNameUri(appName: String, appNameDefault: String): Uri {
         return if (this.defaultSAF().check(appName)) {
-            this.defaultSAF().getUri(appName)
+            this.defaultUri(appName)
         } else {
             DocumentFileUtil.newDirectory(this, this.defaultUri(appNameDefault), appName).uri.also {
-                this.defaultSAF().put(appName, it.toString())
+                this.defaultSAF().put(appName, it)
             }
         }
     }
 
-    // root path Blocker/
-    private fun Context.defaultUri(appNameDefault: String): Uri =
-            this.defaultSAF().getUri(appNameDefault)
+    private fun Context.defaultUri(appName: String): Uri =
+            this.defaultSAF().getUri(appName) ?: throw DefaultSAFUnavailableException()
 
     private fun Context.defaultSAF(): DefaultSAF =
             this.defaultSAF
