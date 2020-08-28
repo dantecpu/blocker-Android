@@ -2,6 +2,7 @@ package io.github.newbugger.android.blocker.util.storage
 
 import android.content.Context
 import androidx.annotation.RequiresApi
+import io.github.newbugger.android.blocker.BuildConfig
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.storage.mediastore.entity.MediaStoreTextUtil
@@ -13,7 +14,7 @@ object MediaStoreLocalUtil {
 
     fun readAllText(context: Context, appName: String?, mimeType: String? = mimeTypeJson): Map<String?, String?> {
         val map = HashMap<String?, String?>()
-        MediaStoreTextUtil.readAllText(context, context.appName(appName), mimeType).forEach { (filename, text) ->
+        MediaStoreTextUtil.readAllText(context, context.appName(appName), mimeType, BuildConfig.APPLICATION_ID).forEach { (filename, text) ->
             when (mimeType) {
                 mimeTypeJson -> {
                     map[filename?.split(File.separator)?.last()?.replace(ConstantUtil.EXTENSION_JSON, "")] = text

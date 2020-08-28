@@ -238,10 +238,7 @@ object ApplicationUtil {
      * @param pm PackageManager
      * @return true : component is enabled , false: component is disabled
      */
-    fun isAppInstalled(pm: PackageManager, packageName: String?): Boolean {
-        if (packageName == null || packageName.trim().isEmpty()) {
-            return false
-        }
+    fun isAppInstalled(pm: PackageManager, packageName: String): Boolean {
         try {
             pm.getApplicationInfo(packageName, 0)
             return true

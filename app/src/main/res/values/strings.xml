@@ -46,6 +46,8 @@
     <string name="pref_controller_settings">Controller Settings</string>
     <string name="pref_controller_chooser_title">Choose Controller</string>
     <string name="pref_controller_type">Controller Type</string>
+    <string name="pref_category_storage_title">Storage (Android 11=+)</string>
+    <string name="pref_category_storage_key">storage</string>
     <string name="pref_saf_key">saf</string>
     <string name="pref_saf_title">grant SAF uri permission</string>
     <string name="pref_media_key">media</string>

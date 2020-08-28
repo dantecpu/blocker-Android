@@ -7,8 +7,8 @@ import io.github.newbugger.android.storage.mediastore.DefaultMediaStore.Companio
 object MediaStoreUtil {
 
     object Images {
-        fun getFolderFile(context: Context, appName: String, mimeType: String? = null): MutableList<DefaultMediaStore.MediaStoreFile?> {
-            return context.defaultMediaStore().Images().getFolderFile(appName, mimeType)
+        fun getFolderFile(context: Context, appName: String, mimeType: String? = null, owner: String? = null): MutableList<DefaultMediaStore.MediaStoreFile?> {
+            return context.defaultMediaStore().Images().getFolderFile(appName, mimeType, owner)
         }
 
         fun getFile(context: Context, appName: String, displayName: String, mimeType: String? = null): DefaultMediaStore.MediaStoreFile? {
@@ -21,8 +21,8 @@ object MediaStoreUtil {
     }
 
     object Downloads {
-        fun getFolderFile(context: Context, appName: String, mimeType: String? = null): MutableList<DefaultMediaStore.MediaStoreFile?> {
-            return context.defaultMediaStore().Downloads().getFolderFile(appName, mimeType)
+        fun getFolderFile(context: Context, appName: String, mimeType: String? = null, owner: String? = null): MutableList<DefaultMediaStore.MediaStoreFile?> {
+            return context.defaultMediaStore().Downloads().getFolderFile(appName, mimeType, owner)
         }
 
         fun getFile(context: Context, appName: String, displayName: String, mimeType: String? = null): DefaultMediaStore.MediaStoreFile? {

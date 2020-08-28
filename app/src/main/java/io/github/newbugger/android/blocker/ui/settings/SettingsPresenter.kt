@@ -75,24 +75,24 @@ class SettingsPresenter(
         var rulesCount: Int
         withContext(Dispatchers.IO) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                ModernStorageLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_BLOCKER).let { all ->
-                    rulesCount = all.size
+                ModernStorageLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_BLOCKER).filter { (packageName, text) ->
+                    packageName?.isNotEmpty() == true && text?.isNotEmpty() == true
+                }.also {
+                    rulesCount = it.size
                     notificationBuilder = NotificationUtil.createProcessingNotification(context, rulesCount)
-                    all.forEach { (packageName, text) ->
-                        if (packageName == null || text == null) return@forEach
-                        if (!ApplicationUtil.isAppInstalled(context.packageManager, packageName)) {
-                            return@forEach
-                        }
-                        Rule.import(context, text)
-                        restoredCount++
-                        NotificationUtil.updateProcessingNotification(
-                                context,
-                                packageName,
-                                restoredCount,
-                                rulesCount,
-                                notificationBuilder
-                        )
+                }.forEach { (packageName, text) ->
+                    if (!ApplicationUtil.isAppInstalled(context.packageManager, packageName!!)) {
+                        return@forEach
                     }
+                    Rule.import(context, text)
+                    restoredCount++
+                    NotificationUtil.updateProcessingNotification(
+                            context,
+                            packageName,
+                            restoredCount,
+                            rulesCount,
+                            notificationBuilder
+                    )
                 }
             } else {
                 rulesCount = FileUtils.getFileCounts(Rule.getBlockerRuleFolder(context), ConstantUtil.EXTENSION_JSON)

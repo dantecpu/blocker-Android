@@ -41,8 +41,8 @@
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
-        android:key="@string/key_pref_other"
-        android:title="@string/others">
+        android:key="@string/pref_category_storage_key"
+        android:title="@string/pref_category_storage_title">
         <androidx.preference.SwitchPreference
             android:defaultValue="true"
             android:key="@string/pref_media_key"
