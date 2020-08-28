@@ -27,7 +27,6 @@ object ApplicationUtil {
         val pm = context.packageManager
         return pm.getInstalledPackages(0)
                 .asSequence()
-                .filterNot { it.packageName == ConstantUtil.BLOCKER_PACKAGE_NAME }
                 .map {
                     Application(pm, it)
                 }
@@ -45,7 +44,6 @@ object ApplicationUtil {
         return pm.getInstalledPackages(0)
                 .asSequence()
                 .filter { it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0 }
-                .filterNot { it.packageName == ConstantUtil.BLOCKER_PACKAGE_NAME }
                 .map {
                     Application(pm, it)
                 }
