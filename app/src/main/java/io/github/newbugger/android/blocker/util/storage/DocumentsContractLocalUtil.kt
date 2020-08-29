@@ -31,12 +31,19 @@ object DocumentsContractLocalUtil {
     }
 
     fun readText(context: Context, appName: String, displayName: String, mimeType: String? = mimeTypeJson): String? {
-        return DefaultDocumentsContractTextUtil.readText(context, appName, displayName, mimeType)
+        return DefaultDocumentsContractTextUtil.readText(context, appName, displayName, mimeType.findExtension(), mimeType)
     }
 
     fun writeText(context: Context, content: String, appName: String, displayName: String, mimeType: String) {
-        DefaultDocumentsContractTextUtil.writeText(context, content, appName, displayName, mimeType, true)
+        DefaultDocumentsContractTextUtil.writeText(context, content, appName, displayName, mimeType.findExtension(), mimeType, true)
     }
+
+    private fun String?.findExtension(): String? =
+            when(this) {
+                mimeTypeJson -> ConstantUtil.EXTENSION_JSON
+                mimeTypeXml -> ConstantUtil.EXTENSION_XML
+                else -> null
+            }
 
     private const val mimeTypeJson: String = DefaultDocumentsContractTextUtil.mimeType_Json
     private const val mimeTypeXml: String = DefaultDocumentsContractTextUtil.mimeType_xml

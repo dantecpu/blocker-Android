@@ -26,12 +26,12 @@ object DefaultDocumentFileUtil {
     }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun getFile(context: Context, appName: String, displayName: String, mimeType: String? = null): Uri =
-            DocumentFileUtil.findFile(context, context.defaultUri(appName), displayName, mimeType)?.uri ?: throw FileNotFoundException()
+    fun getFile(context: Context, appName: String, displayName: String, extension: String? = null, mimeType: String? = null): Uri =
+            DocumentFileUtil.findFile(context, context.defaultUri(appName), displayName, extension, mimeType)?.uri ?: throw FileNotFoundException()
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun newFile(context: Context, appName: String, displayName: String, mimeType: String, override: Boolean): Uri =
-            DocumentFileUtil.newFile(context, context.defaultUri(appName), displayName, mimeType, override).uri
+    fun newFile(context: Context, appName: String, displayName: String, extension: String? = null, mimeType: String, override: Boolean): Uri =
+            DocumentFileUtil.newFile(context, context.defaultUri(appName), displayName, extension, mimeType, override).uri
 
     /**
      * but DocumentFile class uses DocumentUri: if given Uri is backed by a DocumentsProvider

@@ -13,12 +13,12 @@ object DocumentsContractUtil {
         return context.documentsContractClass().listFiles(treeUri, mimeType)
     }
 
-    fun getFile(context: Context, treeUri: Uri, displayName: String, mimeType: String? = null): Uri {
-        return context.documentsContractClass().getFile(treeUri, displayName, mimeType)
+    fun getFile(context: Context, treeUri: Uri, displayName: String, extension: String? = null, mimeType: String? = null): Uri {
+        return context.documentsContractClass().getFile(treeUri, displayName, extension, mimeType)
     }
 
-    fun newFile(context: Context, treeUri: Uri, displayName: String, mimeType: String, override: Boolean = false): Uri {
-        return context.documentsContractClass().newFile(treeUri, displayName, mimeType, override)
+    fun newFile(context: Context, treeUri: Uri, displayName: String, extension: String? = null, mimeType: String, override: Boolean = false): Uri {
+        return context.documentsContractClass().newFile(treeUri, displayName, extension, mimeType, override)
     }
 
     private fun Context.documentsContractClass(): DocumentsContractClass =

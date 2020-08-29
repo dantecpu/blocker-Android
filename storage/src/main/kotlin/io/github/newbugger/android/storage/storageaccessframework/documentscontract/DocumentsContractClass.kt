@@ -30,13 +30,13 @@ class DocumentsContractClass(context: Context) {
     }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun getFile(treeUri: Uri, displayName: String, mimeType: String? = null): Uri {
-        return queryFile(DocumentsContractCommonUtil.getTreeUri(treeUri), displayName, mimeType)?.uri ?: throw FileNotFoundException()
+    fun getFile(treeUri: Uri, displayName: String, extension: String? = null, mimeType: String? = null): Uri {
+        return queryFile(DocumentsContractCommonUtil.getTreeUri(treeUri), displayName, extension, mimeType)?.uri ?: throw FileNotFoundException()
     }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun newFile(treeUri: Uri, displayName: String, mimeType: String, override: Boolean = false): Uri {
-        if (override) queryFile(DocumentsContractCommonUtil.getTreeUri(treeUri), displayName, mimeType)?.delete()
+    fun newFile(treeUri: Uri, displayName: String, extension: String? = null, mimeType: String, override: Boolean = false): Uri {
+        if (override) queryFile(DocumentsContractCommonUtil.getTreeUri(treeUri), displayName, extension, mimeType)?.delete()
         return DocumentsContractCommonUtil.createDocument(contentResolver, DocumentsContractCommonUtil.getTreeUri(treeUri), displayName, mimeType)
     }
 
@@ -81,7 +81,7 @@ class DocumentsContractClass(context: Context) {
      * The only choice is to get all rows and filter yourself.
      */
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun queryFile(uri: Uri, displayName: String, mimeType: String?): DocumentsContractFile? {
+    private fun queryFile(uri: Uri, displayName: String, extension: String?, mimeType: String?): DocumentsContractFile? {
         val projection = arrayOf(
                 DocumentsContract.Document.COLUMN_DOCUMENT_ID,
                 DocumentsContract.Document.COLUMN_DISPLAY_NAME,
@@ -99,7 +99,9 @@ class DocumentsContractClass(context: Context) {
                 val id = cursor.getString(idColumn)
                 val name = cursor.getString(nameColumn)
                 val mime = cursor.getString(mimeColumn)
-                if (name == displayName && (mimeType == null || mimeType == mime)) {
+                if (((extension == null && name.startsWith(displayName)) ||
+                        (extension != null && name == displayName + extension))
+                            && (mimeType == null || mimeType == mime)) {
                     return DocumentsContractFile(id, name, uri, contentResolver)
                 }
             }

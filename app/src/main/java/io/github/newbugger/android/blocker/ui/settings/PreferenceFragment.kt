@@ -66,11 +66,13 @@ class PreferenceFragment: PreferenceFragmentCompat(),
                         if (BuildUtil.BuildProperty.isBuildDebug()) Log.e(javaClass.name, it.toString())
                     }
                     DocumentFileLocalUtil.getDirectoryName(requireContext(), uri).let {
-                        if (it == ConstantUtil.NAME_APP_NAME_DEFAULT) {
+                        // needs to grant permission for each uri, even if it is of sub-directory
+                        /*if (it == ConstantUtil.NAME_APP_NAME_DEFAULT) {
                             SAFLocalUtil.takePersistableUriPermission(requireActivity(), it, uri)
                         } else {
-                            SAFLocalUtil.getDefaultSAFUriRecord(requireContext(), it, uri)
-                        }
+                            SAFLocalUtil.takePersistableUriPermission(requireContext(), it, uri)
+                        }*/
+                        SAFLocalUtil.takePersistableUriPermission(requireActivity(), it, uri)
                     }
                 }
                 else -> return

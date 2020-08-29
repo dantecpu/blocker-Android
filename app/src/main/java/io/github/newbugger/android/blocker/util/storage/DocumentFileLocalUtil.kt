@@ -32,11 +32,11 @@ object DocumentFileLocalUtil {
     }
 
     fun readText(context: Context, appName: String, displayName: String, mimeType: String? = mimeTypeJson): String? {
-        return DefaultDocumentFileTextUtil.readText(context, appName, displayName, mimeType)
+        return DefaultDocumentFileTextUtil.readText(context, appName, displayName, mimeType.findExtension(), mimeType)
     }
 
     fun writeText(context: Context, content: String, appName: String, displayName: String, mimeType: String) {
-        DefaultDocumentFileTextUtil.writeText(context, content, appName, displayName, mimeType, true)
+        DefaultDocumentFileTextUtil.writeText(context, content, appName, displayName, mimeType.findExtension(), mimeType, true)
     }
 
     fun getDirectoryName(context: Context, uri: Uri): String =
@@ -44,6 +44,13 @@ object DocumentFileLocalUtil {
 
     fun getDirectoryUri(context: Context, uri: Uri): Uri =
             DocumentFileCommonUtil.getDirectoryUri(context, uri)
+
+    private fun String?.findExtension(): String? =
+            when(this) {
+                mimeTypeJson -> ConstantUtil.EXTENSION_JSON
+                mimeTypeXml -> ConstantUtil.EXTENSION_XML
+                else -> null
+            }
 
     private const val mimeTypeJson: String = DefaultDocumentFileTextUtil.mimeType_Json
     private const val mimeTypeXml: String = DefaultDocumentFileTextUtil.mimeType_xml

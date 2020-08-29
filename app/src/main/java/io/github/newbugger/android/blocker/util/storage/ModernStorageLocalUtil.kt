@@ -8,6 +8,10 @@ import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.storage.storageaccessframework.documentfile.defaultor.DefaultDocumentFileTextUtil
 
 
+/**
+ * choose one of DocumentFileLocalUtil (DocumentFile) or DocumentsContractLocalUtil (DocumentsContract, a bit performance fast)
+ */
+
 @RequiresApi(26)
 object ModernStorageLocalUtil {
 
@@ -16,6 +20,7 @@ object ModernStorageLocalUtil {
             MediaStoreLocalUtil.readAllText(context, appName, mimeType)
         } else {
             DocumentsContractLocalUtil.readAllText(context, appName, mimeType)
+            // DocumentFileLocalUtil.readAllText(context, appName, mimeType)
         }
     }
 
@@ -24,6 +29,7 @@ object ModernStorageLocalUtil {
             MediaStoreLocalUtil.readText(context, appName, displayName, mimeType)
         } else {
             DocumentsContractLocalUtil.readText(context, appName, displayName, mimeType)
+            // DocumentFileLocalUtil.readText(context, appName, displayName, mimeType)
         }
     }
 
@@ -32,6 +38,7 @@ object ModernStorageLocalUtil {
             MediaStoreLocalUtil.writeText(context, content, appName, displayName, mimeType)
         } else {
             DocumentsContractLocalUtil.writeText(context, content, appName, displayName, mimeType)
+            // DocumentFileLocalUtil.writeText(context, content, appName, displayName, mimeType)
         }
     }
 

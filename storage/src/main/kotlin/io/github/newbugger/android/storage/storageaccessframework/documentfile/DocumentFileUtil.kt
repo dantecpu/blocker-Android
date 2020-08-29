@@ -30,13 +30,13 @@ import java.io.IOException
 object DocumentFileUtil {
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun findFile(context: Context, uri: Uri, displayName: String, mimeType: String? = null): DocumentFile? =
+    fun findFile(context: Context, uri: Uri, displayName: String, extension: String? = null, mimeType: String? = null): DocumentFile? =
             uri.let {
                 DocumentFile.fromTreeUri(context, it)
             }.let {
                 it?.listFiles()
             }.let {
-                it?.filter { i -> i.name == displayName && i.type == mimeType }
+                it?.filter { i -> ((extension == null && i.name?.startsWith(displayName) == true) || (extension != null && i.name == displayName + extension)) && i.type == mimeType }
             }.let {
                 if (it?.isNotEmpty() == true) { it[0] } else { null }
             }
@@ -63,15 +63,12 @@ object DocumentFileUtil {
                 DocumentFile.fromTreeUri(context, it)
             } ?: throw FileNotFoundException()
 
-    /**
-     * todo: bug:: cannot override old file
-     */
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun newFile(context: Context, uri: Uri, displayName: String, mimeType: String, override: Boolean): DocumentFile =
+    fun newFile(context: Context, uri: Uri, displayName: String, extension: String? = null, mimeType: String, override: Boolean): DocumentFile =
             uri.let {
                 DocumentFile.fromTreeUri(context, it)
             }.let {
-                if (override) findFile(context, uri, displayName, mimeType)?.delete()
+                if (override) findFile(context, uri, displayName, extension, mimeType)?.delete()
                 it?.createFile(mimeType, displayName)
             } ?: throw IOException()
 

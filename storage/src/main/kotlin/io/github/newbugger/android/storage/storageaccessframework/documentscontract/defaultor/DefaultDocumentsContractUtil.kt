@@ -16,12 +16,12 @@ object DefaultDocumentsContractUtil {
         return DocumentsContractUtil.listFiles(context, context.defaultUri(appName), mimeType)
     }
 
-    fun getFile(context: Context, appName: String, displayName: String, mimeType: String? = null): Uri {
-        return DocumentsContractUtil.getFile(context, context.defaultUri(appName), displayName, mimeType)
+    fun getFile(context: Context, appName: String, displayName: String, extension: String? = null, mimeType: String? = null): Uri {
+        return DocumentsContractUtil.getFile(context, context.defaultUri(appName), displayName, extension, mimeType)
     }
 
-    fun newFile(context: Context, appName: String, displayName: String, mimeType: String, override: Boolean = false): Uri {
-        return DocumentsContractUtil.newFile(context, context.defaultUri(appName), displayName, mimeType, override)
+    fun newFile(context: Context, appName: String, displayName: String, extension: String? = null, mimeType: String, override: Boolean = false): Uri {
+        return DocumentsContractUtil.newFile(context, context.defaultUri(appName), displayName, extension, mimeType, override)
     }
 
     private fun Context.defaultUri(appName: String): Uri =
