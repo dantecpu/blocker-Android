@@ -8,14 +8,14 @@ import java.io.FileNotFoundException
 import java.io.IOException
 
 
-object DocumentFileKTX {
+object SAFKTX {
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun Context.defaultDocumentFileInputStream(uri: Uri): BufferedInputStream =
+    fun Context.defaultSAFInputStream(uri: Uri): BufferedInputStream =
             contentResolver.openInputStream(uri)?.buffered() ?: throw FileNotFoundException()
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    fun Context.defaultDocumentFileOutputStream(uri: Uri): BufferedOutputStream =
+    fun Context.defaultSAFOutputStream(uri: Uri): BufferedOutputStream =
             contentResolver.openOutputStream(uri)?.buffered() ?: throw FileNotFoundException()
 
 }

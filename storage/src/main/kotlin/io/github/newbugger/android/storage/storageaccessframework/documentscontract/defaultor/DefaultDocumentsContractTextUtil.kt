@@ -1,21 +1,20 @@
-package io.github.newbugger.android.storage.storageaccessframework.entity
+package io.github.newbugger.android.storage.storageaccessframework.documentscontract.defaultor
 
 import android.content.Context
 import androidx.annotation.RequiresApi
-import io.github.newbugger.android.storage.storageaccessframework.DocumentFileKTX.defaultDocumentFileInputStream
-import io.github.newbugger.android.storage.storageaccessframework.DocumentFileKTX.defaultDocumentFileOutputStream
-import io.github.newbugger.android.storage.storageaccessframework.defaultor.DefaultDocumentFileUtil
+import io.github.newbugger.android.storage.storageaccessframework.SAFKTX.defaultSAFInputStream
+import io.github.newbugger.android.storage.storageaccessframework.SAFKTX.defaultSAFOutputStream
 
 
 @RequiresApi(26)
-object DocumentFileTextUtil {
+object DefaultDocumentsContractTextUtil {
 
     fun readAllText(context: Context, appName: String, mimeType: String? = null): MutableMap<String?, String?> {
         val map = mutableMapOf<String?, String?>()
-        DefaultDocumentFileUtil.listFiles(context, appName, mimeType).filter { (filename, uri) ->
+        DefaultDocumentsContractUtil.listFiles(context, appName, mimeType).filter { (filename, uri) ->
             filename?.isNotEmpty() == true && uri.toString().isNotEmpty()
         }.forEach { (filename, uri) ->
-            context.defaultDocumentFileInputStream(uri!!).use {
+            context.defaultSAFInputStream(uri!!).use {
                 map[filename] = it.bufferedReader().readText()
                 it.close()
             }
@@ -25,8 +24,8 @@ object DocumentFileTextUtil {
 
     fun readText(context: Context, appName: String, displayName: String, mimeType: String? = null): String? {
         var text: String? = null
-        DefaultDocumentFileUtil.getFile(context, appName, displayName, mimeType).let { uri ->
-            context.defaultDocumentFileInputStream(uri).use {
+        DefaultDocumentsContractUtil.getFile(context, appName, displayName, mimeType).let { uri ->
+            context.defaultSAFInputStream(uri).use {
                 text = it.bufferedReader().readText()
                 it.close()
             }
@@ -35,8 +34,8 @@ object DocumentFileTextUtil {
     }
 
     fun writeText(context: Context, content: String, appName: String, displayName: String, mimeType: String, override: Boolean = false) {
-        DefaultDocumentFileUtil.newFile(context, appName, displayName, mimeType, override).let { uri ->
-            context.defaultDocumentFileOutputStream(uri).use {
+        DefaultDocumentsContractUtil.newFile(context, appName, displayName, mimeType, override).let { uri ->
+            context.defaultSAFOutputStream(uri).use {
                 content.byteInputStream(Charsets.UTF_8).copyTo(it)
                 it.close()
             }

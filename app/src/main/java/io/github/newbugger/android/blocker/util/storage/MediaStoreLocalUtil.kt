@@ -6,7 +6,7 @@ import io.github.newbugger.android.blocker.BuildConfig
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.storage.mediastore.entity.MediaStoreTextUtil
-import io.github.newbugger.android.storage.storageaccessframework.entity.DocumentFileCommonUtil
+import io.github.newbugger.android.storage.storageaccessframework.documentfile.entity.DocumentFileCommonUtil
 import java.io.File
 
 

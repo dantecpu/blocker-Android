@@ -1,9 +1,9 @@
-package io.github.newbugger.android.storage.storageaccessframework.entity
+package io.github.newbugger.android.storage.storageaccessframework.documentfile.entity
 
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.RequiresApi
-import io.github.newbugger.android.storage.storageaccessframework.DocumentFileUtil
+import io.github.newbugger.android.storage.storageaccessframework.documentfile.DocumentFileUtil
 import java.io.FileNotFoundException
 
 

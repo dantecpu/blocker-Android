@@ -27,19 +27,19 @@ import java.io.IOException
  */
 
 @RequiresApi(30)
-class DefaultMediaStore(private val context: Context) {
+class MediaStoreClass(context: Context) {
 
     inner class Images {
         fun getFolderFile(appName: String, mimeType: String? = null, owner: String? = null): MutableList<MediaStoreFile?> {
-            return context.getFolderFile(tableUri, relativePath(appName), mimeType, owner)
+            return getFolderFile(tableUri, relativePath(appName), mimeType, owner)
         }
 
         fun getFile(appName: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
-            return context.getFile(tableUri, relativePath(appName), displayName, mimeType)
+            return getFile(tableUri, relativePath(appName), displayName, mimeType)
         }
 
         fun newFile(appName: String, displayName: String, mimeType: String? = null, override: Boolean = false): MediaStoreFile {
-            return context.newFile(tableUri, relativePath(appName), displayName, mimeType, override)
+            return newFile(tableUri, relativePath(appName), displayName, mimeType, override)
         }
 
         private fun relativePath(appName: String): String = Environment.DIRECTORY_PICTURES + File.separator + appName + File.separator
@@ -60,15 +60,15 @@ class DefaultMediaStore(private val context: Context) {
      */
     inner class Downloads {
         fun getFolderFile(appName: String, mimeType: String? = null, owner: String? = null): MutableList<MediaStoreFile?> {
-            return context.getFolderFile(tableUri, relativePath(appName), mimeType, owner)
+            return getFolderFile(tableUri, relativePath(appName), mimeType, owner)
         }
 
         fun getFile(appName: String, displayName: String, mimeType: String? = null): MediaStoreFile? {
-            return context.getFile(tableUri, relativePath(appName), displayName, mimeType)
+            return getFile(tableUri, relativePath(appName), displayName, mimeType)
         }
 
         fun newFile(appName: String, displayName: String, mimeType: String? = null, override: Boolean = false): MediaStoreFile {
-            return context.newFile(tableUri, relativePath(appName), displayName, mimeType, override)
+            return newFile(tableUri, relativePath(appName), displayName, mimeType, override)
         }
 
         private fun relativePath(appName: String): String = Environment.DIRECTORY_DOWNLOADS + File.separator + appName + File.separator
@@ -77,17 +77,17 @@ class DefaultMediaStore(private val context: Context) {
     }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.getFolderFile(tableUri: Uri, relativePath: String, mimeType: String?, owner: String?): MutableList<MediaStoreFile?> {
+    private fun getFolderFile(tableUri: Uri, relativePath: String, mimeType: String?, owner: String?): MutableList<MediaStoreFile?> {
         return queryFolderFile(tableUri, relativePath, mimeType, owner)
     }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.getFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String?): MediaStoreFile? {
+    private fun getFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String?): MediaStoreFile? {
         return queryFile(tableUri, relativePath, displayName, mimeType)
     }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.newFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String?, override: Boolean): MediaStoreFile {
+    private fun newFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String?, override: Boolean): MediaStoreFile {
         if (override) queryFile(tableUri, relativePath, displayName, mimeType)?.delete()
         return insertFile(tableUri, relativePath, displayName)
     }
@@ -97,7 +97,7 @@ class DefaultMediaStore(private val context: Context) {
      * but available on Android 11
      */
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.queryFolderFile(tableUri: Uri, relativePath: String, mimeType: String?, owner: String?): MutableList<MediaStoreFile?> {
+    private fun queryFolderFile(tableUri: Uri, relativePath: String, mimeType: String?, owner: String?): MutableList<MediaStoreFile?> {
         val collection = mutableListOf<MediaStoreFile?>()
 
         val projection = arrayOf(
@@ -138,8 +138,7 @@ class DefaultMediaStore(private val context: Context) {
      * but available on Android 11
      */
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.queryFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String?): MediaStoreFile? {
-
+    private fun queryFile(tableUri: Uri, relativePath: String, displayName: String, mimeType: String?): MediaStoreFile? {
         val projection = arrayOf(
                 MediaStore.MediaColumns._ID,
                 MediaStore.MediaColumns.MIME_TYPE,
@@ -168,7 +167,7 @@ class DefaultMediaStore(private val context: Context) {
     }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.insertFile(tableUri: Uri, relativePath: String, displayName: String): MediaStoreFile {
+    private fun insertFile(tableUri: Uri, relativePath: String, displayName: String): MediaStoreFile {
         val fileUri = insertValue(tableUri, relativePath, displayName)
 
         val projection = arrayOf(MediaStore.MediaColumns._ID)
@@ -186,7 +185,7 @@ class DefaultMediaStore(private val context: Context) {
     }
 
     @Throws(SecurityException::class, IOException::class, FileNotFoundException::class)
-    private fun Context.insertValue(tableUri: Uri, relativePath: String, displayName: String): Uri {
+    private fun insertValue(tableUri: Uri, relativePath: String, displayName: String): Uri {
         return ContentValues(2).apply {
             put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
             put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
@@ -194,6 +193,8 @@ class DefaultMediaStore(private val context: Context) {
             contentResolver.insert(tableUri, it)
         } ?: throw IOException("can not insertValue $relativePath$displayName")
     }
+
+    private val contentResolver: ContentResolver = context.contentResolver
 
     data class MediaStoreFile(private val id: Long,
                               private val data: String,
@@ -211,8 +212,8 @@ class DefaultMediaStore(private val context: Context) {
     }
 
     companion object {
-        val Context.defaultMediaStore: DefaultMediaStore
-            get() = DefaultMediaStore(this)
+        val Context.mediaStoreClass: MediaStoreClass
+            get() = MediaStoreClass(this)
     }
 
 }

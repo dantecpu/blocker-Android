@@ -4,8 +4,8 @@ import android.content.Context
 import android.net.Uri
 import androidx.annotation.RequiresApi
 import io.github.newbugger.android.libkit.utils.ConstantUtil
-import io.github.newbugger.android.storage.storageaccessframework.entity.DocumentFileCommonUtil
-import io.github.newbugger.android.storage.storageaccessframework.entity.DocumentFileTextUtil
+import io.github.newbugger.android.storage.storageaccessframework.documentfile.entity.DocumentFileCommonUtil
+import io.github.newbugger.android.storage.storageaccessframework.documentfile.defaultor.DefaultDocumentFileTextUtil
 
 
 @RequiresApi(26)
@@ -13,7 +13,7 @@ object DocumentFileLocalUtil {
 
     fun readAllText(context: Context, appName: String, mimeType: String? = mimeTypeJson): MutableMap<String?, String?> {
         val map = mutableMapOf<String?, String?>()
-        DocumentFileTextUtil.readAllText(context, appName, mimeType).filter { (packageName, text) ->
+        DefaultDocumentFileTextUtil.readAllText(context, appName, mimeType).filter { (packageName, text) ->
             packageName?.isNotEmpty() == true && text?.isNotEmpty() == true
         }.forEach { (filename, text) ->
             when (mimeType) {
@@ -32,11 +32,11 @@ object DocumentFileLocalUtil {
     }
 
     fun readText(context: Context, appName: String, displayName: String, mimeType: String? = mimeTypeJson): String? {
-        return DocumentFileTextUtil.readText(context, appName, displayName, mimeType)
+        return DefaultDocumentFileTextUtil.readText(context, appName, displayName, mimeType)
     }
 
     fun writeText(context: Context, content: String, appName: String, displayName: String, mimeType: String) {
-        DocumentFileTextUtil.writeText(context, content, appName, displayName, mimeType, true)
+        DefaultDocumentFileTextUtil.writeText(context, content, appName, displayName, mimeType, true)
     }
 
     fun getDirectoryName(context: Context, uri: Uri): String =
@@ -45,8 +45,8 @@ object DocumentFileLocalUtil {
     fun getDirectoryUri(context: Context, uri: Uri): Uri =
             DocumentFileCommonUtil.getDirectoryUri(context, uri)
 
-    private const val mimeTypeJson: String = DocumentFileTextUtil.mimeType_Json
-    private const val mimeTypeXml: String = DocumentFileTextUtil.mimeType_xml
-    private const val mimeTypePlain: String = DocumentFileTextUtil.mimeType_plain
+    private const val mimeTypeJson: String = DefaultDocumentFileTextUtil.mimeType_Json
+    private const val mimeTypeXml: String = DefaultDocumentFileTextUtil.mimeType_xml
+    private const val mimeTypePlain: String = DefaultDocumentFileTextUtil.mimeType_plain
 
 }
