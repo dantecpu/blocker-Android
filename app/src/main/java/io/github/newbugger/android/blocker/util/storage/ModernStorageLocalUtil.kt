@@ -38,6 +38,15 @@ object ModernStorageLocalUtil {
     fun check(context: Context): Boolean =
             PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getString(R.string.pref_media_key), true)
 
+    fun replaceStringLast(string: String, from: String, to: String): String =
+            string.lastIndexOf(from).let {
+                if (it < 0) {
+                    string
+                } else {
+                    string.substring(it).replaceFirst(from, to)
+                }
+            }
+
     private const val mimeTypeJson: String = DocumentFileTextUtil.mimeType_Json
     const val mimeTypeXml: String = DocumentFileTextUtil.mimeType_xml
     const val mimeTypePlain: String = DocumentFileTextUtil.mimeType_plain

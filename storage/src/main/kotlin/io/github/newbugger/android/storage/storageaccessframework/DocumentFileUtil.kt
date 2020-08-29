@@ -21,7 +21,8 @@ import java.io.IOException
  *
  * (2) did not use file extensions into the display name
  * Documents express their display name and MIME type as separate fields, instead of relying on file extensions.
- * Some documents providers may still choose to append extensions to their display names, but that's an implementation detail
+ * Some documents providers may still choose to append extensions to their display names, but that's an implementation detail.
+ * but seems getName(): Return the display name of this document gives file extension still ?
  *
  */
 

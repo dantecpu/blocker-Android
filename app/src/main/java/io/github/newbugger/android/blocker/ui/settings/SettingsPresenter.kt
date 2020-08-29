@@ -75,13 +75,12 @@ class SettingsPresenter(
         var rulesCount: Int
         withContext(Dispatchers.IO) {
             if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !ModernStorageLocalUtil.check(context)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                ModernStorageLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_BLOCKER).filter { (packageName, text) ->
-                    packageName?.isNotEmpty() == true && text?.isNotEmpty() == true
-                }.also {
+                ModernStorageLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_BLOCKER).also {
                     rulesCount = it.size
                     notificationBuilder = NotificationUtil.createProcessingNotification(context, rulesCount)
                 }.forEach { (packageName, text) ->
-                    if (!ApplicationUtil.isAppInstalled(context.packageManager, packageName!!)) {
+                    if (packageName.isNullOrEmpty() || text.isNullOrEmpty()) return@forEach
+                    if (!ApplicationUtil.isAppInstalled(context.packageManager, packageName)) {
                         return@forEach
                     }
                     Rule.import(context, text)

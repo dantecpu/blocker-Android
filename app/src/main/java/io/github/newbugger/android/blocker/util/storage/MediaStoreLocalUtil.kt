@@ -6,6 +6,7 @@ import io.github.newbugger.android.blocker.BuildConfig
 import io.github.newbugger.android.blocker.R
 import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.storage.mediastore.entity.MediaStoreTextUtil
+import io.github.newbugger.android.storage.storageaccessframework.entity.DocumentFileCommonUtil
 import java.io.File
 
 
@@ -14,16 +15,18 @@ object MediaStoreLocalUtil {
 
     fun readAllText(context: Context, appName: String?, mimeType: String?): MutableMap<String?, String?> {
         val map = mutableMapOf<String?, String?>()
-        MediaStoreTextUtil.readAllText(context, context.appName(appName), mimeType, BuildConfig.APPLICATION_ID).forEach { (filename, text) ->
+        MediaStoreTextUtil.readAllText(context, context.appName(appName), mimeType, BuildConfig.APPLICATION_ID).filter { (packageName, text) ->
+            packageName?.isNotEmpty() == true && text?.isNotEmpty() == true
+        }.forEach { (filename, text) ->
             when (mimeType) {
                 mimeTypeJson -> {
-                    map[filename?.split(File.separator)?.last()?.replace(ConstantUtil.EXTENSION_JSON, "")] = text
+                    map[DocumentFileCommonUtil.toFileExtension(filename!!, ConstantUtil.EXTENSION_JSON, true)] = text
                 }
                 mimeTypeXml -> {
-                    map[filename?.split(File.separator)?.last()?.replace(ConstantUtil.EXTENSION_XML, "")] = text
+                    map[DocumentFileCommonUtil.toFileExtension(filename!!, ConstantUtil.EXTENSION_XML, true)] = text
                 }
                 else -> {
-                    return@forEach
+                    map[filename] = text
                 }
             }
         }

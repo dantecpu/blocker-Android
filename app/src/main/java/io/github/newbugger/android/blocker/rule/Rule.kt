@@ -176,11 +176,10 @@ object Rule {
         val controller = ComponentControllerProxy.getInstance(EControllerMethod.IFW, context)
         var succeedCount = 0
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !ModernStorageLocalUtil.check(context)) || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            ModernStorageLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_IFW, ModernStorageLocalUtil.mimeTypeXml).filter { (packageName, text) ->
-                packageName?.isNotEmpty() == true && text?.isNotEmpty() == true
-            }.forEach { (packageName, text) ->
-                if (!isApplicationInstalled(context, packageName!!)) return@forEach
-                val rule = RuleSerializer.deserialize(text!!) ?: return@forEach
+            ModernStorageLocalUtil.readAllText(context, ConstantUtil.NAME_RULE_IFW, ModernStorageLocalUtil.mimeTypeXml).forEach { (packageName, text) ->
+                if (packageName.isNullOrEmpty() || text.isNullOrEmpty()) return@forEach
+                if (!isApplicationInstalled(context, packageName)) return@forEach
+                val rule = RuleSerializer.deserialize(text) ?: return@forEach
                 val activities = rule.activity?.componentFilters
                         ?.asSequence()
                         ?.map { filter -> filter.name.split("/") }

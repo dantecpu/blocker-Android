@@ -3,6 +3,7 @@ package io.github.newbugger.android.blocker.util.storage
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.RequiresApi
+import io.github.newbugger.android.libkit.utils.ConstantUtil
 import io.github.newbugger.android.storage.storageaccessframework.entity.DocumentFileCommonUtil
 import io.github.newbugger.android.storage.storageaccessframework.entity.DocumentFileTextUtil
 
@@ -12,8 +13,20 @@ object DocumentFileLocalUtil {
 
     fun readAllText(context: Context, appName: String, mimeType: String? = mimeTypeJson): MutableMap<String?, String?> {
         val map = mutableMapOf<String?, String?>()
-        DocumentFileTextUtil.readAllText(context, appName, mimeType).forEach { (filename, text) ->
-            map[filename] = text
+        DocumentFileTextUtil.readAllText(context, appName, mimeType).filter { (packageName, text) ->
+            packageName?.isNotEmpty() == true && text?.isNotEmpty() == true
+        }.forEach { (filename, text) ->
+            when (mimeType) {
+                mimeTypeJson -> {
+                    map[DocumentFileCommonUtil.toFileExtension(filename!!, ConstantUtil.EXTENSION_JSON, true)] = text
+                }
+                mimeTypeXml -> {
+                    map[DocumentFileCommonUtil.toFileExtension(filename!!, ConstantUtil.EXTENSION_XML, true)] = text
+                }
+                else -> {
+                    map[filename] = text
+                }
+            }
         }
         return map
     }

@@ -69,7 +69,7 @@ class PreferenceFragment: PreferenceFragmentCompat(),
                         if (it == ConstantUtil.NAME_APP_NAME_DEFAULT) {
                             SAFLocalUtil.takePersistableUriPermission(requireActivity(), it, uri)
                         } else {
-                            SAFLocalUtil.takePersistableUriPermission(requireContext(), it, uri)
+                            SAFLocalUtil.getDefaultSAFUriRecord(requireContext(), it, uri)
                         }
                     }
                 }
