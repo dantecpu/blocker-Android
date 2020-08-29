@@ -36,7 +36,7 @@ object DocumentFileUtil {
             }.let {
                 it?.listFiles()
             }.let {
-                it?.filter { i -> ((extension == null && i.name?.startsWith(displayName) == true) || (extension != null && i.name == displayName + extension)) && i.type == mimeType }
+                it?.filter { i -> ((extension == null && i.name?.startsWith(displayName) == true) || (extension != null && i.name == displayName + extension)) && (mimeType == null || mimeType == i.type) }
             }.let {
                 if (it?.isNotEmpty() == true) { it[0] } else { null }
             }
