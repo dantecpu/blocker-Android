@@ -7,7 +7,7 @@
  * (at your option) any later version.
  */
 
-package io.github.newbugger.android.storage.storageaccessframework
+package io.github.newbugger.android.storage.storageaccessframework.saf
 
 import android.content.Context
 import android.content.Intent

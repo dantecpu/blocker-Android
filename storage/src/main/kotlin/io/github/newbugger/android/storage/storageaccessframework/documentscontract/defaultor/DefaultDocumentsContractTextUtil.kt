@@ -2,8 +2,8 @@ package io.github.newbugger.android.storage.storageaccessframework.documentscont
 
 import android.content.Context
 import androidx.annotation.RequiresApi
-import io.github.newbugger.android.storage.storageaccessframework.SAFKTX.defaultSAFInputStream
-import io.github.newbugger.android.storage.storageaccessframework.SAFKTX.defaultSAFOutputStream
+import io.github.newbugger.android.storage.storageaccessframework.saf.SAFKTX.defaultSAFInputStream
+import io.github.newbugger.android.storage.storageaccessframework.saf.SAFKTX.defaultSAFOutputStream
 
 
 @RequiresApi(26)

@@ -1,12 +1,12 @@
-package io.github.newbugger.android.storage.storageaccessframework.defaultor
+package io.github.newbugger.android.storage.storageaccessframework.saf.defaultor
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import androidx.annotation.RequiresApi
-import io.github.newbugger.android.storage.storageaccessframework.SAFUtil
-import io.github.newbugger.android.storage.storageaccessframework.defaultor.DefaultSAF.Companion.defaultSAF
+import io.github.newbugger.android.storage.storageaccessframework.saf.SAFUtil
+import io.github.newbugger.android.storage.storageaccessframework.saf.defaultor.DefaultSAF.Companion.defaultSAF
 
 
 @RequiresApi(26)

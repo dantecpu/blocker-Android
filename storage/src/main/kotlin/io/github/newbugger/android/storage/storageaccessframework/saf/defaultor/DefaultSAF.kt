@@ -1,4 +1,4 @@
-package io.github.newbugger.android.storage.storageaccessframework.defaultor
+package io.github.newbugger.android.storage.storageaccessframework.saf.defaultor
 
 import android.content.Context
 import android.content.SharedPreferences
