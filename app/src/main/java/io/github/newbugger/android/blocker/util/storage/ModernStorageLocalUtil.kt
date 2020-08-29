@@ -15,7 +15,7 @@ object ModernStorageLocalUtil {
         return if (check(context) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             MediaStoreLocalUtil.readAllText(context, appName, mimeType)
         } else {
-            DefaultDocumentsContractLocalUtil.readAllText(context, appName, mimeType)
+            DocumentsContractLocalUtil.readAllText(context, appName, mimeType)
         }
     }
 
@@ -23,7 +23,7 @@ object ModernStorageLocalUtil {
         return if (check(context) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             MediaStoreLocalUtil.readText(context, appName, displayName, mimeType)
         } else {
-            DefaultDocumentsContractLocalUtil.readText(context, appName, displayName, mimeType)
+            DocumentsContractLocalUtil.readText(context, appName, displayName, mimeType)
         }
     }
 
@@ -31,7 +31,7 @@ object ModernStorageLocalUtil {
         if (check(context) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             MediaStoreLocalUtil.writeText(context, content, appName, displayName, mimeType)
         } else {
-            DefaultDocumentsContractLocalUtil.writeText(context, content, appName, displayName, mimeType)
+            DocumentsContractLocalUtil.writeText(context, content, appName, displayName, mimeType)
         }
     }
 

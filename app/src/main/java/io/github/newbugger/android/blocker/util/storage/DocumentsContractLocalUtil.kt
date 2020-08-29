@@ -8,7 +8,7 @@ import io.github.newbugger.android.storage.storageaccessframework.documentscontr
 
 
 @RequiresApi(26)
-object DefaultDocumentsContractLocalUtil {
+object DocumentsContractLocalUtil {
 
     fun readAllText(context: Context, appName: String, mimeType: String? = mimeTypeJson): MutableMap<String?, String?> {
         val map = mutableMapOf<String?, String?>()
